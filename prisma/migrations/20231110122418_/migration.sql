@@ -30,9 +30,8 @@ CREATE TABLE "inventory" (
 
 -- CreateTable
 CREATE TABLE "Shop" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "monsterId" INTEGER NOT NULL,
-    "quantity" INTEGER NOT NULL,
     "price" INTEGER NOT NULL,
     "isAvailable" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

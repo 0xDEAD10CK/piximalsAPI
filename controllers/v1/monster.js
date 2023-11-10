@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
+import { v4 as uuidv4 } from "uuid";
+
 const generateMonster = async (req, res) => {
     const { name, type, species, rarity, hp, ap } = req.body;
     console.log(name, type, species, rarity, hp, ap)

@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { v4 as uuidv4 } from "uuid";
 
 const prisma = new PrismaClient();
 
@@ -33,6 +34,7 @@ async function main() {
     data: {
       monsterId: monster1.id,
       price: 500,
+      id: uuidv4()
     },
   });
 
@@ -40,6 +42,7 @@ async function main() {
     data: {
       monsterId: monster2.id,
       price: 425,
+      id: uuidv4()
     },
   });
 

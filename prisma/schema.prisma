@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model monster {
+  id            Int               @unique @default(autoincrement())
+  type          String
+  species       String
+  rarity        String
+  name          String
+  url           String
+  hp            Int
+  ap            Int
+  inventory     inventory[]
+}
+
+model user {
+  id            Int                 @unique @default(autoincrement())
+  username      String              @unique
+  password      String
+  createdAt     DateTime            @default(now())
+  currency      Int                 @default(1000)
+  inventory     inventory[]
+}
+
+model inventory {
+  id        Int         @id @default(autoincrement())
+  user      user        @relation(fields: [userId], references: [id])
+  userId    Int
+  monster   monster     @relation(fields: [monsterId], references: [id])
+  monsterId Int
+  // You can add more fields to the inventory model as needed, such as quantity or capture date.
+}

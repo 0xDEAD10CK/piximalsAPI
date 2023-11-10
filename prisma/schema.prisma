@@ -17,6 +17,7 @@ model monster {
   hp            Int
   ap            Int
   inventory     inventory[]
+  shop          Shop[]
 }
 
 model user {
@@ -35,4 +36,19 @@ model inventory {
   monster   monster     @relation(fields: [monsterId], references: [id])
   monsterId Int
   // You can add more fields to the inventory model as needed, such as quantity or capture date.
+}
+
+model Shop {
+  id              Int       @unique @default(autoincrement())
+  monsterId       Int       // Reference to the monster in the shop
+  quantity        Int       // Quantity of the monster available for sale
+  price           Int       // Price of each monster
+  isAvailable     Boolean   @default(true) // Indicates whether the monster is available for sale
+
+  // Relation to the Monster model
+  monster         monster   @relation(fields: [monsterId], references: [id])
+
+  // Timestamps for when the record was created and last updated
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }

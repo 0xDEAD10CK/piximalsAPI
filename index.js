@@ -4,6 +4,7 @@ import express, { urlencoded, json } from 'express'
 // IMPORT ROUTES BELOW
 import auth from './routes/auth.js'
 import monster from './routes/monster.js'
+import shop from './routes/shop.js'
 
 dotenv.config()
 
@@ -19,6 +20,7 @@ app.use(json())
 
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/auth`, auth)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/monster`, monster)
+app.use(`/${BASE_URL}/${CURRENT_VERSION}/shop`, shop)
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`)

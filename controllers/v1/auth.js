@@ -82,6 +82,7 @@ const login = async (req, res) => {
       {
         id: user.id,
         name: user.username,
+        currency: user.currency
       },
       JWT_SECRET,
       { expiresIn: JWT_LIFETIME }

@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 const register = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, role } = req.body;
 
     let user = await prisma.user.findUnique({ where: { username } });
 
@@ -14,28 +14,17 @@ const register = async (req, res) => {
       return res.status(409).json({ msg: "User already exists" });
     }
 
-    /**
-     * A salt is random bits added to a password before it is hashed. Salts
-     * create unique passwords even if two users have the same passwords
-     */
-    const salt = await bcryptjs.genSalt();
+    // Set a default role if not provided or if it's not a valid admin role
+    const defaultRole = process.env.defaultUserRole || "BASIC_USER";
+    const finalRole = role === process.env.adminRole ? role : defaultRole;
 
-    /**
-     * Generate a hash for a given string. The first argument
-     * is a string to be hashed, i.e., Pazzw0rd123 and the second
-     * argument is a salt, i.e., E1F53135E559C253
-     */
+    const salt = await bcryptjs.genSalt();
     const hashedPassword = await bcryptjs.hash(password, salt);
 
     user = await prisma.user.create({
-      data: { username, password: hashedPassword },
+      data: { username, password: hashedPassword, role: finalRole },
     });
 
-    /**
-     * Delete the password property from the user object. It
-     * is a less expensive operation than querying the User
-     * table to get only user's email and name
-     */
     delete user.password;
 
     res.set("Access-Control-Allow-Origin", "*"); // set the CORS header

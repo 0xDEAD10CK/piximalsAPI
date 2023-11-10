@@ -46,7 +46,7 @@ async function main() {
     },
   });
 
-  console.log("Seed data successfully inserted.");
+  console.log("Shop Seed data successfully inserted.");
 }
 
 main()

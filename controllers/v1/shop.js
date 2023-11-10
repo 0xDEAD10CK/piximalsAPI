@@ -37,7 +37,13 @@ const purchaseMonster = async (req, res) => {
     })
 
     // TODO: Implement logic for transferring the monster to the user
-
+    const newInventoryItem = await prisma.inventory.create({
+        data: {
+          userId: user.id,
+          monsterId: shopItem.monster.id,
+        },
+      });
+      
     // Remove item from the shop
     await prisma.shop.delete({
       where: { id },

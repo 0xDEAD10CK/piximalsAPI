@@ -10,11 +10,28 @@ const getPlayerInfo = async (req, res) => {
           id: true,
           username: true,
           currency: true,
-          inventory: true
+          inventory: {
+            select: {
+              id: true,
+              // other fields from the inventory you want to include
+              monster: {
+                select: {
+                  id: true,
+                  type: true,
+                  species: true,
+                  rarity: true,
+                  name: true,
+                  url: true,
+                  hp: true,
+                  ap: true,
+                  // other fields from the monster you want to include
+                },
+              },
+            },
+          },
           // other fields you want to include
         },
       });
-
     console.log(userdata)
     
     return res.status(201).json({

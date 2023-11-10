@@ -6,14 +6,16 @@ const generateMonster = async (req, res) => {
     console.log(name, type, species, rarity, hp, ap)
   try { 
 
-    const monster = await prisma.monster.create({
+    const monster = await prisma.monster.create({ 
+      data: {
         name,
         type,
         species,
         rarity,
-        url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=rt349gt2493gt09g2403h240`,
+        url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=fawfawfqw`,
         hp,
         ap
+      },
     })
 
     console.log(monster)

@@ -9,7 +9,8 @@ const getPlayerInfo = async (req, res) => {
         select: {
           id: true,
           username: true,
-          currency: true
+          currency: true,
+          inventory: true
           // other fields you want to include
         },
       });

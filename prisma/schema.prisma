@@ -8,7 +8,7 @@ datasource db {
 }
 
 model monster {
-  id            Int               @unique @default(autoincrement())
+  id            String               @unique
   type          String
   species       String
   rarity        String
@@ -28,6 +28,7 @@ model user {
   createdAt     DateTime            @default(now())
   currency      Int                 @default(1000)
   inventory     inventory[]
+  shopItems     Shop[]
 }
 
 model inventory {
@@ -35,18 +36,21 @@ model inventory {
   user      user        @relation(fields: [userId], references: [id])
   userId    Int
   monster   monster     @relation(fields: [monsterId], references: [id])
-  monsterId Int
+  monsterId String
   // You can add more fields to the inventory model as needed, such as quantity or capture date.
 }
 
 model Shop {
   id              String    @unique
-  monsterId       Int       // Reference to the monster in the shop
+  monsterId       String       // Reference to the monster in the shop
+  playerId        Int       // Add this line for the relationship
   price           Int       // Price of each monster
-  isAvailable     Boolean   @default(true) // Indicates whether the monster is available for sale
 
   // Relation to the Monster model
   monster         monster   @relation(fields: [monsterId], references: [id])
+
+  // Relation to the User model (Player who put the item in the shop)
+  player          user      @relation(fields: [playerId], references: [id])
 
   // Timestamps for when the record was created and last updated
   createdAt       DateTime  @default(now())

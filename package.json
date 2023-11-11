@@ -12,7 +12,10 @@
         "build": "npm run clean && npm run compile",
         "dev": "nodemon index.js",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "seed": "node ./utils/playerSeed.js; node ./utils/shopSeed.js"
+        "seed:player": "node ./utils/playerSeed.js",
+        "seed:shop": "node ./utils/shopSeed.js",
+        "seed:monsters": "node ./utils/monsterSeed.js",
+        "seed": "node ./utils/playerSeed.js && node ./utils/shopSeed.js && node ./utils/monsterSeed.js"
     },
     "keywords": [],
     "author": "",

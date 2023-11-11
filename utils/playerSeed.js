@@ -1,36 +1,56 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { PrismaClient } from '@prisma/client'
+import bcryptjs from 'bcryptjs'
 
-async function main() {
-  // Seed monsters
-  const user1 = await prisma.user.create({
-    data: {
-        "username": "Awesome_User1",
-        "password": "BestGuy"
-    },
-  });
+const prisma = new PrismaClient()
 
-  const user2 = await prisma.user.create({
-    data: {
-        "username": "NerdyBoy69",
-        "password": "ArmpitMaster"
+async function registerUser(username, password, role) {
+
+    let user = await prisma.user.findUnique({ where: { username } });
+
+    if (user) {
+      return res.status(409).json({ msg: "Seeded user already exists" });
     }
-  });
 
-  const user3 = await prisma.user.create({
-    data: {
-        "username": "SuperAdmin",
-        "password": "MasterOfGame"
-    }
-  });
+    const salt = await bcryptjs.genSalt()
+    const hashedPassword = await bcryptjs.hash(password, salt)
 
-  console.log("Player Seed data successfully inserted.");
+    user = await prisma.user.create({
+        data: { username, password: hashedPassword, role },
+    })
+
+    delete user.password
+
+    return user
 }
 
-main()
-  .catch((e) => {
-    throw e;
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+async function seedUsers() {
+    const userData = [
+        { username: 'Awesome_User1', password: 'BestGuy', role: 'BASIC_USER' },
+        {
+            username: 'NerdyBoy69',
+            password: 'ArmpitMaster',
+            role: 'BASIC_USER',
+        },
+        {
+            username: 'SuperAdmin',
+            password: 'MasterOfGame',
+            role: 'SUPER_ADMIN',
+        },
+    ]
+
+    try {
+        const createdUsers = await Promise.all(
+            userData.map(({ username, password, role }) =>
+                registerUser(username, password, role)
+            )
+        )
+
+        console.log('User Seed data successfully inserted:', createdUsers)
+    } catch (error) {
+        console.error('Error seeding users:', error)
+    } finally {
+        await prisma.$disconnect()
+    }
+}
+
+seedUsers()

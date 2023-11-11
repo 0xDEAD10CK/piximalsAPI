@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "monster" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "species" TEXT NOT NULL,
     "rarity" TEXT NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE "user" (
 CREATE TABLE "inventory" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
-    "monsterId" INTEGER NOT NULL,
+    "monsterId" TEXT NOT NULL,
 
     CONSTRAINT "inventory_pkey" PRIMARY KEY ("id")
 );
@@ -32,9 +32,9 @@ CREATE TABLE "inventory" (
 -- CreateTable
 CREATE TABLE "Shop" (
     "id" TEXT NOT NULL,
-    "monsterId" INTEGER NOT NULL,
+    "monsterId" TEXT NOT NULL,
+    "playerId" INTEGER NOT NULL,
     "price" INTEGER NOT NULL,
-    "isAvailable" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL
 );
@@ -59,3 +59,6 @@ ALTER TABLE "inventory" ADD CONSTRAINT "inventory_monsterId_fkey" FOREIGN KEY ("
 
 -- AddForeignKey
 ALTER TABLE "Shop" ADD CONSTRAINT "Shop_monsterId_fkey" FOREIGN KEY ("monsterId") REFERENCES "monster"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Shop" ADD CONSTRAINT "Shop_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

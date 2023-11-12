@@ -149,6 +149,7 @@ async function main() {
                     type: randomType,
                     species: randomSpecies,
                     rarity: randomRarity, // You can customize the rarity logic as needed
+                    status: 'wild',
                     url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${uuidv4()}`,
                     hp: Number(hp),
                     ap: Number(ap),

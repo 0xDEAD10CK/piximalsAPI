@@ -72,7 +72,40 @@ const purchaseMonster = async (req, res) => {
     }
 };
 
+const sellMonster = async (req, res) => {
+    const { id } = req.params;
+    const user = req.user;
+    const { price } = req.body
 
+    try {
+        const shopItem = await prisma.shop.create({
+            data: {
+                id: uuidv4(),
+                monsterId: id,
+                playerId: user.id,
+                price: price,
+            },
+        });
+
+        await prisma.monster.update({
+            where: { id: id},
+            data: {
+                status: 'On_Market'
+            }
+        })
+
+        return res.status(200).json({
+            msg: 'Monster listed successfully',
+            data: {
+                listedMonster: shopItem.data,
+            },
+        });
+    } catch (err) {
+        return res.status(500).json({
+            msg: err.message,
+        });
+    }
+};
 
 const getShop = async (req, res) => {
     const { page = 1, pageSize = 10, type, species, rarity } = req.query
@@ -131,4 +164,4 @@ const getShop = async (req, res) => {
     }
 }
 
-export { purchaseMonster, getShop }
+export { purchaseMonster, getShop, sellMonster }

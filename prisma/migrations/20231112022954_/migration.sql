@@ -5,6 +5,7 @@ CREATE TABLE "monster" (
     "species" TEXT NOT NULL,
     "rarity" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "hp" INTEGER NOT NULL,
     "ap" INTEGER NOT NULL

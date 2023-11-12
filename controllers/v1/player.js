@@ -17,6 +17,7 @@ const getPlayerInfo = async (req, res) => {
                             select: {
                                 id: true,
                                 type: true,
+                                status: true,
                                 species: true,
                                 rarity: true,
                                 name: true,

@@ -17,6 +17,7 @@ async function main() {
             type: 'Pyro',
             species: 'Dragon',
             rarity: 'Transcendant',
+            status: "On-Market",
             url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${uuidv4()}`,
             hp: 167,
             ap: 34,
@@ -30,6 +31,7 @@ async function main() {
             type: 'Cryo',
             species: 'Behemoth',
             rarity: 'Rare',
+            status: "On-Market",
             url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${uuidv4()}`,
             hp: 90,
             ap: 20,
@@ -43,6 +45,7 @@ async function main() {
             type: 'Astral',
             species: 'Minotaur',
             rarity: 'Legendary',
+            status: "On-Market",
             url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${uuidv4()}`,
             hp: 135,
             ap: 25,
@@ -56,6 +59,7 @@ async function main() {
             type: 'Shadow',
             species: 'Serpent',
             rarity: 'Mythical',
+            status: "On-Market",
             url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${uuidv4()}`,
             hp: 155,
             ap: 30,
@@ -69,6 +73,7 @@ async function main() {
             type: 'Solar',
             species: 'Sphinx',
             rarity: 'Uncommon',
+            status: "On-Market",
             url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${uuidv4()}`,
             hp: 100,
             ap: 24,
@@ -131,7 +136,7 @@ async function main() {
     const shopItem3 = await prisma.shop.create({
         data: {
             id: uuidv4(),
-            monsterId: monster1.id,
+            monsterId: monster3.id,
             playerId: 3,
             price: 6800,
         },
@@ -140,7 +145,7 @@ async function main() {
     const shopItem4 = await prisma.shop.create({
         data: {
             id: uuidv4(),
-            monsterId: monster2.id,
+            monsterId: monster4.id,
             playerId: 3,
             price: 10500,
         },
@@ -149,7 +154,7 @@ async function main() {
     const shopItem5 = await prisma.shop.create({
         data: {
             id: uuidv4(),
-            monsterId: monster1.id,
+            monsterId: monster5.id,
             playerId: 4,
             price: 750,
         },

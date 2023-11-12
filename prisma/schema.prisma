@@ -13,6 +13,7 @@ model monster {
   species       String
   rarity        String
   name          String
+  status        String
   url           String
   hp            Int
   ap            Int

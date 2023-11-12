@@ -11,7 +11,7 @@ CREATE TABLE "monster" (
 );
 
 -- CreateTable
-CREATE TABLE "user" (
+CREATE TABLE "account" (
     "id" SERIAL NOT NULL,
     "username" TEXT NOT NULL,
     "password" TEXT NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE "inventory" (
 );
 
 -- CreateTable
-CREATE TABLE "Shop" (
+CREATE TABLE "shop" (
     "id" TEXT NOT NULL,
     "monsterId" TEXT NOT NULL,
     "playerId" INTEGER NOT NULL,
@@ -43,22 +43,22 @@ CREATE TABLE "Shop" (
 CREATE UNIQUE INDEX "monster_id_key" ON "monster"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_id_key" ON "user"("id");
+CREATE UNIQUE INDEX "account_id_key" ON "account"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_username_key" ON "user"("username");
+CREATE UNIQUE INDEX "account_username_key" ON "account"("username");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Shop_id_key" ON "Shop"("id");
+CREATE UNIQUE INDEX "shop_id_key" ON "shop"("id");
 
 -- AddForeignKey
-ALTER TABLE "inventory" ADD CONSTRAINT "inventory_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "inventory" ADD CONSTRAINT "inventory_userId_fkey" FOREIGN KEY ("userId") REFERENCES "account"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "inventory" ADD CONSTRAINT "inventory_monsterId_fkey" FOREIGN KEY ("monsterId") REFERENCES "monster"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Shop" ADD CONSTRAINT "Shop_monsterId_fkey" FOREIGN KEY ("monsterId") REFERENCES "monster"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "shop" ADD CONSTRAINT "shop_monsterId_fkey" FOREIGN KEY ("monsterId") REFERENCES "monster"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Shop" ADD CONSTRAINT "Shop_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "shop" ADD CONSTRAINT "shop_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "account"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

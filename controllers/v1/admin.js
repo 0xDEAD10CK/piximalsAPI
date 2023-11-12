@@ -1,11 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-const getPlayerInfo = async (req, res) => {
-    const user = req.user
+const getAllUsers = async (req, res) => {
     try {
-        const userdata = await prisma.account.findUnique({
-            where: { id: Number(user.id) },
+        const users = await prisma.account.findMany({
             select: {
                 id: true,
                 username: true,
@@ -31,17 +29,12 @@ const getPlayerInfo = async (req, res) => {
                 // other fields you want to include
             },
         })
-        console.log(userdata)
 
         return res.status(201).json({
             msg: 'User information successfully fetched!',
-            data: userdata,
+            data: users,
         })
-    } catch (err) {
-        return res.status(500).json({
-            msg: err.message,
-        })
-    }
+    } catch (error) {}
 }
 
-export { getPlayerInfo }
+export { getAllUsers }

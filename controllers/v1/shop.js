@@ -3,81 +3,76 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 const purchaseMonster = async (req, res) => {
-    const { id } = req.params
-    const user = req.user
+    const { id } = req.params;
+    const user = req.user;
 
     try {
         // Find the monster in the shop
         const shopItem = await prisma.shop.findUnique({
             where: { id },
             include: { monster: true }, // Include monster details in the response
-        })
+        });
 
-        console.log(user)
+        // Check if the user has enough money
+        const buyer = await prisma.account.findUnique({
+            where: { id: user.id },
+            select: { id: true, currency: true },
+        });
 
-        if (user.currency < shopItem.price) {
+        if (buyer.currency < shopItem.price) {
             return res.status(403).json({
                 msg: 'You do not have enough money!',
-            })
+            });
         }
 
-        // TODO: Implement logic for handling user balance and payment
-        await prisma.user.update({
-            where: { id: Number(user.id) },
-            data: {
-                currency: { decrement: shopItem.price },
-            },
-        })
+        // Start a Prisma transaction to ensure atomicity
+        await prisma.$transaction([
+            // Deduct money from the buyer
+            prisma.account.update({
+                where: { id: buyer.id },
+                data: { currency: { decrement: shopItem.price } },
+            }),
 
-        // TODO: Implement logic for updating the seller's balance and removing the monster from their inventory
-        await prisma.user.update({
-            where: { id: Number(shopItem.playerId) },
-            data: {
-                currency: { increment: shopItem.price },
-            },
-        })
+            // Update the seller's balance
+            prisma.account.update({
+                where: { id: shopItem.playerId },
+                data: { currency: { increment: shopItem.price } },
+            }),
 
-        // Find the existing inventory item for the seller and monster
-        const sellerInventoryItem = await prisma.inventory.findFirst({
-            where: {
-                userId: shopItem.playerId,
-                monsterId: shopItem.monster.id,
-            },
-        })
+            // Transfer the monster from seller to buyer
+            prisma.inventory.create({
+                data: {
+                    userId: buyer.id,
+                    monsterId: shopItem.monster.id,
+                },
+            }),
 
-        // Update the existing inventory item for the seller to transfer it to the buyer
-        await prisma.inventory.update({
-            where: { id: sellerInventoryItem.id },
-            data: {
-                userId: user.id, // Transfer to the buyer
-            },
-        })
+            // Remove the monster from the seller's inventory
+            prisma.inventory.deleteMany({
+                where: {
+                    userId: shopItem.playerId,
+                    monsterId: shopItem.monster.id,
+                },
+            }),
 
-        // TODO: Implement logic for removing the monster from the seller's inventory
-        await prisma.inventory.deleteMany({
-            where: {
-                userId: shopItem.playerId,
-                monsterId: shopItem.monster.id,
-            },
-        })
-
-        // Remove item from the shop
-        await prisma.shop.delete({
-            where: { id },
-        })
+            // Remove item from the shop
+            prisma.shop.delete({ where: { id } }),
+        ]);
 
         return res.status(200).json({
             msg: 'Monster purchased successfully',
             data: {
                 purchasedMonster: shopItem.monster,
             },
-        })
+        });
     } catch (err) {
         return res.status(500).json({
             msg: err.message,
-        })
+        });
     }
-}
+};
+
+
 
 const getShop = async (req, res) => {
     const { page = 1, pageSize = 10, type, species, rarity } = req.query

@@ -8,7 +8,7 @@ const register = async (req, res) => {
   try {
     const { username, password, role } = req.body;
 
-    let user = await prisma.user.findUnique({ where: { username } });
+    let user = await prisma.account.findUnique({ where: { username } });
 
     if (user) {
       return res.status(409).json({ msg: "User already exists" });
@@ -21,7 +21,7 @@ const register = async (req, res) => {
     const salt = await bcryptjs.genSalt();
     const hashedPassword = await bcryptjs.hash(password, salt);
 
-    user = await prisma.user.create({
+    user = await prisma.account.create({
       data: { username, password: hashedPassword, role: finalRole },
     });
 
@@ -44,16 +44,12 @@ const login = async (req, res) => {
     try {
     const { username, password } = req.body;
 
-    const user = await prisma.user.findUnique({ where: { username } });
+    const user = await prisma.account.findUnique({ where: { username } });
 
     if (!user) {
       return res.status(401).json({ msg: "Invalid username" });
     }
 
-    /**
-     * Compare the given string, i.e., Pazzw0rd123, with the given
-     * hash, i.e., user's hashed password
-     */
     const isPasswordCorrect = await bcryptjs.compare(password, user.password);
 
     if (!isPasswordCorrect) {
@@ -62,16 +58,11 @@ const login = async (req, res) => {
 
     const { JWT_SECRET, JWT_LIFETIME } = process.env;
 
-    /**
-     * Return a JWT. The first argument is the payload, i.e., an object containing
-     * the authenticated user's id and name, the second argument is the secret
-     * or public/private key, and the third argument is the lifetime of the JWT
-     */
     const token = jwt.sign(
       {
         id: user.id,
         name: user.username,
-        currency: user.currency
+        role: user.role
       },
       JWT_SECRET,
       { expiresIn: JWT_LIFETIME }

@@ -1,11 +1,12 @@
 import { PrismaClient } from '@prisma/client'
 import bcryptjs from 'bcryptjs'
+import { userData } from './playerObjects.js'
 
 const prisma = new PrismaClient()
 
 async function registerUser(username, password, role) {
 
-    let user = await prisma.user.findUnique({ where: { username } });
+    let user = await prisma.account.findUnique({ where: { username } });
 
     if (user) {
       return res.status(409).json({ msg: "Seeded user already exists" });
@@ -14,7 +15,7 @@ async function registerUser(username, password, role) {
     const salt = await bcryptjs.genSalt()
     const hashedPassword = await bcryptjs.hash(password, salt)
 
-    user = await prisma.user.create({
+    user = await prisma.account.create({
         data: { username, password: hashedPassword, role },
     })
 
@@ -24,23 +25,11 @@ async function registerUser(username, password, role) {
 }
 
 async function seedUsers() {
-    const userData = [
-        { username: 'Awesome_User1', password: 'BestGuy', role: 'BASIC_USER' },
-        {
-            username: 'NerdyBoy69',
-            password: 'ArmpitMaster',
-            role: 'BASIC_USER',
-        },
-        {
-            username: 'SuperAdmin',
-            password: 'MasterOfGame',
-            role: 'SUPER_ADMIN',
-        },
-    ]
+    const data = userData;
 
     try {
         const createdUsers = await Promise.all(
-            userData.map(({ username, password, role }) =>
+            data.map(({ username, password, role }) =>
                 registerUser(username, password, role)
             )
         )

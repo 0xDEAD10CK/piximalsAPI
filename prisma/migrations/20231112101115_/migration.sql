@@ -18,7 +18,7 @@ CREATE TABLE "account" (
     "password" TEXT NOT NULL,
     "role" TEXT NOT NULL DEFAULT 'BASIC_USER',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "currency" INTEGER NOT NULL DEFAULT 1000
+    "currency" INTEGER NOT NULL DEFAULT 100000
 );
 
 -- CreateTable

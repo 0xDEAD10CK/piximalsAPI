@@ -47,6 +47,12 @@ const purchaseMonster = async (req, res) => {
                 },
             }),
 
+            // Update the monster's status to 'In_Inventory'
+            prisma.monster.update({
+                where: { id: shopItem.monster.id },
+                data: { status: 'In_Inventory' },
+            }),
+
             // Remove the monster from the seller's inventory
             prisma.inventory.deleteMany({
                 where: {

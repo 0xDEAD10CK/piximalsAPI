@@ -125,6 +125,24 @@ const sellMonster = async (req, res) => {
     }
 };
 
+const cancelListing = async (req, res) => {
+    const { id } = req.params.id;
+    const user = req.user;
+    try {
+        const listing = await prisma.shop.findUnique({
+            where: { id: id }
+        })
+
+        if (listing.playerId !== user.id) {
+            return res.status(401).json({
+                msg: "You cannot cancel another persons listing."
+            })
+        }
+    } catch (error) {
+
+    }
+}
+
 const getShop = async (req, res) => {
     const { page = 1, pageSize = 10, type, species, rarity } = req.query
 
@@ -182,4 +200,4 @@ const getShop = async (req, res) => {
     }
 }
 
-export { purchaseMonster, getShop, sellMonster }
+export { purchaseMonster, getShop, sellMonster, cancelListing }

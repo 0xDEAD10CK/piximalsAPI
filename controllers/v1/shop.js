@@ -84,6 +84,18 @@ const sellMonster = async (req, res) => {
     const { price } = req.body
 
     try {
+        const monster = await prisma.monster.findUnique({
+            where: { id: id}
+        })
+
+        console.log(monster)
+
+        if (monster.status === 'On_Market') {
+            return res.status(403).json({
+                msg: "Monster already marketed."
+            })
+        }
+
         const shopItem = await prisma.shop.create({
             data: {
                 id: uuidv4(),

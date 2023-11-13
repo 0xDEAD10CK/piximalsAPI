@@ -32,7 +32,6 @@ const getPlayerInfo = async (req, res) => {
                 // other fields you want to include
             },
         })
-        console.log(userdata)
 
         return res.status(201).json({
             msg: 'User information successfully fetched!',

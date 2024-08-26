@@ -1,0 +1,51 @@
+{
+    "types": [
+        "Pyro",
+        "Cryo",
+        "Aero",
+        "Hydro",
+        "Geo",
+        "Electro",
+        "Solar",
+        "Lunar",
+        "Shadow",
+        "Mystic",
+        "Nature",
+        "Astral",
+        "Toxic",
+        "Metallic",
+        "Spectral",
+        "Chaos"
+    ],
+    "species": [
+        "Drake",
+        "Yeti",
+        "Golem",
+        "Gryphon",
+        "Serpent",
+        "Salamander",
+        "Unicorn",
+        "Wraith",
+        "Sphinx",
+        "Behemoth",
+        "Minotaur",
+        "Banshee",
+        "Pegasus",
+        "Hydracorn",
+        "Phoenix",
+        "Wendigo",
+        "Treant",
+        "Specter",
+        "Chimera",
+        "Wyrm"
+    ],
+    "rarity": [
+        "Common",
+        "Uncommon",
+        "Rare",
+        "Epic",
+        "Legendary",
+        "Mythical",
+        "Transcendant"
+    ]
+}

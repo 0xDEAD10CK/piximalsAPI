@@ -1,0 +1,15 @@
+Local Machine -
+	API - 
+	    npm run dev
+	    postman to localhost:3000/api/v1/
+	env -
+	    PORT
+	    JWT_SECRET
+	    JWT_LIFETIME
+	    DATABASE_URL *Render Postgres
+
+
+Database -
+	Render
+		
+	  	

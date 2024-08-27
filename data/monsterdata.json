@@ -40,12 +40,12 @@
         "Wyrm"
     ],
     "rarity": [
-        "Common",
-        "Uncommon",
-        "Rare",
-        "Epic",
-        "Legendary",
-        "Mythical",
-        "Transcendant"
+        { "rarity": "Common", "weight": 50 },
+        { "rarity": "Uncommon", "weight": 25 },
+        { "rarity": "Rare", "weight": 15 },
+        { "rarity": "Epic", "weight": 5 },
+        { "rarity": "Legendary", "weight": 3 },
+        { "rarity": "Mythical", "weight": 1 },
+        { "rarity": "Transcendant", "weight": 0.5 }
     ]
 }

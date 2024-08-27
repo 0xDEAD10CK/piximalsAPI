@@ -8,6 +8,21 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
+// Function to get a random weighted option
+const getRandomWeightedOption = (options) => {
+    const totalWeight = options.reduce((sum, option) => sum + option.weight, 0);
+    let random = Math.random() * totalWeight;
+    console.log("Total Weight:", totalWeight, "Random:", random)
+    for (const option of options) {
+        if (random < option.weight) {
+            return option;
+        }
+        random -= option.weight;
+    }
+    
+    return options[options.length - 1]; // Fallback
+};
+
 /**
  * Generates a new monster and saves it to the database.
  * 
@@ -18,7 +33,7 @@ function getRandomInt(min, max) {
 const generateMonster = async (req, res) => {
     const randomType = mData.types[getRandomInt(0, mData.types.length - 1)]
     const randomSpecies = mData.species[getRandomInt(0, mData.species.length - 1)]
-    const randomRarity = mData.rarity[getRandomInt(0, mData.rarity.length - 1)]
+    const randomRarity = getRandomWeightedOption(mData.rarity).rarity;
     console.log("Jones", randomType, randomSpecies, randomRarity)
     const id = uuidv4()
     try {

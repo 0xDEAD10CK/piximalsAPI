@@ -21,7 +21,6 @@
         "Drake",
         "Yeti",
         "Golem",
-        "Gryphon",
         "Serpent",
         "Salamander",
         "Unicorn",
@@ -31,21 +30,32 @@
         "Minotaur",
         "Banshee",
         "Pegasus",
-        "Hydracorn",
+        "Hydra",
         "Phoenix",
         "Wendigo",
         "Treant",
         "Specter",
         "Chimera",
-        "Wyrm"
+        "Wyrm",
+        "Harpy",
+        "Cerberus",
+        "Kraken",
+        "Leviathan",
+        "Manticore",
+        "Cyclops",
+        "Griffin",
+        "Basilisk",
+        "Gorgon",
+        "Siren",
+        "Titan"
     ],
     "rarity": [
         { "rarity": "Common", "weight": 50 },
         { "rarity": "Uncommon", "weight": 25 },
-        { "rarity": "Rare", "weight": 15 },
-        { "rarity": "Epic", "weight": 5 },
-        { "rarity": "Legendary", "weight": 3 },
-        { "rarity": "Mythical", "weight": 1 },
-        { "rarity": "Transcendant", "weight": 0.5 }
+        { "rarity": "Rare", "weight": 16.4 },
+        { "rarity": "Epic", "weight": 6.4 },
+        { "rarity": "Legendary", "weight": 1.5 },
+        { "rarity": "Mythical", "weight": 0.5 },
+        { "rarity": "Transcendant", "weight": 0.2 }
     ]
 }

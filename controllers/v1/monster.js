@@ -2,7 +2,8 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 import { v4 as uuidv4 } from 'uuid'
-import mData from '../../data/monsterdata.json' assert { type: 'json' };
+
+import { monsterData } from '../../data/monsterdata.js';
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
@@ -31,9 +32,9 @@ const getRandomWeightedOption = (options) => {
  * @returns {Object} The generated monster.
  */
 const generateMonster = async (req, res) => {
-    const randomType = mData.types[getRandomInt(0, mData.types.length - 1)]
-    const randomSpecies = mData.species[getRandomInt(0, mData.species.length - 1)]
-    const randomRarity = getRandomWeightedOption(mData.rarity).rarity;
+    const randomType = monsterData.types[getRandomInt(0, monsterData.types.length - 1)]
+    const randomSpecies = monsterData.species[getRandomInt(0, monsterData.species.length - 1)]
+    const randomRarity = getRandomWeightedOption(monsterData.rarity).rarity;
     console.log("Jones", randomType, randomSpecies, randomRarity)
     const id = uuidv4()
     try {

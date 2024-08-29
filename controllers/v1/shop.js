@@ -28,10 +28,7 @@ const purchaseMonster = async (req, res) => {
         // Start a Prisma transaction to ensure atomicity
         await prisma.$transaction([
             // Deduct money from the buyer
-            prisma.account.update({
-                where: { id: buyer.id },
-                data: { currency: { decrement: shopItem.price } },
-            }),
+            
 
             // Update the seller's balance
             prisma.account.update({

@@ -2,6 +2,15 @@ import { v4 as uuidv4 } from 'uuid'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
+import { 
+    deductBalance,
+    updateBalance,
+    transferMonster,
+    updateMonsterStatus,
+    removeMonsterFromSeller,
+    removeItemFromShop 
+} from '../../utils/accountBalance.js';
+
 const purchaseMonster = async (req, res) => {
     const { id } = req.params;
     const user = req.user;
@@ -27,39 +36,12 @@ const purchaseMonster = async (req, res) => {
 
         // Start a Prisma transaction to ensure atomicity
         await prisma.$transaction([
-            // Deduct money from the buyer
-            
-
-            // Update the seller's balance
-            prisma.account.update({
-                where: { id: shopItem.playerId },
-                data: { currency: { increment: shopItem.price } },
-            }),
-
-            // Transfer the monster from seller to buyer
-            prisma.inventory.create({
-                data: {
-                    userId: buyer.id,
-                    monsterId: shopItem.monster.id,
-                },
-            }),
-
-            // Update the monster's status to 'In_Inventory'
-            prisma.monster.update({
-                where: { id: shopItem.monster.id },
-                data: { status: 'In_Inventory' },
-            }),
-
-            // Remove the monster from the seller's inventory
-            prisma.inventory.deleteMany({
-                where: {
-                    userId: shopItem.playerId,
-                    monsterId: shopItem.monster.id,
-                },
-            }),
-
-            // Remove item from the shop
-            prisma.shop.delete({ where: { id } }),
+            deductBalance(buyer.id, shopItem.price),   // Deduct money from the buyer
+            updateBalance(shopItem.playerId, shopItem.price),  // Update the seller's balance
+            transferMonster(buyer.id, shopItem.monster.id),   // Transfer the monster from seller to buyer
+            updateMonsterStatus(shopItem.monster.id, 'In_Inventory'),   // Update the monster's status to 'In_Inventory'
+            removeMonsterFromSeller(shopItem.playerId, shopItem.monster.id),  // Remove the monster from the seller's inventory
+            removeItemFromShop(id),  // Remove item from the shop
         ]);
 
         return res.status(200).json({

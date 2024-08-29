@@ -10,14 +10,13 @@ const getPlayerInfo = async (req, res) => {
                 id: true,
                 username: true,
                 currency: true,
-                inventory: {
+                menagerie: {
                     select: {
-                        // other fields from the inventory you want to include
                         monster: {
                             select: {
                                 id: true,
+                                capturedAt: true, // Include the capturedAt field from menagerie
                                 type: true,
-                                status: true,
                                 species: true,
                                 rarity: true,
                                 name: true,
@@ -29,9 +28,11 @@ const getPlayerInfo = async (req, res) => {
                         },
                     },
                 },
+                inventory: {},
                 // other fields you want to include
             },
         })
+        console.log(userdata)
 
         return res.status(201).json({
             msg: 'User information successfully fetched!',

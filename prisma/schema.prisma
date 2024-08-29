@@ -8,7 +8,8 @@ datasource db {
 }
 
 model monster {
-  id            String               @unique
+  id            String         @id @default(uuid())
+  capturedAt    DateTime       @default(now())
   type          String
   species       String
   rarity        String
@@ -17,43 +18,48 @@ model monster {
   url           String
   hp            Int
   ap            Int
-  inventory     inventory[]
+  menageries    menagerie[]     // Monsters are associated with the menagerie
   shop          shop[]
 }
 
 model account {
-  id            Int                 @unique @default(autoincrement())
-  username      String              @unique
+  id            Int            @id @default(autoincrement())
+  username      String         @unique
   password      String
-  role          String              @default("BASIC_USER")
-  createdAt     DateTime            @default(now())
-  currency      Int                 @default(100000)
-  inventory     inventory[]
+  role          String         @default("BASIC_USER")
+  createdAt     DateTime       @default(now())
+  currency      Int            @default(100000)
+  inventory     inventory[]    // Relation to inventory model
+  menagerie     menagerie[]    // Relation to the new menagerie model
   shopItems     shop[]
 }
 
 model inventory {
-  id        Int         @id @default(autoincrement())
-  user      account        @relation(fields: [userId], references: [id])
-  userId    Int
-  monster   monster     @relation(fields: [monsterId], references: [id])
-  monsterId String
-  // You can add more fields to the inventory model as needed, such as quantity or capture date.
+  id            Int            @id @default(autoincrement())
+  user          account        @relation(fields: [userId], references: [id])
+  userId        Int
+  // Removed the relation to monster since monsters will only go into the menagerie.
+  // You can add more fields to the inventory model as needed, such as item type, quantity, or description.
+}
+
+model menagerie {
+  id            Int            @id @default(autoincrement())
+  user          account        @relation(fields: [userId], references: [id])
+  userId        Int
+  monster       monster        @relation(fields: [monsterId], references: [id])
+  monsterId     String
+  // Additional fields for menagerie management can be added here
 }
 
 model shop {
-  id              String    @unique
-  monsterId       String       // Reference to the monster in the shop
-  playerId        Int       // Add this line for the relationship
-  price           Int       // Price of each monster
+  id            String         @id @default(uuid())
+  monsterId     String
+  playerId      Int
 
-  // Relation to the Monster model
-  monster         monster   @relation(fields: [monsterId], references: [id])
+  price         Int
+  monster       monster        @relation(fields: [monsterId], references: [id])
+  player        account        @relation(fields: [playerId], references: [id])
 
-  // Relation to the User model (Player who put the item in the shop)
-  player          account      @relation(fields: [playerId], references: [id])
-
-  // Timestamps for when the record was created and last updated
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }

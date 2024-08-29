@@ -5,7 +5,8 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "migrate": "prisma migrate reset --force && prisma migrate dev",
+        "migrate": "prisma migrate dev",
+        "nuke": "prisma migrate reset --force",
         "generate": "npx prisma generate",
         "prettier:write": "npx pretty-quick --staged",
         "prettier:check": "npx prettier --check .",

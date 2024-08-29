@@ -5,11 +5,6 @@ const userData = [
         role: 'SUPER_ADMIN',
     },
     {
-        username: 'AnotherAdmin',
-        password: 'SecondInCharge',
-        role: 'SUPER_ADMIN',
-    },
-    {
         username: 'ModeratorAdmin',
         password: 'RightHandMan',
         role: 'SUPER_ADMIN',
@@ -17,11 +12,6 @@ const userData = [
     {
         username: 'Awesome_User1',
         password: 'BestGuy',
-        role: 'BASIC_USER',
-    },
-    {
-        username: 'NerdyBoy69',
-        password: 'ArmpitMaster',
         role: 'BASIC_USER',
     },
     {

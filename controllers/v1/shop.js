@@ -126,22 +126,58 @@ const sellMonster = async (req, res) => {
 };
 
 const cancelListing = async (req, res) => {
-    const { id } = req.params.id;
+    const { id } = req.params; // Correct the destructuring
     const user = req.user;
+
     try {
         const listing = await prisma.shop.findUnique({
             where: { id: id }
-        })
+        });
+
+        if (!listing) {
+            return res.status(404).json({ msg: "Listing not found." });
+        }
 
         if (listing.playerId !== user.id) {
-            return res.status(401).json({
-                msg: "You cannot cancel another persons listing."
-            })
+            return res.status(401).json({ msg: "You cannot cancel another person's listing." });
         }
-    } catch (error) {
 
+        // If the listing belongs to the user, proceed with cancellation
+        await prisma.shop.delete({
+            where: { id: id }
+        });
+
+        // Assuming the listing has a 'monsterId' field
+        const monsterId = listing.monsterId; 
+
+        if (!monsterId) {
+            return res.status(400).json({ msg: "Invalid monster ID associated with this listing." });
+        }
+
+        // Check if the monster exists
+        const monster = await prisma.monster.findUnique({
+            where: { id: monsterId }
+        });
+
+        if (!monster) {
+            return res.status(404).json({ msg: "Monster not found." });
+        }
+
+        // Update the monster status
+        await prisma.monster.update({
+            where: { id: monsterId },
+            data: {
+                status: 'In_Menagerie'
+            }
+        });
+
+        return res.status(200).json({ msg: "Listing successfully canceled." });
+    } catch (error) {
+        // Add error handling to return a response in case of exceptions
+        console.error(error);
+        return res.status(500).json({ msg: "Internal server error." });
     }
-}
+};
 
 const getShop = async (req, res) => {
     const { page = 1, pageSize = 10, type, species, rarity } = req.query

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
@@ -47,5 +48,24 @@ export const removeMonsterFromSeller = (sellerId, monsterId) => {
 export const removeItemFromShop = (itemId) => {
     return prisma.shop.delete({
         where: { id: itemId },
+    });
+};
+
+// Fetch monster by ID
+export const findMonsterById = (id) => {
+    return prisma.monster.findUnique({
+        where: { id: id },
+    });
+};
+
+// Create a shop item for the monster
+export const createShopItem = (monsterId, playerId, price) => {
+    return prisma.shop.create({
+        data: {
+            id: uuidv4(),
+            monsterId: monsterId,
+            playerId: playerId,
+            price: price,
+        },
     });
 };

@@ -8,7 +8,9 @@ import {
     transferMonster,
     updateMonsterStatus,
     removeMonsterFromSeller,
-    removeItemFromShop 
+    removeItemFromShop,
+    findMonsterById,
+    createShopItem,
 } from '../../utils/accountBalance.js';
 
 const purchaseMonster = async (req, res) => {
@@ -60,41 +62,30 @@ const purchaseMonster = async (req, res) => {
 const sellMonster = async (req, res) => {
     const { id } = req.params;
     const user = req.user;
-    const { price } = req.body
+    const { price } = req.body;
 
     try {
-        const monster = await prisma.monster.findUnique({
-            where: { id: id}
-        })
+        // Fetch the monster details
+        const monster = await findMonsterById(id);
 
-        console.log(monster)
+        console.log(monster);
 
         if (monster.status === 'On_Market') {
             return res.status(403).json({
                 msg: "Monster already marketed."
-            })
+            });
         }
 
-        const shopItem = await prisma.shop.create({
-            data: {
-                id: uuidv4(),
-                monsterId: id,
-                playerId: user.id,
-                price: price,
-            },
-        });
+        // Create the shop item for the monster
+        const shopItem = await createShopItem(id, user.id, price);
 
-        await prisma.monster.update({
-            where: { id: id},
-            data: {
-                status: 'On_Market'
-            }
-        })
+        // Update the status of the monster to 'On_Market'
+        await updateMonsterStatus(id, 'On_Market');
 
         return res.status(200).json({
             msg: 'Monster listed successfully',
             data: {
-                listedMonster: shopItem.data,
+                listedMonster: shopItem,
             },
         });
     } catch (err) {

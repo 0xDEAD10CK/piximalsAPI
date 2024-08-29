@@ -17,7 +17,7 @@ async function main() {
             type: 'Pyro',
             species: 'Dragon',
             rarity: 'Transcendant',
-            status: "On-Market",
+            status: "On_Market",
             url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${uuidv4()}`,
             hp: 167,
             ap: 34,
@@ -31,7 +31,7 @@ async function main() {
             type: 'Cryo',
             species: 'Behemoth',
             rarity: 'Rare',
-            status: "On-Market",
+            status: "On_Market",
             url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${uuidv4()}`,
             hp: 90,
             ap: 20,
@@ -45,7 +45,7 @@ async function main() {
             type: 'Astral',
             species: 'Minotaur',
             rarity: 'Legendary',
-            status: "On-Market",
+            status: "On_Market",
             url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${uuidv4()}`,
             hp: 135,
             ap: 25,
@@ -59,7 +59,7 @@ async function main() {
             type: 'Shadow',
             species: 'Serpent',
             rarity: 'Mythical',
-            status: "On-Market",
+            status: "On_Market",
             url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${uuidv4()}`,
             hp: 155,
             ap: 30,
@@ -73,41 +73,41 @@ async function main() {
             type: 'Solar',
             species: 'Sphinx',
             rarity: 'Uncommon',
-            status: "On-Market",
+            status: "On_Market",
             url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${uuidv4()}`,
             hp: 100,
             ap: 24,
         },
     })
 
-    const inventoryItem1 = await prisma.inventory.create({
+    const menagerieItem1 = await prisma.menagerie.create({
         data: {
             userId: 1,
             monsterId: monsterid1,
         },
     })
 
-    const inventoryItem2 = await prisma.inventory.create({
+    const menagerieItem2 = await prisma.menagerie.create({
         data: {
             userId: 2,
             monsterId: monsterid2,
         },
     })
-    const inventoryItem3 = await prisma.inventory.create({
+    const menagerieItem3 = await prisma.menagerie.create({
         data: {
             userId: 3,
             monsterId: monsterid3,
         },
     })
 
-    const inventoryItem4 = await prisma.inventory.create({
+    const menagerieItem4 = await prisma.menagerie.create({
         data: {
             userId: 3,
             monsterId: monsterid4,
         },
     })
     
-    const inventoryItem5 = await prisma.inventory.create({
+    const menagerieItem5 = await prisma.menagerie.create({
         data: {
             userId: 4,
             monsterId: monsterid5,
@@ -136,7 +136,7 @@ async function main() {
     const shopItem3 = await prisma.shop.create({
         data: {
             id: uuidv4(),
-            monsterId: monster3.id,
+            monsterId: monster1.id,
             playerId: 3,
             price: 6800,
         },
@@ -145,7 +145,7 @@ async function main() {
     const shopItem4 = await prisma.shop.create({
         data: {
             id: uuidv4(),
-            monsterId: monster4.id,
+            monsterId: monster2.id,
             playerId: 3,
             price: 10500,
         },
@@ -154,7 +154,7 @@ async function main() {
     const shopItem5 = await prisma.shop.create({
         data: {
             id: uuidv4(),
-            monsterId: monster5.id,
+            monsterId: monster1.id,
             playerId: 4,
             price: 750,
         },

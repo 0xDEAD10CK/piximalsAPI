@@ -5,10 +5,10 @@ const prisma = new PrismaClient()
 import { 
     deductBalance,
     updateBalance,
-    transferMonster,
+    addMonsterToMenagerie,
     updateMonsterStatus,
-    removeMonsterFromSeller,
-    removeItemFromShop,
+    removeMonsterFromMenagerie,
+    removeListingFromShop,
     findMonsterById,
     createShopListing,
 } from '../../utils/accountBalance.js';
@@ -40,9 +40,9 @@ const purchaseMonster = async (req, res) => {
         await prisma.$transaction([
             deductBalance(buyer.id, shopItem.price),   // Deduct money from the buyer
             updateBalance(shopItem.playerId, shopItem.price),  // Update the seller's balance
-            transferMonster(buyer.id, shopItem.monster.id),   // Transfer the monster from seller to buyer
+            addMonsterToMenagerie(buyer.id, shopItem.monster.id),   // Transfer the monster from seller to buyer
             updateMonsterStatus(shopItem.monster.id, 'In_Inventory'),   // Update the monster's status to 'In_Inventory'
-            removeMonsterFromSeller(shopItem.playerId, shopItem.monster.id),  // Remove the monster from the seller's inventory
+            removeMonsterFromMenagerie(shopItem.playerId, shopItem.monster.id),  // Remove the monster from the seller's inventory
             removeItemFromShop(id),  // Remove item from the shop
         ]);
 
@@ -79,6 +79,8 @@ const sellMonster = async (req, res) => {
         // Create the shop item for the monster
         const shopItem = await createShopListing(id, user.id, price);
 
+        await removeMonsterFromMenagerie(user.id, id)
+
         // Update the status of the monster to 'On_Market'
         await updateMonsterStatus(id, 'On_Market');
 
@@ -112,13 +114,12 @@ const cancelListing = async (req, res) => {
             return res.status(401).json({ msg: "You cannot cancel another person's listing." });
         }
 
-        // If the listing belongs to the user, proceed with cancellation
-        await prisma.shop.delete({
-            where: { id: id }
-        });
+        await removeListingFromShop(id)  // Remove item from the shop
 
         // Assuming the listing has a 'monsterId' field
         const monsterId = listing.monsterId; 
+
+        await addMonsterToMenagerie(user.id, monsterId)
 
         if (!monsterId) {
             return res.status(400).json({ msg: "Invalid monster ID associated with this listing." });
@@ -133,13 +134,8 @@ const cancelListing = async (req, res) => {
             return res.status(404).json({ msg: "Monster not found." });
         }
 
-        // Update the monster status
-        await prisma.monster.update({
-            where: { id: monsterId },
-            data: {
-                status: 'In_Menagerie'
-            }
-        });
+        // Update the status of the monster to 'In_Menagerie'
+        await updateMonsterStatus(monsterId, 'In_Menagerie');
 
         return res.status(200).json({ msg: "Listing successfully canceled." });
     } catch (error) {

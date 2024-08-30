@@ -80,40 +80,6 @@ async function main() {
         },
     })
 
-    const menagerieItem1 = await prisma.menagerie.create({
-        data: {
-            userId: 1,
-            monsterId: monsterid1,
-        },
-    })
-
-    const menagerieItem2 = await prisma.menagerie.create({
-        data: {
-            userId: 2,
-            monsterId: monsterid2,
-        },
-    })
-    const menagerieItem3 = await prisma.menagerie.create({
-        data: {
-            userId: 3,
-            monsterId: monsterid3,
-        },
-    })
-
-    const menagerieItem4 = await prisma.menagerie.create({
-        data: {
-            userId: 3,
-            monsterId: monsterid4,
-        },
-    })
-    
-    const menagerieItem5 = await prisma.menagerie.create({
-        data: {
-            userId: 4,
-            monsterId: monsterid5,
-        },
-    })
-
     // Seed shop items
     const shopItem1 = await prisma.shop.create({
         data: {

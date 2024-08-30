@@ -20,10 +20,19 @@ export const updateBalance = (id, amount) => {
     });
 };
 
-export const transferMonster = (buyerId, monsterId) => {
+export const addMonsterToMenagerie = (id, monsterId) => {
     return prisma.menagerie.create({
         data: {
-            userId: buyerId,
+            userId: id,
+            monsterId: monsterId,
+        },
+    });
+};
+
+export const removeMonsterFromMenagerie = (id, monsterId) => {
+    return prisma.menagerie.deleteMany({
+        where: {
+            userId: id,
             monsterId: monsterId,
         },
     });
@@ -36,16 +45,7 @@ export const updateMonsterStatus = (monsterId, status) => {
     });
 };
 
-export const removeMonsterFromSeller = (sellerId, monsterId) => {
-    return prisma.menagerie.deleteMany({
-        where: {
-            userId: sellerId,
-            monsterId: monsterId,
-        },
-    });
-};
-
-export const removeItemFromShop = (itemId) => {
+export const removeListingFromShop = (itemId) => {
     return prisma.shop.delete({
         where: { id: itemId },
     });

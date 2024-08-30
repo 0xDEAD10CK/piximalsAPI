@@ -35,7 +35,6 @@ const generateMonster = async (req, res) => {
     const randomType = monsterData.types[getRandomInt(0, monsterData.types.length - 1)]
     const randomSpecies = monsterData.species[getRandomInt(0, monsterData.species.length - 1)]
     const randomRarity = getRandomWeightedOption(monsterData.rarity).rarity;
-    console.log("Jones", randomType, randomSpecies, randomRarity)
     const id = uuidv4()
     try {
         const monster = await prisma.monster.create({
@@ -45,6 +44,7 @@ const generateMonster = async (req, res) => {
                 type: randomType,
                 species: randomSpecies,
                 rarity: randomRarity,
+                status: "Wild",
                 url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${id}`,
                 hp: 100,
                 ap:20,
@@ -73,9 +73,7 @@ const generateMonster = async (req, res) => {
  */
 const getMonsters = async (req, res) => {
     try {
-        console.log(mData)
         const monsterData = await prisma.monster.findMany({})
-        console.log(monsterData)
 
         return res.status(201).json({
             msg: 'Monster successfully fetched',

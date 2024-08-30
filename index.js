@@ -25,7 +25,7 @@ app.use(urlencoded({ extended: false }))
 app.use(json())
 
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/auth`, auth)
-app.use(`/${BASE_URL}/${CURRENT_VERSION}/monster`, monster)
+app.use(`/${BASE_URL}/${CURRENT_VERSION}/monster`, adminAuthRoute, monster)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/shop`, shop)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/my`, player)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/admin`, adminAuthRoute, admin)

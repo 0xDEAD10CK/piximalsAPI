@@ -102,7 +102,7 @@ async function main() {
     const shopItem3 = await prisma.shop.create({
         data: {
             id: uuidv4(),
-            monsterId: monster1.id,
+            monsterId: monster3.id,
             playerId: 3,
             price: 6800,
         },
@@ -111,7 +111,7 @@ async function main() {
     const shopItem4 = await prisma.shop.create({
         data: {
             id: uuidv4(),
-            monsterId: monster2.id,
+            monsterId: monster4.id,
             playerId: 3,
             price: 10500,
         },
@@ -120,7 +120,7 @@ async function main() {
     const shopItem5 = await prisma.shop.create({
         data: {
             id: uuidv4(),
-            monsterId: monster1.id,
+            monsterId: monster5.id,
             playerId: 4,
             price: 750,
         },

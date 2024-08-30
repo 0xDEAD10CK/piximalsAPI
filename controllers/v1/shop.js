@@ -43,7 +43,7 @@ const purchaseMonster = async (req, res) => {
             addMonsterToMenagerie(buyer.id, shopItem.monster.id),   // Transfer the monster from seller to buyer
             updateMonsterStatus(shopItem.monster.id, 'In_Inventory'),   // Update the monster's status to 'In_Inventory'
             removeMonsterFromMenagerie(shopItem.playerId, shopItem.monster.id),  // Remove the monster from the seller's inventory
-            removeItemFromShop(id),  // Remove item from the shop
+            removeListingFromShop(id),  // Remove item from the shop
         ]);
 
         return res.status(200).json({
@@ -67,8 +67,6 @@ const sellMonster = async (req, res) => {
     try {
         // Fetch the monster details
         const monster = await findMonsterById(id);
-
-        console.log(monster);
 
         if (monster.status === 'On_Market') {
             return res.status(403).json({

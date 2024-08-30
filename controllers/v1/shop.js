@@ -10,7 +10,7 @@ import {
     removeMonsterFromSeller,
     removeItemFromShop,
     findMonsterById,
-    createShopItem,
+    createShopListing,
 } from '../../utils/accountBalance.js';
 
 const purchaseMonster = async (req, res) => {
@@ -77,7 +77,7 @@ const sellMonster = async (req, res) => {
         }
 
         // Create the shop item for the monster
-        const shopItem = await createShopItem(id, user.id, price);
+        const shopItem = await createShopListing(id, user.id, price);
 
         // Update the status of the monster to 'On_Market'
         await updateMonsterStatus(id, 'On_Market');

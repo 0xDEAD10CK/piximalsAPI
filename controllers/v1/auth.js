@@ -22,7 +22,7 @@ const register = async (req, res) => {
     const hashedPassword = await bcryptjs.hash(password, salt);
 
     user = await prisma.account.create({
-      data: { username, password: hashedPassword, role: finalRole },
+      data: { username, password: hashedPassword, role: finalRole, locationId: 1 },
     });
 
     delete user.password;

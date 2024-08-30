@@ -4,7 +4,7 @@ import { userData } from './playerObjects.js'
 
 const prisma = new PrismaClient()
 
-async function registerUser(username, password, role) {
+async function registerUser(username, password, role, locationId) {
 
     let user = await prisma.account.findUnique({ where: { username } });
 
@@ -16,7 +16,7 @@ async function registerUser(username, password, role) {
     const hashedPassword = await bcryptjs.hash(password, salt)
 
     user = await prisma.account.create({
-        data: { username, password: hashedPassword, role },
+        data: { username, password: hashedPassword, role, locationId },
     })
 
     delete user.password
@@ -29,8 +29,8 @@ async function seedUsers() {
 
     try {
         const createdUsers = await Promise.all(
-            data.map(({ username, password, role }) =>
-                registerUser(username, password, role)
+            data.map(({ username, password, role, location }) =>
+                registerUser(username, password, role, location)
             )
         )
 

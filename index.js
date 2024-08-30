@@ -10,6 +10,7 @@ import monster from './routes/monster.js'
 import shop from './routes/shop.js'
 import player from './routes/player.js'
 import admin from './routes/admin.js'
+import adventure from "./routes/adventure.js"
 
 dotenv.config()
 
@@ -29,6 +30,7 @@ app.use(`/${BASE_URL}/${CURRENT_VERSION}/monster`, adminAuthRoute, monster)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/shop`, shop)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/my`, player)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/admin`, adminAuthRoute, admin)
+app.use(`/${BASE_URL}/${CURRENT_VERSION}/adventure`, auth, adventure)
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`)

@@ -149,6 +149,7 @@ async function main() {
                     type: randomType,
                     species: randomSpecies,
                     rarity: randomRarity, // You can customize the rarity logic as needed
+                    status: 'Wild',
                     url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${uuidv4()}`,
                     hp: Number(hp),
                     ap: Number(ap),
@@ -162,7 +163,7 @@ async function main() {
     }
 
     // Specify the number of monsters you want to create
-    const numMonstersToSeed = 100
+    const numMonstersToSeed = 12
 
     seedMonsters(numMonstersToSeed)
         .catch((e) => {

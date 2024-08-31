@@ -7,7 +7,7 @@ export const shuffleArray = (array, monsterAmount) => {
     return array;
 }
 
-export const generateZone = async (name, randomMonsters, type, user) => {
+export const generateZone = async (name, monsters, type, user) => {
     const zone = await prisma.zone.create({
         data: {
             zonename: name,
@@ -16,10 +16,14 @@ export const generateZone = async (name, randomMonsters, type, user) => {
                 connect: {id: user.id}
             },
             monsters: {
-                connect: randomMonsters.map(monster => {
+                connect: monsters.map(monster => {
                     return {id: monster.id}
                 })
             }
+        },
+        include: {
+            players: true,
+            monsters: true
         }
     })
     

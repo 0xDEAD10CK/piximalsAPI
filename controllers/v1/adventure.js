@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
-import { generateZone, shuffleArray } from '../../utils/zoning.js';
+import { generateMonster } from '../../utils/monsters.js';
+import { generateZone } from '../../utils/zoning.js';
 const prisma = new PrismaClient()
 
 const adventureLocation = (req, res) => {
@@ -13,23 +14,33 @@ const adventureLocation = (req, res) => {
     }
 }
 
+/**
+ * Generates a new zone with a specified amount of monsters.
+ * This will also include items later on
+ * This will generate when a player decides to explore at a location
+ * 
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} The generated zone.
+ * 
+ * @example POST /api/v1/adventure/zone
+ * 
+ **/
 const zoneGeneration = async (req, res) => {
     try {
         const { type, monsterAmount } = req.body
         const user = req.user;
+        let monsters = []
 
-        // Fetch monsters from the database
-        const monsters = await prisma.monster.findMany({
-            where: {
-                type: type
-            }
-        })
+        for (let i = 0; i < monsterAmount; i++){
+            monsters.push(generateMonster(type))
+        }
+
+        monsters = await Promise.all(monsters);
         
         if (monsters.length < 1) return res.status(404).json({msg: "No monsters found"})
-            
-        const randomMonsters = shuffleArray(monsters, monsterAmount)
-        
-        const zone = await generateZone("Dangerzone", randomMonsters, type, user)
+                    
+        const zone = await generateZone("Dangerzone", monsters, type, user)
 
         return res.status(200).json({msg: "Welcome to the Dangerzone", zone: zone})
     } catch (error) {

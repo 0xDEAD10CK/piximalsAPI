@@ -35,3 +35,5 @@ app.use(`/${BASE_URL}/${CURRENT_VERSION}/adventure`, auth, adventure)
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`)
 })
+
+export default app

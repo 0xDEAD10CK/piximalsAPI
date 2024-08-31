@@ -52,14 +52,6 @@ const goToZone = async (req, res) => {
     try {
         const { zoneid } = req.params
         const user = req.user;
-
-        const player = await prisma.player.findFirst({
-            where: {
-                id: user.id
-            }
-        })
-
-        if (!player) return res.status(404).json({msg: "Player not found"})
         
         const zone = await prisma.zone.findUnique({
             where: {
@@ -90,4 +82,4 @@ const goToZone = async (req, res) => {
 }
 
 
-export { adventureLocation, zoneGeneration }
+export { adventureLocation, zoneGeneration, goToZone }

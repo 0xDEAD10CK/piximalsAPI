@@ -75,6 +75,7 @@ model Zone {
   monsters      Monster[]      // One-to-many relationship with Monster
   players       Account[]     // One-to-many relationship with Account
   type          String       // Type of zone, e.g. forest, desert, etc. inherited from the location model
+  
 }
 
 model Location {

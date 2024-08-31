@@ -29,6 +29,26 @@ const getPlayerInfo = async (req, res) => {
                     },
                 },
                 inventory: {},
+                zone: {
+                    select: {
+                        id: true,
+                        zonename: true,
+                        type: true,
+                        monsters: {
+                            select: {
+                                id: true,
+                                type: true,
+                                species: true,
+                                rarity: true,
+                                name: true,
+                                url: true,
+                                hp: true,
+                                ap: true,
+                                // other fields from the monster you want to include
+                            },
+                        },
+                    },
+                },
                 shopItems: {
                     select: {
                         id: true,
@@ -48,6 +68,7 @@ const getPlayerInfo = async (req, res) => {
                         },
                     },
                 },
+                
                 // other fields you want to include
             },
         })

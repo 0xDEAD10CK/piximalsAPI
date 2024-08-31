@@ -20,6 +20,7 @@ model Monster {
   ap            Int
   menageries    Menagerie[]     // Monsters are associated with the menagerie
   shop          Shop[]
+  zone          Zone[]          // Monsters can spawn in multiple zones
 }
 
 model Account {
@@ -34,6 +35,8 @@ model Account {
   shopItems     Shop[]
   locationId    Int           
   location      Location       @relation(fields: [locationId], references: [id])
+  zoneId        String?
+  zone          Zone?           @relation(fields: [zoneId], references: [id])// Relation to the zone model
 }
 
 model Inventory {
@@ -68,12 +71,10 @@ model Shop {
 
 model Zone {
   id            String         @id @default(uuid())
-  zonename      String
-  monsterId     String[] // Multiple monsters can spawn
-
-
-
-
+  zonename      String    
+  monsters      Monster[]      // One-to-many relationship with Monster
+  players       Account[]     // One-to-many relationship with Account
+  type          String       // Type of zone, e.g. forest, desert, etc. inherited from the location model
 }
 
 model Location {
@@ -82,5 +83,5 @@ model Location {
   playerId      Int[] //multiple players can be at a location
   zoneId        String[]
   players       Account[]      // One-to-many relationship with Account
-
+  type          String
 }

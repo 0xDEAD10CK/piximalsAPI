@@ -38,6 +38,8 @@ enum EffectType {
   DAMAGE
   HEALING
   PROTECTION
+  BUFF
+  DEBUFF
   // More effect types as required
 }
 

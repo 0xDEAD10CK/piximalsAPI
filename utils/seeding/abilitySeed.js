@@ -1,11 +1,11 @@
 import { PrismaClient } from '@prisma/client'
-import { pyroAbilities } from '../../data/abilityData.js'
+import { fireAbilities, iceAbilities } from '../../data/abilityData.js'
 
 const prisma = new PrismaClient();
 
-const seedAbilities = async () => {
+const seedAbilities = async (abilities) => {
     // Loop through each ability in the seed data
-    for (const abilityData of pyroAbilities) {
+    for (const abilityData of abilities) {
         // Create each ability with its related effects
         await prisma.ability.create({
             data: {
@@ -31,15 +31,19 @@ const seedAbilities = async () => {
     }
 }
 
-// Execute the main function
-seedAbilities()
-    .then(() => {
-        console.log('Abilities have been seeded.');
-    })
-    .catch((e) => {
-        console.error(e);
-        process.exit(1);
-    })
-    .finally(async () => {
+const main = async () => {
+    try {
+        // Seed abilities for each type
+        await seedAbilities(fireAbilities);
+        await seedAbilities(iceAbilities);
+        // Add more arrays if needed
+        console.log('Seeding completed successfully.');
+    } catch (error) {
+        console.error('Error seeding abilities:', error);
+    } finally {
         await prisma.$disconnect();
-    });
+    }
+};
+
+// Execute the main function
+main();

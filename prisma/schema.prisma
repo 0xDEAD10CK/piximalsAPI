@@ -7,6 +7,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum AbilityType {
+  FIRE
+  ICE
+  EARTH
+  WATER
+  ELECTRIC
+  SOLAR
+  LUNAR
+  SHADOW
+  MYSTIC
+  NATURE
+  ASTRAL
+  TOXIC
+  METALLIC
+  SPECTRAL
+  CHAOS
+  CRISPIES
+  // Add more types as needed
+}
+
+enum AbilityCategory {
+  ATTACK
+  DEFENSE
+  UTILITY
+  // Categories to describe what the ability does
+}
+
+enum EffectType {
+  DAMAGE
+  HEALING
+  PROTECTION
+  // More effect types as required
+}
+
 model monster {
   id            String         @id @default(uuid())
   capturedAt    DateTime       @default(now())
@@ -20,6 +54,32 @@ model monster {
   ap            Int
   menageries    menagerie[]     // Monsters are associated with the menagerie
   shop          shop[]
+}
+
+// Ability model
+model Ability {
+  id          Int    @unique @default(autoincrement())
+  name        String
+  type        String    // Enum could be used here for ability types: "Pyro", "Hydro", etc.
+  cost        Int
+  damage      Int?      // Optional, as some abilities may not deal direct damage
+  description String
+  effects     Effect[]  // Array to handle multiple effects if necessary
+  category    AbilityCategory  // Enum or String: "Attack", "Defense", "Utility", etc.
+}
+
+// Effect model
+model Effect {
+  id          Int  @id @default(autoincrement())
+  name        String  // e.g., "burning", "protection", etc.
+  type        String  // Could be "Damage", "Healing", "Protection", etc.
+  turns       Int     // Duration of the effect
+  chance      Int     // Chance for the effect to apply (0-100%)
+  damage      Int?    // Optional, used if the effect deals damage
+  reduction   Int?    // Optional, for effects that reduce damage
+  heal        Int?    // Optional, for effects that heal
+  ability    Ability  @relation(fields: [abilityId], references: [id])
+  abilityId  Int   // Foreign key to link back to Ability
 }
 
 model account {

@@ -7,52 +7,138 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model monster {
-  id            String               @unique
+enum AbilityType {
+  FIRE
+  ICE
+  EARTH
+  WATER
+  ELECTRIC
+  SOLAR
+  LUNAR
+  SHADOW
+  MYSTIC
+  NATURE
+  ASTRAL
+  TOXIC
+  METALLIC
+  SPECTRAL
+  CHAOS
+  CRISPIES
+  // Add more types as needed
+}
+
+enum AbilityCategory {
+  ATTACK
+  DEFENSE
+  UTILITY
+  // Categories to describe what the ability does
+}
+
+enum EffectType {
+  DAMAGE
+  HEALING
+  PROTECTION
+  BUFF
+  DEBUFF
+  // More effect types as required
+}
+
+model Monster {
+  id            String         @id @default(uuid())
+  capturedAt    DateTime       @default(now())
   type          String
   species       String
   rarity        String
   name          String
+  status        String
   url           String
   hp            Int
   ap            Int
-  inventory     inventory[]
-  shop          shop[]
+  menageries    Menagerie[]     // Monsters are associated with the menagerie
+  shop          Shop[]
+  abilities     Ability[]       // Monster abilities
 }
 
-model account {
-  id            Int                 @unique @default(autoincrement())
-  username      String              @unique
+// Ability model
+model Ability {
+  id              Int        @id @default(autoincrement())
+  name            String
+  type            String      // e.g., "Pyro", "Hydro", etc., or use an Enum for stricter control
+  cost            Int         // Mana or energy cost to use the ability
+  damage          Int?        // Base damage of the ability, optional for non-damaging abilities
+  description     String      // Description of the ability's effect or flavor text
+  category        String      // "Attack", "Defense", "Utility", etc., or use an Enum
+
+  // Prefixed effect-related fields
+  effectType      String?     // Type of effect: "Damage", "Healing", "Protection", etc.
+  effectTurns     Int?        // Duration of the effect in turns
+  effectChance    Int?        // Chance for the effect to apply (0-100%)
+  effectDamage    Int?        // Optional, used if the effect deals damage
+  effectReduction Int?        // Optional, for effects that reduce damage or stats
+  effectHeal      Int?        // Optional, for effects that heal the target
+  effectIncrease  Int?        // Optional, for buffs that increase stats or effects
+
+  monsters        Monster[]   // Abilities can be associated with multiple monsters
+}
+
+model Account {
+  id            Int            @id @default(autoincrement())
+  username      String         @unique
   password      String
-  role          String              @default("BASIC_USER")
-  createdAt     DateTime            @default(now())
-  currency      Int                 @default(1000)
-  inventory     inventory[]
-  shopItems     shop[]
+  role          String         @default("BASIC_USER")
+  createdAt     DateTime       @default(now())
+  currency      Int            @default(100000)
+  inventory     Inventory[]    // Relation to inventory model
+  menagerie     Menagerie[]    // Relation to the new menagerie model
+  shopItems     Shop[]
 }
 
-model inventory {
-  id        Int         @id @default(autoincrement())
-  user      account        @relation(fields: [userId], references: [id])
-  userId    Int
-  monster   monster     @relation(fields: [monsterId], references: [id])
-  monsterId String
-  // You can add more fields to the inventory model as needed, such as quantity or capture date.
+model Item {
+  id            Int             @id @default(autoincrement())
+  name          String
+  type          String          // "Hands", "Weapon", "Buff", etc.
+  effects       Json            // JSON field to store effects flexibly
+  buyPrice      Int
+  sellPrice     Int
+  // No direct relation to Inventory; handled through an intermediary or other contexts.
+
+  InventoryItem InventoryItem[]
 }
 
-model shop {
-  id              String    @unique
-  monsterId       String       // Reference to the monster in the shop
-  playerId        Int       // Add this line for the relationship
-  price           Int       // Price of each monster
+model Inventory {
+  id            Int             @id @default(autoincrement())
+  user          Account         @relation(fields: [userId], references: [id])
+  userId        Int
+  items         InventoryItem[] // Relation to InventoryItem model
+}
 
-  // Relation to the Monster model
-  monster         monster   @relation(fields: [monsterId], references: [id])
+model InventoryItem {
+  id            Int             @id @default(autoincrement())
+  inventory     Inventory       @relation(fields: [inventoryId], references: [id])
+  inventoryId   Int
+  item          Item            @relation(fields: [itemId], references: [id])
+  itemId        Int
+  quantity      Int             @default(1) // Optional: For stackable items
+}
 
-  // Relation to the User model (Player who put the item in the shop)
-  player          account      @relation(fields: [playerId], references: [id])
+model Menagerie {
+  id            Int            @id @default(autoincrement())
+  user          Account        @relation(fields: [userId], references: [id])
+  userId        Int
+  monster       Monster        @relation(fields: [monsterId], references: [id])
+  monsterId     String
+  // Additional fields for menagerie management can be added here
+}
 
-  // Timestamps for when the record was created and last updated
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+model Shop {
+  id            String         @id @default(uuid())
+  monsterId     String
+  playerId      Int
+
+  price         Int
+  monster       Monster        @relation(fields: [monsterId], references: [id])
+  player        Account        @relation(fields: [playerId], references: [id])
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }

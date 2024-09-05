@@ -9,6 +9,7 @@ import monster from './routes/monster.js'
 import shop from './routes/shop.js'
 import player from './routes/player.js'
 import admin from './routes/admin.js'
+import item from './routes/item.js'
 
 dotenv.config()
 
@@ -26,6 +27,7 @@ app.use(`/${BASE_URL}/${CURRENT_VERSION}/auth`, auth)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/monster`, monster)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/shop`, shop)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/my`, player)
+app.use(`/${BASE_URL}/${CURRENT_VERSION}/item`, item)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/admin`, adminAuthRoute, admin)
 
 app.listen(PORT, () => {

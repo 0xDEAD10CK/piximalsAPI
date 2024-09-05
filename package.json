@@ -16,6 +16,7 @@
         "seed:player": "node ./utils/playerSeed.js",
         "seed:shop": "node ./utils/shopSeed.js",
         "seed:monsters": "node ./utils/monsterSeed.js",
+        "seed:item": "node ./utils/itemSeed.js",
         "seed": "node ./utils/playerSeed.js && node ./utils/shopSeed.js && node ./utils/monsterSeed.js"
     },
     "keywords": [],

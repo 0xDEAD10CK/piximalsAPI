@@ -82,15 +82,35 @@ model Ability {
 }
 
 model Account {
-  id            Int            @id @default(autoincrement())
-  username      String         @unique
-  password      String
-  role          String         @default("BASIC_USER")
-  createdAt     DateTime       @default(now())
-  currency      Int            @default(100000)
-  inventory     Inventory[]    // Relation to inventory model
-  menagerie     Menagerie[]    // Relation to the new menagerie model
-  shopItems     Shop[]
+  id              Int            @id @default(autoincrement())
+  username        String         @unique
+  password        String
+  role            String         @default("BASIC_USER")
+  createdAt       DateTime       @default(now())
+  currency        Int            @default(100000)
+  level           Int            @default(1)
+  experience      Int            @default(0)
+  health          Int            @default(100)
+
+  inventory       Inventory[]    // Relation to inventory model
+  menagerie       Menagerie[]    // Relation to the new menagerie model
+  shopItems       Shop[]
+
+  // Equippable slots linked to InventoryItem for consistency
+  equippedWeapon  InventoryItem?  @relation("equippedWeapon", fields: [equippedWeaponId], references: [id])
+  equippedHead    InventoryItem?  @relation("equippedHead", fields: [equippedHeadId], references: [id])
+  equippedBody    InventoryItem?  @relation("equippedBody", fields: [equippedBodyId], references: [id])
+  equippedHands   InventoryItem?  @relation("equippedHands", fields: [equippedHandsId], references: [id])
+  equippedFeet    InventoryItem?  @relation("equippedFeet", fields: [equippedFeetId], references: [id])
+  equippedLegs    InventoryItem?  @relation("equippedLegs", fields: [equippedLegsId], references: [id])
+
+  // Foreign key fields with unique constraints
+  equippedWeaponId Int?           @unique
+  equippedHeadId   Int?           @unique
+  equippedBodyId   Int?           @unique
+  equippedHandsId  Int?           @unique
+  equippedFeetId   Int?           @unique
+  equippedLegsId   Int?           @unique
 }
 
 model Item {
@@ -119,6 +139,14 @@ model InventoryItem {
   item          Item            @relation(fields: [itemId], references: [id])
   itemId        Int
   quantity      Int             @default(1) // Optional: For stackable items
+
+  // Optional relations back to Account for equippable slots
+  accountsEquippedWeapon  Account? @relation("equippedWeapon")
+  accountsEquippedHead    Account? @relation("equippedHead")
+  accountsEquippedBody    Account? @relation("equippedBody")
+  accountsEquippedHands   Account? @relation("equippedHands")
+  accountsEquippedFeet    Account? @relation("equippedFeet")
+  accountsEquippedLegs    Account? @relation("equippedLegs")
 }
 
 model Menagerie {

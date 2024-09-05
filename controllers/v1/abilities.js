@@ -1,8 +1,21 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-const createAbility = async () => {
-    const { name, type, cost, damage, description, category, effects } = req.body;
+const createAbility = async (req, res) => {
+    const { name,
+        type,
+        cost, 
+        damage, 
+        description, 
+        category, 
+        effectType,
+        effectChance,
+        effectTurns,
+        effectDamage,
+        effectReduction,
+        effectHeal,
+        effectIncrease } = req.body;
+
     try {
         const ability = await prisma.ability.create({
             data: {
@@ -12,17 +25,13 @@ const createAbility = async () => {
                 damage: damage,
                 description: description,
                 category: category,
-                effects: {
-                    create: effects.effects.map((effect) => ({
-                        name: effect.name,
-                        type: effect.type,
-                        turns: effect.turns,
-                        chance: effect.chance,
-                        damage: effect.damage ?? null,
-                        reduction: effect.reduction ?? null,
-                        heal: effect.heal ?? null,
-                    })),
-                },
+                effectType: effectType,
+                effectTurns: effectTurns,
+                effectChance: effectChance,
+                effectDamage: effectDamage,
+                effectReduction: effectReduction,
+                effectHeal: effectHeal,
+                effectIncrease: effectIncrease,
             },
         });
         console.log('Ability created:', ability);
@@ -38,10 +47,7 @@ const getAbilities = async (req, res) => {
 
     try {
         const filterOptions = {
-            where: {},
-            include: {
-                effects: true,  // If you want to include related effects
-            },
+            where: {}
         };
 
         if (type) {
@@ -85,4 +91,4 @@ const getAbilities = async (req, res) => {
     }
 }
 
-export { getAbilities }
+export { getAbilities, createAbility }

@@ -1,12 +1,27 @@
 import { PrismaClient } from '@prisma/client'
-import { fireAbilities, iceAbilities } from '../../data/abilityData.js'
+import {  
+    fireAbilities, 
+    iceAbilities, 
+    windAbilities, 
+    waterAbilities, 
+    earthAbilities, 
+    electricAbilities, 
+    solarAbilities,
+    lunarAbilities,
+    shadowAbilities,
+    mysticAbilities,
+    natureAbilities,
+    astralAbilities,
+    toxicAbilities,
+    metallicAbilities,
+    spectralAbilities,
+    chaosAbilities,
+    crispiesAbilities} from '../../data/abilityData.js'
 
 const prisma = new PrismaClient();
 
 const seedAbilities = async (abilities) => {
-    // Loop through each ability in the seed data
     for (const abilityData of abilities) {
-        // Create each ability with its related effects
         await prisma.ability.create({
             data: {
                 name: abilityData.name,
@@ -15,35 +30,45 @@ const seedAbilities = async (abilities) => {
                 damage: abilityData.damage,
                 description: abilityData.description,
                 category: abilityData.category,
-                effects: {
-                    create: abilityData.effects.map((effect) => ({
-                        name: effect.name,
-                        type: effect.type,
-                        turns: effect.turns,
-                        chance: effect.chance,
-                        damage: effect.damage ?? null,
-                        reduction: effect.reduction ?? null,
-                        heal: effect.heal ?? null,
-                    })),
-                },
+                effectType: abilityData.effectType,
+                effectTurns: abilityData.effectTurns,
+                effectChance: abilityData.effectChance,
+                effectDamage: abilityData.effectDamage,
+                effectReduction: abilityData.effectReduction,
+                effectHeal: abilityData.effectHeal,
+                effectIncrease: abilityData.effectIncrease,
             },
         });
     }
-}
+};
+
 
 const main = async () => {
     try {
-        // Seed abilities for each type
         await seedAbilities(fireAbilities);
         await seedAbilities(iceAbilities);
-        // Add more arrays if needed
+        await seedAbilities(windAbilities);
+        await seedAbilities(waterAbilities);
+        await seedAbilities(earthAbilities);
+        await seedAbilities(electricAbilities);
+        await seedAbilities(solarAbilities);
+        await seedAbilities(lunarAbilities);
+        await seedAbilities(shadowAbilities);
+        await seedAbilities(mysticAbilities);
+        await seedAbilities(natureAbilities);
+        await seedAbilities(astralAbilities);
+        await seedAbilities(toxicAbilities);
+        await seedAbilities(metallicAbilities);
+        await seedAbilities(spectralAbilities);
+        await seedAbilities(chaosAbilities);
+        await seedAbilities(crispiesAbilities);
+
         console.log('Seeding completed successfully.');
     } catch (error) {
-        console.error('Error seeding abilities:', error);
+        console.error('Error seeding data:', error);
     } finally {
         await prisma.$disconnect();
     }
 };
 
-// Execute the main function
 main();

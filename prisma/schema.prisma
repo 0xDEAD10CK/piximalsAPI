@@ -60,28 +60,22 @@ model monster {
 
 // Ability model
 model Ability {
-  id          Int    @unique @default(autoincrement())
-  name        String
-  type        String    // Enum could be used here for ability types: "Pyro", "Hydro", etc.
-  cost        Int
-  damage      Int?      // Optional, as some abilities may not deal direct damage
-  description String
-  effects     Effect[]  // Array to handle multiple effects if necessary
-  category    AbilityCategory  // Enum or String: "Attack", "Defense", "Utility", etc.
-}
+  id              Int        @id @default(autoincrement())
+  name            String
+  type            String      // e.g., "Pyro", "Hydro", etc., or use an Enum for stricter control
+  cost            Int         // Mana or energy cost to use the ability
+  damage          Int?        // Base damage of the ability, optional for non-damaging abilities
+  description     String      // Description of the ability's effect or flavor text
+  category        String      // "Attack", "Defense", "Utility", etc., or use an Enum
 
-// Effect model
-model Effect {
-  id          Int  @id @default(autoincrement())
-  name        String  // e.g., "burning", "protection", etc.
-  type        String  // Could be "Damage", "Healing", "Protection", etc.
-  turns       Int     // Duration of the effect
-  chance      Int     // Chance for the effect to apply (0-100%)
-  damage      Int?    // Optional, used if the effect deals damage
-  reduction   Int?    // Optional, for effects that reduce damage
-  heal        Int?    // Optional, for effects that heal
-  ability    Ability  @relation(fields: [abilityId], references: [id])
-  abilityId  Int   // Foreign key to link back to Ability
+  // Prefixed effect-related fields
+  effectType      String?     // Type of effect: "Damage", "Healing", "Protection", etc.
+  effectTurns     Int?        // Duration of the effect in turns
+  effectChance    Int?        // Chance for the effect to apply (0-100%)
+  effectDamage    Int?        // Optional, used if the effect deals damage
+  effectReduction Int?        // Optional, for effects that reduce damage or stats
+  effectHeal      Int?        // Optional, for effects that heal the target
+  effectIncrease  Int?        // Optional, for buffs that increase stats or effects
 }
 
 model account {

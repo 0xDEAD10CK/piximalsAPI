@@ -116,8 +116,9 @@ model Account {
 model Item {
   id            Int             @id @default(autoincrement())
   name          String
+  rarity        String
   type          String          // "Hands", "Weapon", "Buff", etc.
-  effects       Json            // JSON field to store effects flexibly
+  effects       Json?            // JSON field to store effects flexibly
   buyPrice      Int
   sellPrice     Int
   // No direct relation to Inventory; handled through an intermediary or other contexts.

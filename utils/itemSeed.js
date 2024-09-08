@@ -11,7 +11,8 @@ import {
     swordData,
     staffData,
     bowData,
-    wandData} from '../data/itemData.js'
+    wandData,
+    materialData} from '../data/itemData.js'
 
 const prisma = new PrismaClient()
 
@@ -21,6 +22,7 @@ const seedItems = async (items) => {
             data: {
                 name: item.name,
                 type: item.type,
+                rarity: item.rarity,
                 effects: item.effects,
                 buyPrice: item.buyPrice,
                 sellPrice: item.sellPrice,
@@ -43,6 +45,7 @@ const main = async () => {
         await seedItems(staffData);
         await seedItems(bowData);
         await seedItems(wandData);
+        await seedItems(materialData);
 
         console.log('Seeding completed successfully.');
     } catch (e) {

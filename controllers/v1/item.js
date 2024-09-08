@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 const getItems = async (req, res) => {
-    const { page = 1, pageSize = 10, type, name } = req.query;
+    const { page = 1, pageSize = 10, type, name, rarity } = req.query;
 
     const skip = (page - 1) * pageSize;
 
@@ -13,6 +13,10 @@ const getItems = async (req, res) => {
 
         if (type) {
             filterOptions.where.type = { contains: type };
+        }
+
+        if (rarity) {
+            filterOptions.where.rarity = { contains: rarity}
         }
 
         if (name) {

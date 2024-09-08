@@ -1,6 +1,7 @@
 export const potionsData = [
     {
         name: "Minor Health Potion",
+        rarity: "common",
         type: "Healing",
         effects: [
             { attribute: "health", value: 40 }
@@ -10,6 +11,7 @@ export const potionsData = [
     },
     {
         name: "Major Health Potion",
+        rarity: "uncommon",
         type: "Healing",
         effects: [
             { attribute: "health", value: 100 }
@@ -19,6 +21,7 @@ export const potionsData = [
     },
     {
         name: "Potion of Luck",
+        rarity: "rare",
         type: "Buff",
         effects: [
             { attribute: "luck", value: 5 }
@@ -28,6 +31,7 @@ export const potionsData = [
     },
     {
         name: "Attack Potion",
+        rarity: "uncommon",
         type: "Buff",
         effects: [
             { attribute: "attack", value: 10 }
@@ -37,6 +41,7 @@ export const potionsData = [
     },
     {
         name: "Defense Potion",
+        rarity: "uncommon",
         type: "Buff",
         effects: [
             { attribute: "defense", value: 10 }
@@ -46,6 +51,7 @@ export const potionsData = [
     },
     {
         name: "Elixir of Strength",
+        rarity: "epic",
         type: "Buff",
         effects: [
             { attribute: "attack", value: 15 },
@@ -59,6 +65,7 @@ export const potionsData = [
 export const foodData = [
     {
         name: "Apple",
+        rarity: "common",
         type: "Food",
         effects: [
             { attribute: "health", value: 20 }
@@ -68,6 +75,7 @@ export const foodData = [
     },
     {
         name: "Bread",
+        rarity: "common",
         type: "Food",
         effects: [
             { attribute: "health", value: 40 }
@@ -77,6 +85,7 @@ export const foodData = [
     },
     {
         name: "Cheese",
+        rarity: "uncommon",
         type: "Food",
         effects: [
             { attribute: "health", value: 30 }
@@ -86,6 +95,7 @@ export const foodData = [
     },
     {
         name: "Meat",
+        rarity: "uncommon",
         type: "Food",
         effects: [
             { attribute: "health", value: 50 }
@@ -95,6 +105,7 @@ export const foodData = [
     },
     {
         name: "Fish",
+        rarity: "common",
         type: "Food",
         effects: [
             { attribute: "health", value: 40 }
@@ -104,6 +115,7 @@ export const foodData = [
     },
     {
         name: "Cake",
+        rarity: "rare",
         type: "Food",
         effects: [
             { attribute: "health", value: 100 }
@@ -113,6 +125,7 @@ export const foodData = [
     },
     {
         name: "Pie",
+        rarity: "uncommon",
         type: "Food",
         effects: [
             { attribute: "health", value: 40 }
@@ -122,6 +135,7 @@ export const foodData = [
     },
     {
         name: "Pizza",
+        rarity: "rare",
         type: "Food",
         effects: [
             { attribute: "health", value: 90 }
@@ -131,6 +145,7 @@ export const foodData = [
     },
     {
         name: "Pasta",
+        rarity: "rare",
         type: "Food",
         effects: [
             { attribute: "health", value: 70 }
@@ -140,6 +155,7 @@ export const foodData = [
     },
     {
         name: "Salad",
+        rarity: "uncommon",
         type: "Food",
         effects: [
             { attribute: "health", value: 50 }
@@ -149,6 +165,7 @@ export const foodData = [
     },
     {
         name: "Soup",
+        rarity: "common",
         type: "Food",
         effects: [
             { attribute: "health", value: 20 }
@@ -158,6 +175,7 @@ export const foodData = [
     },
     {
         name: "Stew",
+        rarity: "common",
         type: "Food",
         effects: [
             { attribute: "health", value: 30 }
@@ -170,6 +188,7 @@ export const foodData = [
 export const swordData = [
     {
         name: "Wooden Sword",
+        rarity: "common",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 10 }
@@ -179,6 +198,7 @@ export const swordData = [
     },
     {
         name: "Iron Sword",
+        rarity: "uncommon",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 20 }
@@ -188,6 +208,7 @@ export const swordData = [
     },
     {
         name: "Steel Sword",
+        rarity: "rare",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 30 }
@@ -197,6 +218,7 @@ export const swordData = [
     },
     {
         name: "Diamond Sword",
+        rarity: "epic",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 40 }
@@ -206,6 +228,7 @@ export const swordData = [
     },
     {
         name: "Legendary Sword",
+        rarity: "legendary",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 50 }
@@ -218,6 +241,7 @@ export const swordData = [
 export const shieldData = [
     {
         name: "Wooden Shield",
+        rarity: "common",
         type: "Shield",
         effects: [
             { attribute: "defense", value: 5 }
@@ -227,6 +251,7 @@ export const shieldData = [
     },
     {
         name: "Iron Shield",
+        rarity: "uncommon",
         type: "Shield",
         effects: [
             { attribute: "defense", value: 10 }
@@ -236,6 +261,7 @@ export const shieldData = [
     },
     {
         name: "Steel Shield",
+        rarity: "rare",
         type: "Shield",
         effects: [
             { attribute: "defense", value: 15 }
@@ -245,6 +271,7 @@ export const shieldData = [
     },
     {
         name: "Diamond Shield",
+        rarity: "epic",
         type: "Shield",
         effects: [
             { attribute: "defense", value: 20 }
@@ -254,6 +281,7 @@ export const shieldData = [
     },
     {
         name: "Legendary Shield",
+        rarity: "legendary",
         type: "Shield",
         effects: [
             { attribute: "defense", value: 25 }
@@ -266,6 +294,7 @@ export const shieldData = [
 export const bowData = [
     {
         name: "Wooden Bow",
+        rarity: "common",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 10 }
@@ -275,6 +304,7 @@ export const bowData = [
     },
     {
         name: "Iron Bow",
+        rarity: "uncommon",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 20 }
@@ -284,6 +314,7 @@ export const bowData = [
     },
     {
         name: "Steel Bow",
+        rarity: "rare",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 30 }
@@ -293,6 +324,7 @@ export const bowData = [
     },
     {
         name: "Diamond Bow",
+        rarity: "epic",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 40 }
@@ -302,6 +334,7 @@ export const bowData = [
     },
     {
         name: "Legendary Bow",
+        rarity: "legendary",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 50 }
@@ -314,6 +347,7 @@ export const bowData = [
 export const staffData = [
     {
         name: "Wooden Staff",
+        rarity: "common",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 10 }
@@ -323,6 +357,7 @@ export const staffData = [
     },
     {
         name: "Iron Staff",
+        rarity: "uncommon",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 20 }
@@ -332,6 +367,7 @@ export const staffData = [
     },
     {
         name: "Steel Staff",
+        rarity: "rare",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 30 }
@@ -341,6 +377,7 @@ export const staffData = [
     },
     {
         name: "Diamond Staff",
+        rarity: "epic",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 40 }
@@ -350,6 +387,7 @@ export const staffData = [
     },
     {
         name: "Legendary Staff",
+        rarity: "legendary",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 50 }
@@ -362,6 +400,7 @@ export const staffData = [
 export const wandData = [
     {
         name: "Wooden Wand",
+        rarity: "common",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 10 }
@@ -371,6 +410,7 @@ export const wandData = [
     },
     {
         name: "Iron Wand",
+        rarity: "uncommon",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 20 }
@@ -380,6 +420,7 @@ export const wandData = [
     },
     {
         name: "Steel Wand",
+        rarity: "rare",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 30 }
@@ -389,6 +430,7 @@ export const wandData = [
     },
     {
         name: "Diamond Wand",
+        rarity: "epic",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 40 }
@@ -398,6 +440,7 @@ export const wandData = [
     },
     {
         name: "Legendary Wand",
+        rarity: "legendary",
         type: "Weapon",
         effects: [
             { attribute: "attack", value: 50 }
@@ -410,6 +453,7 @@ export const wandData = [
 export const headData = [
     {
         name: "Leather Cap",
+        rarity: "common",
         type: "Head",
         effects: [
             { attribute: "defense", value: 5 }
@@ -419,6 +463,7 @@ export const headData = [
     },
     {
         name: "Iron Helmet",
+        rarity: "uncommon",
         type: "Head",
         effects: [
             { attribute: "defense", value: 10 }
@@ -428,6 +473,7 @@ export const headData = [
     },
     {
         name: "Steel Helmet",
+        rarity: "rare",
         type: "Head",
         effects: [
             { attribute: "defense", value: 15 }
@@ -437,6 +483,7 @@ export const headData = [
     },
     {
         name: "Diamond Helmet",
+        rarity: "epic",
         type: "Head",
         effects: [
             { attribute: "defense", value: 20 }
@@ -446,6 +493,7 @@ export const headData = [
     },
     {
         name: "Legendary Helmet",
+        rarity: "legendary",
         type: "Head",
         effects: [
             { attribute: "defense", value: 25 }
@@ -458,6 +506,7 @@ export const headData = [
 export const bodyData = [
     {
         name: "Leather Vest",
+        rarity: "common",
         type: "Body",
         effects: [
             { attribute: "defense", value: 5 }
@@ -467,6 +516,7 @@ export const bodyData = [
     },
     {
         name: "Iron Chestplate",
+        rarity: "uncommon",
         type: "Body",
         effects: [
             { attribute: "defense", value: 10 }
@@ -476,6 +526,7 @@ export const bodyData = [
     },
     {
         name: "Steel Chestplate",
+        rarity: "rare",
         type: "Body",
         effects: [
             { attribute: "defense", value: 15 }
@@ -485,6 +536,7 @@ export const bodyData = [
     },
     {
         name: "Diamond Chestplate",
+        rarity: "epic",
         type: "Body",
         effects: [
             { attribute: "defense", value: 20 }
@@ -494,6 +546,7 @@ export const bodyData = [
     },
     {
         name: "Legendary Chestplate",
+        rarity: "legendary",
         type: "Body",
         effects: [
             { attribute: "defense", value: 25 }
@@ -506,6 +559,7 @@ export const bodyData = [
 export const legData = [
     {
         name: "Leather Pants",
+        rarity: "common",
         type: "Legs",
         effects: [
             { attribute: "defense", value: 5 }
@@ -515,6 +569,7 @@ export const legData = [
     },
     {
         name: "Iron Leggings",
+        rarity: "uncommon",
         type: "Legs",
         effects: [
             { attribute: "defense", value: 10 }
@@ -524,6 +579,7 @@ export const legData = [
     },
     {
         name: "Steel Leggings",
+        rarity: "rare",
         type: "Legs",
         effects: [
             { attribute: "defense", value: 15 }
@@ -533,6 +589,7 @@ export const legData = [
     },
     {
         name: "Diamond Leggings",
+        rarity: "epic",
         type: "Legs",
         effects: [
             { attribute: "defense", value: 20 }
@@ -542,6 +599,7 @@ export const legData = [
     },
     {
         name: "Legendary Leggings",
+        rarity: "legendary",
         type: "Legs",
         effects: [
             { attribute: "defense", value: 25 }
@@ -554,6 +612,7 @@ export const legData = [
 export const footData = [
     {
         name: "Leather Boots",
+        rarity: "common",
         type: "Feet",
         effects: [
             { attribute: "defense", value: 5 }
@@ -563,6 +622,7 @@ export const footData = [
     },
     {
         name: "Iron Boots",
+        rarity: "uncommon",
         type: "Feet",
         effects: [
             { attribute: "defense", value: 10 }
@@ -572,6 +632,7 @@ export const footData = [
     },
     {
         name: "Steel Boots",
+        rarity: "rare",
         type: "Feet",
         effects: [
             { attribute: "defense", value: 15 }
@@ -581,6 +642,7 @@ export const footData = [
     },
     {
         name: "Diamond Boots",
+        rarity: "epic",
         type: "Feet",
         effects: [
             { attribute: "defense", value: 20 }
@@ -590,6 +652,7 @@ export const footData = [
     },
     {
         name: "Legendary Boots",
+        rarity: "legendary",
         type: "Feet",
         effects: [
             { attribute: "defense", value: 25 }
@@ -602,6 +665,7 @@ export const footData = [
 export const handData = [
     {
         name: "Leather Gloves",
+        rarity: "common",
         type: "Hands",
         effects: [
             { attribute: "defense", value: 5 }
@@ -611,6 +675,7 @@ export const handData = [
     },
     {
         name: "Iron Gauntlets",
+        rarity: "uncommon",
         type: "Hands",
         effects: [
             { attribute: "defense", value: 10 }
@@ -620,6 +685,7 @@ export const handData = [
     },
     {
         name: "Steel Gauntlets",
+        rarity: "rare",
         type: "Hands",
         effects: [
             { attribute: "defense", value: 15 }
@@ -629,6 +695,7 @@ export const handData = [
     },
     {
         name: "Diamond Gauntlets",
+        rarity: "epic",
         type: "Hands",
         effects: [
             { attribute: "defense", value: 20 }
@@ -638,6 +705,7 @@ export const handData = [
     },
     {
         name: "Legendary Gauntlets",
+        rarity: "legendary",
         type: "Hands",
         effects: [
             { attribute: "defense", value: 25 }
@@ -646,3 +714,41 @@ export const handData = [
         sellPrice: 200
     }
 ];
+
+export const materialData = [
+    {
+        name: "Wood",
+        rarity: "common",
+        type: "Material",
+        buyPrice: 5,
+        sellPrice: 2
+    },
+    {
+        name: "Stone",
+        rarity: "common",
+        type: "Material",
+        buyPrice: 5,
+        sellPrice: 2
+    },
+    {
+        name: "Glass",
+        rarity: "common",
+        type: "Material",
+        buyPrice: 10,
+        sellPrice: 4
+    },
+    {
+        name: "Iron",
+        rarity: "uncommon",
+        type: "Material",
+        buyPrice: 100,
+        sellPrice: 20
+    },
+    {
+        name: "Gold",
+        rarity: "rare",
+        type: "Material",
+        buyPrice: 600,
+        sellPrice: 150
+    }
+]

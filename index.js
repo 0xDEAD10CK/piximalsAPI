@@ -5,6 +5,7 @@ import cors from "cors";
 // IMPORT ROUTES BELOW
 import adminAuthRoute from './middleware/adminAuthRoute.js'
 
+import ability from './routes/ability.js'
 import auth from './routes/auth.js'
 import monster from './routes/monster.js'
 import shop from './routes/shop.js'
@@ -29,6 +30,7 @@ app.use(`/${BASE_URL}/${CURRENT_VERSION}/monster`, adminAuthRoute, monster)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/shop`, shop)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/my`, player)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/admin`, adminAuthRoute, admin)
+app.use(`/${BASE_URL}/${CURRENT_VERSION}/abilities`, ability)
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`)

@@ -32,11 +32,41 @@ const getRandomWeightedOption = (options) => {
  * @returns {Object} The generated monster.
  */
 const generateMonster = async (req, res) => {
-    const randomType = monsterData.types[getRandomInt(0, monsterData.types.length - 1)]
-    const randomSpecies = monsterData.species[getRandomInt(0, monsterData.species.length - 1)]
+    const randomType = monsterData.types[getRandomInt(0, monsterData.types.length - 1)];
+    const randomSpecies = monsterData.species[getRandomInt(0, monsterData.species.length - 1)];
     const randomRarity = getRandomWeightedOption(monsterData.rarity).rarity;
-    const id = uuidv4()
+    const id = uuidv4();
+
     try {
+        // Fetch abilities based on the monster's type
+        const abilities = await prisma.ability.findMany({
+            where: {
+                type: randomType,
+            },
+        });
+
+        console.log("Abilities:", abilities);
+
+        // Ensure we have enough abilities to choose from
+        if (abilities.length < 2) {
+            return res.status(500).json({
+                msg: 'Not enough abilities for this monster type.',
+            });
+        }
+
+        // Shuffle abilities and pick two unique abilities
+        const selectedAbilities = [];
+        while (selectedAbilities.length < 2) {
+            const randomIndex = getRandomInt(0, abilities.length - 1);
+            const selectedAbility = abilities[randomIndex];
+
+            if (!selectedAbilities.some(a => a.id === selectedAbility.id)) {
+                selectedAbilities.push(selectedAbility);
+            }
+        }
+
+        console.log("Selected Abilities:", selectedAbilities);
+        // Create the monster with selected abilities
         const monster = await prisma.monster.create({
             data: {
                 id: id,
@@ -47,22 +77,28 @@ const generateMonster = async (req, res) => {
                 status: "Wild",
                 url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${id}`,
                 hp: 100,
-                ap:20,
+                ap: 20,
+                abilities: {
+                    connect: selectedAbilities.map(ability => ({ id: ability.id })),
+                },
             },
-        })
+            include: {
+                abilities: true
+            }
+        });
 
-        console.log(monster)
+        console.log(monster);
 
         return res.status(201).json({
             msg: 'Monster successfully generated',
             data: monster,
-        })
+        });
     } catch (err) {
         return res.status(500).json({
             msg: err.message,
-        })
+        });
     }
-}
+};
 
 /**
  * Fetches all monsters.
@@ -73,7 +109,18 @@ const generateMonster = async (req, res) => {
  */
 const getMonsters = async (req, res) => {
     try {
-        const monsterData = await prisma.monster.findMany({})
+        const monsterData = await prisma.monster.findMany({
+            include: {
+                abilities: {
+                    select: {
+                        name: true,
+                        type: true,
+                        category: true,
+                        description: true
+                    }, // Ensure abilities are included in the creation response
+                },  // Include related abilities
+            },
+        })
 
         return res.status(201).json({
             msg: 'Monster successfully fetched',

@@ -20,6 +20,59 @@ export const createInventory = async (userId) => {
     );
 };
 
+// Get Inventory
+export const getInventory = async (userId) => {
+    return await prisma.account.findUnique({
+        where: { id: Number(userId) },
+        select: {
+            inventory: {
+                select: {
+                    items: {
+                        select: {
+                            id: true,
+                            quantity: true,
+                            item: { // Accessing the related item model
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    effects: true,
+                                    buyPrice: true,
+                                    sellPrice: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    });
+};
+
+export const getMenagerie = async (userId) => {
+    return await prisma.account.findUnique({
+        where: { id: Number(userId) },
+        select: {
+            menagerie: {
+                select: {
+                    monster: {
+                        select: {
+                            id: true,
+                            name: true,
+                            rarity: true,
+                            type: true,
+                            species: true,
+                            hp: true,
+                            ap: true,
+                            status: true,
+                            url: true,
+                        },
+                    },
+                },
+            },
+        },
+    });
+};
+
 // Check if the item exists in the user's inventory
 export const checkItemInInventory = async (inventoryId, itemId) => {
     return await prisma.inventoryItem.findFirst({

@@ -4,13 +4,14 @@ const prisma = new PrismaClient()
 import { 
     checkInventory,
     createInventory,
+    getInventory,
+    getMenagerie,
     checkItemInInventory,
     updateInventoryItem,
     createInventoryItem
  } from '../../utils/userUtils.js'
 
- import { checkItem } from '../../utils/itemUtils.js'
-import { check } from 'prettier'
+import { checkItem } from '../../utils/itemUtils.js'
 
 const getPlayerInfo = async (req, res) => {
     const user = req.user
@@ -36,33 +37,10 @@ const getPlayerInfo = async (req, res) => {
     }
 }
 
-const getInventory = async (req, res) => {
+const getUserInventory = async (req, res) => {
     const user = req.user;
     try {
-        const userdata = await prisma.account.findUnique({
-            where: { id: Number(user.id) },
-            select: {
-                inventory: {
-                    select: {
-                        items: {
-                            select: {
-                                id: true,
-                                quantity: true,
-                                item: { // Accessing the related item model
-                                    select: {
-                                        id: true,
-                                        name: true,
-                                        effects: true,
-                                        buyPrice: true,
-                                        sellPrice: true,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        });
+        const userdata = await getInventory(user.id);
 
         // If the user's inventory or items are not found, handle the response accordingly
         if (!userdata || !userdata.inventory) {
@@ -82,6 +60,28 @@ const getInventory = async (req, res) => {
     }
 };
 
+const getUserMenagerie = async (req, res) => {
+    const user = req.user;
+    try {
+        const userdata = await getMenagerie(user.id);
+
+        // If the user's menagerie or monsters are not found, handle the response accordingly
+        if (!userdata || !userdata.menagerie) {
+            return res.status(404).json({
+                msg: 'Menagerie not found!',
+            });
+        }
+
+        return res.status(200).json({
+            msg: 'User menagerie successfully fetched!',
+            data: userdata,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            msg: err.message,
+        });
+    }
+};
 
 
 const addItemToInventory = async (req, res) => {
@@ -132,4 +132,4 @@ const addItemToInventory = async (req, res) => {
 
 
 
-export { getPlayerInfo, getInventory, addItemToInventory };
+export { getPlayerInfo, getUserMenagerie, addItemToInventory, getUserInventory };

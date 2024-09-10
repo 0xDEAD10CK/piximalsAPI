@@ -17,7 +17,7 @@
         "seed:shop": "node ./utils/seeding/shopSeed.js",
         "seed:monster": "node ./utils/seeding/monsterSeed.js",
         "seed:ability": "node ./utils/seeding/abilitySeed.js",
-        "seed:item": "node ./utils/itemSeed.js",
+        "seed:item": "node ./utils/seeding/itemSeed.js",
         "seed": "node ./utils/seeding/playerSeed.js && node ./utils/seeding/shopSeed.js && node ./utils/seeding/monsterSeed.js"
 
     },

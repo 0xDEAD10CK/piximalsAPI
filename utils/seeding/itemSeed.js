@@ -12,7 +12,7 @@ import {
     staffData,
     bowData,
     wandData,
-    materialData} from '../data/itemData.js'
+    materialData} from '../../data/itemData.js'
 
 const prisma = new PrismaClient()
 

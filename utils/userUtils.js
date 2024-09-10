@@ -1,6 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
+// Get User Account
+export const getUserAccount = async (userId) => {
+};
+
 // Check if the user has an inventory
 export const checkInventory = async (userId) => {
     return await prisma.inventory.findFirst({

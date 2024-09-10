@@ -6,6 +6,7 @@ export const viewBalance = () => {
     return
 }
 
+// Deduct balance from account
 export const deductBalance = (id, cost) => {
     return prisma.account.update({
         where: { id: id },
@@ -13,6 +14,7 @@ export const deductBalance = (id, cost) => {
     });
 };
 
+// Update balance in account
 export const updateBalance = (id, amount) => {
     return prisma.account.update({
         where: { id: id },
@@ -20,6 +22,7 @@ export const updateBalance = (id, amount) => {
     });
 };
 
+// Add a monster to the menagerie
 export const addMonsterToMenagerie = (id, monsterId) => {
     return prisma.menagerie.create({
         data: {
@@ -29,6 +32,7 @@ export const addMonsterToMenagerie = (id, monsterId) => {
     });
 };
 
+// Remove a monster from the menagerie
 export const removeMonsterFromMenagerie = (id, monsterId) => {
     return prisma.menagerie.deleteMany({
         where: {
@@ -38,6 +42,7 @@ export const removeMonsterFromMenagerie = (id, monsterId) => {
     });
 };
 
+// Update monster status
 export const updateMonsterStatus = (monsterId, status) => {
     return prisma.monster.update({
         where: { id: monsterId },
@@ -45,6 +50,7 @@ export const updateMonsterStatus = (monsterId, status) => {
     });
 };
 
+// Remove listing from shop
 export const removeListingFromShop = (itemId) => {
     return prisma.shop.delete({
         where: { id: itemId },
@@ -58,7 +64,7 @@ export const findMonsterById = (id) => {
     });
 };
 
-// Create a shop item for the monster
+// Create a shop listing for the monster
 export const createShopListing = (monsterId, playerId, price) => {
     return prisma.shop.create({
         data: {

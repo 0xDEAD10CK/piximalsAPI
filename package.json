@@ -17,7 +17,11 @@
         "seed:shop": "node ./utils/seeding/shopSeed.js",
         "seed:monsters": "node ./utils/seeding/monsterSeed.js",
         "seed:location": "node ./utils/seeding/locationSeed.js",
-        "seed": "node ./utils/seeding/locationSeed.js && node ./utils/seeding/playerSeed.js && node ./utils/seeding/shopSeed.js && node ./utils/seeding/monsterSeed.js"
+        "seed:monster": "node ./utils/seeding/monsterSeed.js",
+        "seed:ability": "node ./utils/seeding/abilitySeed.js",
+        "seed:item": "node ./utils/seeding/itemSeed.js",
+        "seed": "node ./utils/seeding/playerSeed.js && node ./utils/seeding/shopSeed.js && node ./utils/seeding/monsterSeed.js"
+
     },
     "type": "module",
     "keywords": [],

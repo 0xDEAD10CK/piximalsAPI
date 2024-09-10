@@ -1,5 +1,8 @@
 import { v4 as uuidv4 } from 'uuid'
 import { PrismaClient } from '@prisma/client'
+import { sellInventoryItem } from '../../utils/shopUtils.js';
+
+
 const prisma = new PrismaClient()
 
 import { 
@@ -200,4 +203,14 @@ const getShop = async (req, res) => {
     }
 }
 
-export { purchaseMonster, getShop, sellMonster, cancelListing }
+const sellItem = async (req, res) => {
+    const user = req.user
+    const { itemId, quantity } = req.body
+    const response = await sellInventoryItem(user.id, itemId, quantity);
+    return res.status(200).json({
+        msg: response.msg,
+        data: response.data,
+    });
+};
+
+export { purchaseMonster, getShop, sellMonster, cancelListing, sellItem }

@@ -1,7 +1,22 @@
 export const monsterData = {
     types: [
-        "Pyro", "Cryo", "Aero", "Hydro", "Geo", "Electro", "Solar", "Lunar", 
-        "Shadow", "Mystic", "Nature", "Astral", "Toxic", "Metallic", "Spectral", "Chaos"
+        "FIRE",
+        "ICE",
+        "WIND",
+        "WATER",
+        "EARTH",
+        "ELECTRIC",
+        "SOLAR",
+        "LUNAR", 
+        "SHADOW",
+        "MYSTIC",
+        "NATURE",
+        "ASTRAL",
+        "TOXIC",
+        "METALLIC",
+        "SPECTRAL",
+        "CHAOS",
+        "CRISPIES"
     ],
     species: [
         "Drake", "Yeti", "Golem", "Serpent", "Salamander", "Unicorn", "Wraith", "Sphinx",

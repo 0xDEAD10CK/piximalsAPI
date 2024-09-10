@@ -13,11 +13,13 @@
         "build": "npm run clean && npm run compile",
         "dev": "nodemon index.js",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "seed:player": "node ./utils/playerSeed.js",
-        "seed:shop": "node ./utils/shopSeed.js",
-        "seed:monsters": "node ./utils/monsterSeed.js",
+        "seed:player": "node ./utils/seeding/playerSeed.js",
+        "seed:shop": "node ./utils/seeding/shopSeed.js",
+        "seed:monster": "node ./utils/seeding/monsterSeed.js",
+        "seed:ability": "node ./utils/seeding/abilitySeed.js",
         "seed:item": "node ./utils/itemSeed.js",
-        "seed": "node ./utils/playerSeed.js && node ./utils/shopSeed.js && node ./utils/monsterSeed.js"
+        "seed": "node ./utils/seeding/playerSeed.js && node ./utils/seeding/shopSeed.js && node ./utils/seeding/monsterSeed.js"
+
     },
     "keywords": [],
     "author": "",

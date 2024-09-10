@@ -5,6 +5,17 @@ import { sellInventoryItem } from '../../utils/shopUtils.js';
 
 const prisma = new PrismaClient()
 
+import { 
+    deductBalance,
+    updateBalance,
+    addMonsterToMenagerie,
+    updateMonsterStatus,
+    removeMonsterFromMenagerie,
+    removeListingFromShop,
+    findMonsterById,
+    createShopListing,
+} from '../../utils/accountBalance.js';
+
 const purchaseMonster = async (req, res) => {
     const { id } = req.params;
     const user = req.user;
@@ -30,36 +41,12 @@ const purchaseMonster = async (req, res) => {
 
         // Start a Prisma transaction to ensure atomicity
         await prisma.$transaction([
-            // Deduct money from the buyer
-            prisma.account.update({
-                where: { id: buyer.id },
-                data: { currency: { decrement: shopItem.price } },
-            }),
-
-            // Update the seller's balance
-            prisma.account.update({
-                where: { id: shopItem.playerId },
-                data: { currency: { increment: shopItem.price } },
-            }),
-
-            // Transfer the monster from seller to buyer
-            prisma.inventory.create({
-                data: {
-                    userId: buyer.id,
-                    monsterId: shopItem.monster.id,
-                },
-            }),
-
-            // Remove the monster from the seller's inventory
-            prisma.inventory.deleteMany({
-                where: {
-                    userId: shopItem.playerId,
-                    monsterId: shopItem.monster.id,
-                },
-            }),
-
-            // Remove item from the shop
-            prisma.shop.delete({ where: { id } }),
+            deductBalance(buyer.id, shopItem.price),   // Deduct money from the buyer
+            updateBalance(shopItem.playerId, shopItem.price),  // Update the seller's balance
+            addMonsterToMenagerie(buyer.id, shopItem.monster.id),   // Transfer the monster from seller to buyer
+            updateMonsterStatus(shopItem.monster.id, 'In_Inventory'),   // Update the monster's status to 'In_Inventory'
+            removeMonsterFromMenagerie(shopItem.playerId, shopItem.monster.id),  // Remove the monster from the seller's inventory
+            removeListingFromShop(id),  // Remove item from the shop
         ]);
 
         return res.status(200).json({
@@ -75,7 +62,89 @@ const purchaseMonster = async (req, res) => {
     }
 };
 
+const sellMonster = async (req, res) => {
+    const { id } = req.params;
+    const user = req.user;
+    const { price } = req.body;
 
+    try {
+        // Fetch the monster details
+        const monster = await findMonsterById(id);
+
+        if (monster.status === 'On_Market') {
+            return res.status(403).json({
+                msg: "Monster already marketed."
+            });
+        }
+
+        // Create the shop item for the monster
+        const shopItem = await createShopListing(id, user.id, price);
+
+        await removeMonsterFromMenagerie(user.id, id)
+
+        // Update the status of the monster to 'On_Market'
+        await updateMonsterStatus(id, 'On_Market');
+
+        return res.status(200).json({
+            msg: 'Monster listed successfully',
+            data: {
+                listedMonster: shopItem,
+            },
+        });
+    } catch (err) {
+        return res.status(500).json({
+            msg: err.message,
+        });
+    }
+};
+
+const cancelListing = async (req, res) => {
+    const { id } = req.params; // Correct the destructuring
+    const user = req.user;
+
+    try {
+        const listing = await prisma.shop.findUnique({
+            where: { id: id }
+        });
+
+        if (!listing) {
+            return res.status(404).json({ msg: "Listing not found." });
+        }
+
+        if (listing.playerId !== user.id) {
+            return res.status(401).json({ msg: "You cannot cancel another person's listing." });
+        }
+
+        await removeListingFromShop(id)  // Remove item from the shop
+
+        // Assuming the listing has a 'monsterId' field
+        const monsterId = listing.monsterId; 
+
+        await addMonsterToMenagerie(user.id, monsterId)
+
+        if (!monsterId) {
+            return res.status(400).json({ msg: "Invalid monster ID associated with this listing." });
+        }
+
+        // Check if the monster exists
+        const monster = await prisma.monster.findUnique({
+            where: { id: monsterId }
+        });
+
+        if (!monster) {
+            return res.status(404).json({ msg: "Monster not found." });
+        }
+
+        // Update the status of the monster to 'In_Menagerie'
+        await updateMonsterStatus(monsterId, 'In_Menagerie');
+
+        return res.status(200).json({ msg: "Listing successfully canceled." });
+    } catch (error) {
+        // Add error handling to return a response in case of exceptions
+        console.error(error);
+        return res.status(500).json({ msg: "Internal server error." });
+    }
+};
 
 const getShop = async (req, res) => {
     const { page = 1, pageSize = 10, type, species, rarity } = req.query
@@ -134,7 +203,6 @@ const getShop = async (req, res) => {
     }
 }
 
-
 const sellItem = async (req, res) => {
     const user = req.user
     const { itemId, quantity } = req.body
@@ -144,4 +212,5 @@ const sellItem = async (req, res) => {
         data: response.data,
     });
 };
-export { purchaseMonster, getShop, sellItem }
+
+export { purchaseMonster, getShop, sellMonster, cancelListing, sellItem }

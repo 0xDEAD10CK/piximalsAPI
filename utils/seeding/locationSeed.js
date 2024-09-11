@@ -1,16 +1,22 @@
 // utils/seeding/playerSeed.js
 
+import { locationData } from "../../data/locationData.js";
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient();
+
 
 async function seed() {
   try {
     // Create Locations first
-    await prisma.location.create({
-      data: {
-        name: 'Forrect Park',
-        type: 'Nature',
-      },
+    locationData.forEach(async (location) => {
+      await prisma.location.create({
+        data: {
+          name: location.name,
+          description: location.description,
+          type: location.type,
+          rarity: location.rarity,
+        }
+      });
     });
 
     console.log('Seeding completed successfully.');

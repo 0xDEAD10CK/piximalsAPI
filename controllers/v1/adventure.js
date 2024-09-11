@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { generateMonster } from '../../utils/monsters.js';
 import { generateZone } from '../../utils/zoning.js';
+import { randomItem } from '../../utils/items.js';
 const prisma = new PrismaClient()
 
 const adventureLocation = (req, res) => {
@@ -28,19 +29,40 @@ const adventureLocation = (req, res) => {
  **/
 const zoneGeneration = async (req, res) => {
     try {
-        const { type, monsterAmount } = req.body
+        console.log("Generating zone")
+        const { monsterAmount } = req.body
         const user = req.user;
         let monsters = []
-
+        let items = []
+        
+        const player = await prisma.account.findUnique({
+            where: {
+                id: user.id
+            },
+            select: {
+                location: {
+                    select: {
+                        id: true,
+                        type: true,
+                        rarity: true
+                    }
+                }
+            }
+        })
+        
         for (let i = 0; i < monsterAmount; i++){
-            monsters.push(generateMonster(type))
+            monsters.push(generateMonster(player.location.type))
+            items.push(randomItem(player.location))
         }
 
         monsters = await Promise.all(monsters);
+        items = await Promise.all(items);
         
         if (monsters.length < 1) return res.status(404).json({msg: "No monsters found"})
-                    
-        const zone = await generateZone("Dangerzone", monsters, type, user)
+        
+        const zone = await generateZone("Dangerzone", monsters, player.location.type, user, "This is a dangerous zone", items)
+
+        console.log(zone)
 
         return res.status(200).json({msg: "Welcome to the Dangerzone", zone: zone})
     } catch (error) {

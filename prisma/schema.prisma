@@ -128,7 +128,7 @@ model Item {
   buyPrice      Int
   sellPrice     Int
   // No direct relation to Inventory; handled through an intermediary or other contexts.
-
+  zone          Zone[]          // Items can be found in multiple zones
   InventoryItem InventoryItem[]
 }
 
@@ -185,6 +185,7 @@ model Zone {
   players       Account[]     // One-to-many relationship with Account
   type          String       // Type of zone, e.g. forest, desert, etc. inherited from the location model
   description   String
+  items         Item[]        // One-to-many relationship with Item
 }
 
 model Location {
@@ -194,4 +195,6 @@ model Location {
   zoneId        String[]
   players       Account[]      // One-to-many relationship with Account
   type          String
+  description   String
+  rarity        Json[]
 }

@@ -1,33 +1,75 @@
+/**
+ * @file zoning.js
+ * @description This file contains the functions to generate and clean up zones.
+ * @module utils/zoning
+ * @requires PrismaClient
+ */
+
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export const shuffleArray = (array, monsterAmount) => {
-    array = array.sort(() => Math.random() - 0.5);
-    array = array.slice(0, monsterAmount);
-    return array;
-}
-
-export const generateZone = async (name, monsters, type, user) => {
-    const zone = await prisma.zone.create({
-        data: {
-            zonename: name,
-            type: type,
+export const generateZone = async (name, monsters, type, user, description, items) => {
+    try {
+        
+        const zone = await prisma.zone.create({
+            data: {
+                zonename: name,
+                type: type,
+                description: description,
+                players: {
+                    connect: {id: user.id}
+                },
+                monsters: {
+                    connect: monsters.map(monster => {
+                        return {id: monster.id}
+                    })
+                },
+                items: {
+                    connect: items.map(item => {
+                        return {id: item.id}
+                    })
+                }
+        },
+        select: {
+            id: true,
+            zonename: true,
+            type: true,
+            description: true,
             players: {
-                connect: {id: user.id}
+                select: {
+                    id: true,
+                    username: true
+                }
             },
             monsters: {
-                connect: monsters.map(monster => {
-                    return {id: monster.id}
-                })
+                select: {
+                    id: true,
+                    name: true,
+                    type: true,
+                    species: true,
+                    rarity: true,
+                    status: true,
+                    url: true,
+                    hp: true,
+                    ap: true
+                }
+            },
+            items: {
+                select: {
+                    id: true,
+                    name: true,
+                    effects: true,
+                    type: true,
+                    sellPrice: true
+                }
             }
-        },
-        include: {
-            players: true,
-            monsters: true
         }
     })
     
     return zone;
+    } catch (error) {
+        console.log(error)        
+    }
 }
 
 export const cleanUpZone = async (zone) => {

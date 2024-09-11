@@ -21,68 +21,6 @@ const getPlayerInfo = async (req, res) => {
                 id: true,
                 username: true,
                 currency: true,
-<<<<<<< HEAD
-                menagerie: {
-                    select: {
-                        monster: {
-                            select: {
-                                id: true,
-                                capturedAt: true, // Include the capturedAt field from menagerie
-                                type: true,
-                                species: true,
-                                rarity: true,
-                                name: true,
-                                url: true,
-                                hp: true,
-                                ap: true,
-                                // other fields from the monster you want to include
-                            },
-                        },
-                    },
-                },
-                inventory: {},
-                zone: {
-                    select: {
-                        id: true,
-                        zonename: true,
-                        type: true,
-                        monsters: {
-                            select: {
-                                id: true,
-                                type: true,
-                                species: true,
-                                rarity: true,
-                                name: true,
-                                url: true,
-                                hp: true,
-                                ap: true,
-                                // other fields from the monster you want to include
-                            },
-                        },
-                    },
-                },
-                shopItems: {
-                    select: {
-                        id: true,
-                        price: true,
-                        monster: {
-                            select: {
-                                id: true,
-                                type: true,
-                                species: true,
-                                rarity: true,
-                                name: true,
-                                url: true,
-                                hp: true,
-                                ap: true,
-                                // other fields from the monster you want to include
-                            },
-                        },
-                    },
-                },
-                
-=======
->>>>>>> origin/staging
                 // other fields you want to include
             },
         })

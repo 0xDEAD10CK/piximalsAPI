@@ -72,10 +72,10 @@ export const generateZone = async (name, monsters, type, user, description, item
     }
 }
 
-export const cleanUpZone = async (zone) => {
+export const cleanUpZone = async (zoneid) => {
     const deleteZone = await prisma.zone.delete({
         where: {
-            id: zone.id
+            id: zoneid
         }
     })
 

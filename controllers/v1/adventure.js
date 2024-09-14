@@ -1,35 +1,27 @@
+/**
+ * @file adventure.js
+ * @description This file contains controller functions for completing actions such as:
+ * - Generating a new zone
+ * - Moving to a zone
+ * Planned features:
+ * - Deleting a zone
+ * 
+ * @module controllers/v1/adventure
+ */
+
 import { PrismaClient } from '@prisma/client'
 import { generateMonster } from '../../utils/monsters.js';
-import { generateZone } from '../../utils/zoning.js';
+import { cleanUpZone, generateZone } from '../../utils/zoning.js';
 import { randomItem } from '../../utils/items.js';
+import { addMonsterToMenagerie } from '../../utils/accountBalance.js';
 const prisma = new PrismaClient()
 
-const adventureLocation = (req, res) => {
-    try {
-        const { zone } = req.params
-        const user = req.user;
-
-        return res.status(200).json({msg: "Welcome to the Dangerzone"})
-    } catch (error) {
-        return res.status(500).json({msg: error})
-    }
-}
 
 /**
- * Generates a new zone with a specified amount of monsters.
- * This will also include items later on
- * This will generate when a player decides to explore at a location
- * 
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @returns {Object} The generated zone.
- * 
- * @example POST /api/v1/adventure/zone
- * 
- **/
+ * This function will generate a new zone with a specified amount of monsters and items
+ */
 const zoneGeneration = async (req, res) => {
     try {
-        console.log("Generating zone")
         const { monsterAmount } = req.body
         const user = req.user;
         let monsters = []
@@ -96,12 +88,62 @@ const goToZone = async (req, res) => {
 
         if (!moveZone) return res.status(500).json({msg: "Failed to move to zone"})
 
-
         return res.status(200).json({msg: "Welcome to the Dangerzone", zone: moveZone})
     } catch (error) {
         return res.status(500).json({msg: error})
     }
 }
 
+const collect = async (req, res) => {
+    try {
+        const { zoneid } = req.params
+        const user = req.user;
+        const { monsterId } = req.body
 
-export { adventureLocation, zoneGeneration, goToZone }
+        const zone = await prisma.zone.findUnique({
+            where: {
+                id: zoneid
+            },
+            select: {
+                monsters: true
+            }
+        })
+
+        if (!zone){
+            return res.status(404).json({msg: "Zone does not exist"})
+        }
+
+        const player = await prisma.account.findUnique({
+            where: {
+                id: user.id
+            }
+        }) 
+
+        if (!player){
+            return res.status(404).json({msg: "Player can not be found"})
+        }
+
+        const response = await addMonsterToMenagerie(user.id, monsterId)
+
+
+        return res.status(200).json({msg: response})
+    } catch (error) {
+        return res.status(500).json({msg: error})
+    }
+}
+
+
+const deleteZone = async (req, res) => {
+    try {
+        const { zoneid } = req.params
+
+
+        const response = await cleanUpZone(zoneid)
+
+        return res.status(200).json({msg: "Zone Deleted"})
+    } catch (error) {
+        return res.status(500).json({msg: error})
+    }
+}
+
+export { zoneGeneration, goToZone, deleteZone, collect }

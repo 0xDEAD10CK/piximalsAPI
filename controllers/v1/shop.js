@@ -44,7 +44,7 @@ const purchaseMonster = async (req, res) => {
             deductBalance(buyer.id, shopItem.price),   // Deduct money from the buyer
             updateBalance(shopItem.playerId, shopItem.price),  // Update the seller's balance
             addMonsterToMenagerie(buyer.id, shopItem.monster.id),   // Transfer the monster from seller to buyer
-            updateMonsterStatus(shopItem.monster.id, 'IN_MENAGERIE'),   // Update the monster's status to 'In_Inventory'
+            updateMonsterStatus(buyer.id, shopItem.monster.id, 'IN_MENAGERIE'),   // Update the monster's status to 'In_Inventory'
             removeMonsterFromMenagerie(shopItem.playerId, shopItem.monster.id),  // Remove the monster from the seller's inventory
             removeListingFromShop(id),  // Remove item from the shop
         ]);
@@ -83,7 +83,7 @@ const sellMonster = async (req, res) => {
         await removeMonsterFromMenagerie(user.id, id)
 
         // Update the status of the monster to 'ON_MARKET'
-        await updateMonsterStatus(id, 'ON_MARKET');
+        await updateMonsterStatus(user.id, id, 'ON_MARKET');
 
         return res.status(200).json({
             msg: 'Monster listed successfully',

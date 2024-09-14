@@ -43,7 +43,14 @@ export const removeMonsterFromMenagerie = (id, monsterId) => {
 };
 
 // Update monster status
-export const updateMonsterStatus = (monsterId, status) => {
+export const updateMonsterStatus = async (userId, monsterId, status) => {
+    // Find the menagerie record for the user that contains the monster
+    await prisma.menagerie.findUnique({
+        where: { id: userId },
+        include: { monster: true } // Fetch the related monster
+    });
+
+    // Update the monster's status
     return prisma.monster.update({
         where: { id: monsterId },
         data: { status: status },

@@ -132,15 +132,30 @@ const addItemToInventory = async (req, res) => {
 };
 
 const moveMonsterToParty = async (req, res) => {
-    const { id } = req.params;
+    const user = req.user;
+    const { monsterId } = req.params;
 
     try {
-        // Check if the monster exists
-        await updateMonsterStatus(id, 'IN_PARTY');
+        // Check how many monsters in menagerie have status 'IN_PARTY'
+        const menagerie = await getMenagerie(user.id);
 
-        return res.status(201).json({
-            msg: 'Monster successfully moved to party!',
-        });
+        // Extract the monsters from the menagerie records
+        const monsters = menagerie.menagerie.map(record => record.monster);
+
+        // Count the number of monsters in the party
+        const partyCount = monsters.filter(monster => monster.status === 'IN_PARTY').length;
+        
+        if (partyCount >= 3) {
+            return res.status(403).json({
+                msg: 'Party is full!',
+            });
+        } else {
+            await updateMonsterStatus(user.id, monsterId, 'IN_PARTY');
+
+            return res.status(201).json({
+                msg: 'Monster successfully moved to party!',
+            });
+        }
     } catch (err) {
         return res.status(500).json({
             msg: err.message,
@@ -149,11 +164,12 @@ const moveMonsterToParty = async (req, res) => {
 };
 
 const moveMonsterFromParty = async (req, res) => {
-    const { id } = req.params;
+    const user = req.user;
+    const { monsterId } = req.params;
 
     try {
         // Check if the monster exists
-        await updateMonsterStatus(id, 'IN_MENAGERIE');
+        await updateMonsterStatus(user.id, monsterId, 'IN_MENAGERIE');
 
         return res.status(201).json({
             msg: 'Monster successfully moved from party!',

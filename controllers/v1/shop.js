@@ -44,7 +44,7 @@ const purchaseMonster = async (req, res) => {
             deductBalance(buyer.id, shopItem.price),   // Deduct money from the buyer
             updateBalance(shopItem.playerId, shopItem.price),  // Update the seller's balance
             addMonsterToMenagerie(buyer.id, shopItem.monster.id),   // Transfer the monster from seller to buyer
-            updateMonsterStatus(shopItem.monster.id, 'In_Inventory'),   // Update the monster's status to 'In_Inventory'
+            updateMonsterStatus(shopItem.monster.id, 'IN_MENAGERIE'),   // Update the monster's status to 'In_Inventory'
             removeMonsterFromMenagerie(shopItem.playerId, shopItem.monster.id),  // Remove the monster from the seller's inventory
             removeListingFromShop(id),  // Remove item from the shop
         ]);
@@ -136,7 +136,7 @@ const cancelListing = async (req, res) => {
         }
 
         // Update the status of the monster to 'IN_MENAGERIE'
-        await updateMonsterStatus(monsterId, 'IN_MENAGERIE');
+        await updateMonsterStatus(user.id, monsterId, 'IN_MENAGERIE');
 
         return res.status(200).json({ msg: "Listing successfully canceled." });
     } catch (error) {

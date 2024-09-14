@@ -10,7 +10,7 @@ router.route("/menagerie").get(authRoute, getUserMenagerie);
 
 router.route("/inventory/add").post(authRoute, addItemToInventory);
 
-router.route("/party/add/:id").post(authRoute, moveMonsterToParty);
-router.route("/party/remove/:id").post(authRoute, moveMonsterFromParty);
+router.route("/party/add/:monsterId").post(authRoute, moveMonsterToParty);
+router.route("/party/remove/:monsterId").post(authRoute, moveMonsterFromParty);
 
 export default router;

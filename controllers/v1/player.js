@@ -13,6 +13,8 @@ import {
 
 import { checkItem } from '../../utils/itemUtils.js'
 
+import { updateMonsterStatus } from '../../utils/accountBalance.js'
+
 const getPlayerInfo = async (req, res) => {
     const user = req.user
     try {
@@ -83,7 +85,6 @@ const getUserMenagerie = async (req, res) => {
     }
 };
 
-
 const addItemToInventory = async (req, res) => {
     const user = req.user;
     const { itemId, quantity } = req.body;
@@ -130,6 +131,39 @@ const addItemToInventory = async (req, res) => {
     }
 };
 
+const moveMonsterToParty = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Check if the monster exists
+        await updateMonsterStatus(id, 'IN_PARTY');
+
+        return res.status(201).json({
+            msg: 'Monster successfully moved to party!',
+        });
+    } catch (err) {
+        return res.status(500).json({
+            msg: err.message,
+        });
+    }
+};
+
+const moveMonsterFromParty = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Check if the monster exists
+        await updateMonsterStatus(id, 'IN_MENAGERIE');
+
+        return res.status(201).json({
+            msg: 'Monster successfully moved from party!',
+        });
+    } catch (err) {
+        return res.status(500).json({
+            msg: err.message,
+        });
+    }
+};
 
 
-export { getPlayerInfo, getUserMenagerie, addItemToInventory, getUserInventory };
+export { getPlayerInfo, getUserMenagerie, addItemToInventory, getUserInventory, moveMonsterToParty, moveMonsterFromParty };

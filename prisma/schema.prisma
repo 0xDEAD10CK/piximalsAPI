@@ -92,7 +92,7 @@ model Account {
   experience      Int            @default(0)
   health          Int            @default(100)
 
-  inventory       Inventory?    // Relation to inventory model
+  inventory       Inventory[]    // Relation to inventory model
   menagerie       Menagerie[]    // Relation to the new menagerie model
   shopItems       Shop[]
 

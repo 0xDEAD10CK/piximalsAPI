@@ -3,24 +3,27 @@
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
-    "type": "module",
     "scripts": {
         "migrate": "prisma migrate dev",
         "nuke": "prisma migrate reset --force",
         "generate": "npx prisma generate",
+        "studio": "npx prisma studio",
         "prettier:write": "npx pretty-quick --staged",
         "prettier:check": "npx prettier --check .",
         "build": "npm run clean && npm run compile",
         "dev": "nodemon index.js",
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "npx prisma migrate reset --force && npx mocha --timeout 10000 --exit",
         "seed:player": "node ./utils/seeding/playerSeed.js",
         "seed:shop": "node ./utils/seeding/shopSeed.js",
+        "seed:monsters": "node ./utils/seeding/monsterSeed.js",
+        "seed:location": "node ./utils/seeding/locationSeed.js",
         "seed:monster": "node ./utils/seeding/monsterSeed.js",
         "seed:ability": "node ./utils/seeding/abilitySeed.js",
         "seed:item": "node ./utils/seeding/itemSeed.js",
         "seed": "node ./utils/seeding/playerSeed.js && node ./utils/seeding/shopSeed.js && node ./utils/seeding/monsterSeed.js"
 
     },
+    "type": "module",
     "keywords": [],
     "author": "",
     "license": "ISC",
@@ -35,7 +38,10 @@
         "uuid": "^9.0.1"
     },
     "devDependencies": {
+        "chai": "^4.3.9",
+        "chai-http": "^4.4.0",
         "dotenv": "^16.3.1",
+        "mocha": "^10.7.3",
         "prettier": "^3.0.3",
         "pretty-quick": "^3.1.3",
         "prisma": "^5.5.2"

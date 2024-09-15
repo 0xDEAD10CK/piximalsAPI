@@ -29,6 +29,7 @@ const register = async (req, res) => {
         inventory: {
           create: {}, // Create an empty inventory record associated with the user
         },
+        locationId: 1, // Set the user's location to the default location
       },
       include: {
         inventory: true, // Include the inventory in the returned user object

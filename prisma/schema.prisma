@@ -54,9 +54,10 @@ model Monster {
   url           String
   hp            Int
   ap            Int
+  abilities     Ability[]       // Monster abilities
   menageries    Menagerie[]     // Monsters are associated with the menagerie
   shop          Shop[]
-  abilities     Ability[]       // Monster abilities
+  zone          Zone[]          // Monsters can spawn in multiple zones
 }
 
 // Ability model
@@ -91,6 +92,11 @@ model Account {
   level           Int            @default(1)
   experience      Int            @default(0)
   health          Int            @default(100)
+  
+  locationId    Int           
+  location      Location       @relation(fields: [locationId], references: [id])
+  zoneId        String?
+  zone          Zone?           @relation(fields: [zoneId], references: [id])// Relation to the zone model
 
   inventory       Inventory?    // Relation to inventory model
   menagerie       Menagerie[]    // Relation to the new menagerie model
@@ -122,7 +128,7 @@ model Item {
   buyPrice      Int
   sellPrice     Int
   // No direct relation to Inventory; handled through an intermediary or other contexts.
-
+  zone          Zone[]          // Items can be found in multiple zones
   InventoryItem InventoryItem[]
 }
 
@@ -172,3 +178,23 @@ model Shop {
   updatedAt     DateTime       @updatedAt
 }
 
+model Zone {
+  id            String         @id @default(uuid())
+  zonename      String    
+  monsters      Monster[]      // One-to-many relationship with Monster
+  players       Account[]     // One-to-many relationship with Account
+  type          String       // Type of zone, e.g. forest, desert, etc. inherited from the location model
+  description   String
+  items         Item[]        // One-to-many relationship with Item
+}
+
+model Location {
+  id            Int         @id @default(autoincrement())
+  name          String
+  playerId      Int[] //multiple players can be at a location
+  zoneId        String[]
+  players       Account[]      // One-to-many relationship with Account
+  type          String
+  description   String
+  rarity        Json[]
+}

@@ -69,3 +69,17 @@ export const createShopListing = (monsterId, playerId, price) => {
         },
     });
 };
+
+export const findPlayer = async (userId) => {
+    const player = await prisma.account.findUnique({
+        where: {
+            id: userId
+        }
+    }) 
+
+    if (!player){
+        return res.status(404).json({msg: "Player can not be found"})
+    }
+
+    return player
+}

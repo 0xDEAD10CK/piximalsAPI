@@ -12,6 +12,7 @@ import shop from './routes/shop.js'
 import player from './routes/player.js'
 import admin from './routes/admin.js'
 import item from './routes/item.js'
+import adventure from "./routes/adventure.js"
 
 dotenv.config()
 
@@ -33,7 +34,10 @@ app.use(`/${BASE_URL}/${CURRENT_VERSION}/my`, player)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/item`, item)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/admin`, adminAuthRoute, admin)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/abilities`, ability)
+app.use(`/${BASE_URL}/${CURRENT_VERSION}/adventure`, auth, adventure)
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`)
 })
+
+export default app

@@ -1,29 +1,9 @@
 import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
-
 import { v4 as uuidv4 } from 'uuid'
-
 import { monsterData } from '../../data/monsterdata.js';
+import { getRandomInt, getRandomWeightedOption } from '../../utils/utils.js';
 
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
-// Function to get a random weighted option
-const getRandomWeightedOption = (options) => {
-    const totalWeight = options.reduce((sum, option) => sum + option.weight, 0);
-    let random = Math.random() * totalWeight;
-    console.log("Total Weight:", totalWeight, "Random:", random)
-    for (const option of options) {
-        if (random < option.weight) {
-            return option;
-        }
-        random -= option.weight;
-    }
-    
-    return options[options.length - 1]; // Fallback
-};
-
+const prisma = new PrismaClient()
 /**
  * Generates a new monster and saves it to the database.
  * 

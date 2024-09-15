@@ -11,9 +11,10 @@
 
 import { PrismaClient } from '@prisma/client'
 import { generateMonster } from '../../utils/monsters.js';
-import { cleanUpZone, generateZone } from '../../utils/zoning.js';
+import { cleanUpZone, findZone, generateZone } from '../../utils/zoning.js';
 import { randomItem } from '../../utils/items.js';
-import { addMonsterToMenagerie } from '../../utils/accountBalance.js';
+import { addMonsterToMenagerie, findPlayer } from '../../utils/accountBalance.js';
+import { addToInventory } from '../../utils/itemUtils.js';
 const prisma = new PrismaClient()
 
 
@@ -53,8 +54,6 @@ const zoneGeneration = async (req, res) => {
         if (monsters.length < 1) return res.status(404).json({msg: "No monsters found"})
         
         const zone = await generateZone("Dangerzone", monsters, player.location.type, user, "This is a dangerous zone", items)
-
-        console.log(zone)
 
         return res.status(200).json({msg: "Welcome to the Dangerzone", zone: zone})
     } catch (error) {
@@ -98,35 +97,23 @@ const collect = async (req, res) => {
     try {
         const { zoneid } = req.params
         const user = req.user;
-        const { monsterId } = req.body
+        const { monsterId, itemId } = req.body
+        let data = []
 
-        const zone = await prisma.zone.findUnique({
-            where: {
-                id: zoneid
-            },
-            select: {
-                monsters: true
-            }
-        })
+        await findZone(zoneid)
+        await findPlayer(user.id)
 
-        if (!zone){
-            return res.status(404).json({msg: "Zone does not exist"})
+        if (monsterId){
+            const monsterResponse = await addMonsterToMenagerie(user.id, monsterId)
+            data.push(monsterResponse)
         }
 
-        const player = await prisma.account.findUnique({
-            where: {
-                id: user.id
-            }
-        }) 
-
-        if (!player){
-            return res.status(404).json({msg: "Player can not be found"})
+        if (itemId){
+            const itemResponse = await addToInventory(user.id, itemId, 1)
+            data.push(itemResponse) 
         }
 
-        const response = await addMonsterToMenagerie(user.id, monsterId)
-
-
-        return res.status(200).json({msg: response})
+        return res.status(200).json({msg: "Added to inventory", data: data})
     } catch (error) {
         return res.status(500).json({msg: error})
     }

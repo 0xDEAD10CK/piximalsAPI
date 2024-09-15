@@ -81,3 +81,20 @@ export const cleanUpZone = async (zoneid) => {
 
     return deleteZone;
 }
+
+export const findZone = async (zoneid) => {
+    const zone = await prisma.zone.findUnique({
+        where: {
+            id: zoneid
+        },
+        select: {
+            monsters: true
+        }
+    })
+
+    if (!zone){
+        return res.status(404).json({msg: "Zone does not exist"})
+    }
+
+    return zone
+}

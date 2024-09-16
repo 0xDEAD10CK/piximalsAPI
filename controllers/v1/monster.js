@@ -25,8 +25,6 @@ const generateMonster = async (req, res) => {
             },
         });
 
-        console.log("Abilities:", abilities);
-
         // Ensure we have enough abilities to choose from
         if (abilities.length < 2) {
             return res.status(500).json({
@@ -45,7 +43,6 @@ const generateMonster = async (req, res) => {
             }
         }
 
-        console.log("Selected Abilities:", selectedAbilities);
         // Create the monster with selected abilities
         const monster = await prisma.monster.create({
             data: {
@@ -66,9 +63,7 @@ const generateMonster = async (req, res) => {
                 abilities: true
             }
         });
-
-        console.log(monster);
-
+        
         return res.status(201).json({
             msg: 'Monster successfully generated',
             data: monster,

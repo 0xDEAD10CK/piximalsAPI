@@ -5,13 +5,10 @@ import cors from "cors";
 // IMPORT ROUTES BELOW
 import adminAuthRoute from './middleware/adminAuthRoute.js'
 
-import ability from './routes/ability.js'
 import auth from './routes/auth.js'
-import monster from './routes/monster.js'
 import shop from './routes/shop.js'
 import player from './routes/player.js'
 import admin from './routes/admin.js'
-import item from './routes/item.js'
 import adventure from "./routes/adventure.js"
 
 dotenv.config()
@@ -27,14 +24,15 @@ const PORT = process.env.PORT
 app.use(urlencoded({ extended: false }))
 app.use(json())
 
+// PLAYER ROUTES BELOW
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/auth`, auth)
-app.use(`/${BASE_URL}/${CURRENT_VERSION}/monster`, adminAuthRoute, monster)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/shop`, shop)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/my`, player)
-app.use(`/${BASE_URL}/${CURRENT_VERSION}/item`, item)
-app.use(`/${BASE_URL}/${CURRENT_VERSION}/admin`, adminAuthRoute, admin)
-app.use(`/${BASE_URL}/${CURRENT_VERSION}/abilities`, ability)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/adventure`, auth, adventure)
+
+// ADMIN ROUTES BELOW
+app.use(`/${BASE_URL}/${CURRENT_VERSION}/admin`, adminAuthRoute, admin)
+
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`)

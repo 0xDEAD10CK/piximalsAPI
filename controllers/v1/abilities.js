@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
+import { getAbilitiesFilter } from '../../utils/filteringUtils';
+
 const createAbility = async (req, res) => {
     const { name,
         type,
@@ -46,31 +48,9 @@ const getAbilities = async (req, res) => {
     const skip = (page - 1) * pageSize;
 
     try {
-        const filterOptions = {
-            where: {}
-        };
+        const [abilities, filterOptions] = await getAbilitiesFilter(pageSize, skip, type, name, category);
 
-        if (type) {
-            filterOptions.where.type = { contains: type };
-        }
-
-        if (name) {
-            filterOptions.where.name = { contains: name };
-        }
-
-        if (category) {
-            filterOptions.where.category = { contains: category };
-        }
-
-        const abilities = await prisma.ability.findMany({
-            ...filterOptions,
-            take: pageSize,
-            skip,
-        });
-
-        const totalItems = await prisma.ability.count({
-            where: filterOptions.where,
-        });
+        const totalItems = await getTotalAbilityCount(filterOptions);
 
         const totalPages = Math.ceil(totalItems / pageSize);
 

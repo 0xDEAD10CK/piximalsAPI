@@ -39,3 +39,35 @@ export const generateMonster = async (type) => {
         console.log(err)
     }
 }
+
+export const addMonsterToMenagerie = (id, monsterId) => {
+    return prisma.menagerie.create({
+        data: {
+            userId: id,
+            monsterId: monsterId,
+        },
+    });
+};
+
+export const removeMonsterFromMenagerie = (id, monsterId) => {
+    return prisma.menagerie.deleteMany({
+        where: {
+            userId: id,
+            monsterId: monsterId,
+        },
+    });
+};
+
+export const updateMonsterStatus = (monsterId, status) => {
+    return prisma.monster.update({
+        where: { id: monsterId },
+        data: { status: status },
+    });
+};
+
+// Fetch monster by ID
+export const findMonsterById = (id) => {
+    return prisma.monster.findUnique({
+        where: { id: id },
+    });
+};

@@ -20,56 +20,6 @@ export const updateBalance = (id, amount) => {
     });
 };
 
-export const addMonsterToMenagerie = (id, monsterId) => {
-    return prisma.menagerie.create({
-        data: {
-            userId: id,
-            monsterId: monsterId,
-        },
-    });
-};
-
-export const removeMonsterFromMenagerie = (id, monsterId) => {
-    return prisma.menagerie.deleteMany({
-        where: {
-            userId: id,
-            monsterId: monsterId,
-        },
-    });
-};
-
-export const updateMonsterStatus = (monsterId, status) => {
-    return prisma.monster.update({
-        where: { id: monsterId },
-        data: { status: status },
-    });
-};
-
-export const removeListingFromShop = (itemId) => {
-    return prisma.shop.delete({
-        where: { id: itemId },
-    });
-};
-
-// Fetch monster by ID
-export const findMonsterById = (id) => {
-    return prisma.monster.findUnique({
-        where: { id: id },
-    });
-};
-
-// Create a shop item for the monster
-export const createShopListing = (monsterId, playerId, price) => {
-    return prisma.shop.create({
-        data: {
-            id: uuidv4(),
-            monsterId: monsterId,
-            playerId: playerId,
-            price: price,
-        },
-    });
-};
-
 export const findPlayer = async (userId) => {
     const player = await prisma.account.findUnique({
         where: {

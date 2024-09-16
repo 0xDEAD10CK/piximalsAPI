@@ -2,6 +2,18 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
 
+export const getTotalItemCount = async (filterOptions) => {
+    return await prisma.item.count({
+        where: filterOptions.where,
+    });
+};
+
+export const getTotalAbilityCount = async (filterOptions) => {
+    return await prisma.ability.count({
+        where: filterOptions.where,
+    });
+};
+
 export const getItemsFilter = async (pageSize, skip, type, name, rarity) => {
     const filterOptions = {
         where: {}
@@ -31,9 +43,28 @@ export const getItemsFilter = async (pageSize, skip, type, name, rarity) => {
     return [items, filterOptions];
 };
 
+export const getAbilitiesFilter = async (pageSize, skip, type, name, category) => {
+    const filterOptions = {
+        where: {}
+    };
 
-export const getTotalItemCount = async (filterOptions) => {
-    return await prisma.item.count({
-        where: filterOptions.where,
+    if (type) {
+        filterOptions.where.type = { contains: type };
+    }
+
+    if (name) {
+        filterOptions.where.name = { contains: name };
+    }
+
+    if (category) {
+        filterOptions.where.category = { contains: category };
+    }
+
+    const abilities = await prisma.ability.findMany({
+        ...filterOptions,
+        take: pageSize,
+        skip,
     });
+
+    return [abilities, filterOptions];
 }

@@ -1,20 +1,23 @@
-import { v4 as uuidv4 } from 'uuid'
 import { PrismaClient } from '@prisma/client'
-import { sellInventoryItem } from '../../utils/shopUtils.js';
-
-
 const prisma = new PrismaClient()
+
+import {
+    sellInventoryItem,
+    removeListingFromShop,
+    createShopListing
+} from '../../utils/shopUtils.js';
 
 import { 
     deductBalance,
     updateBalance,
+} from '../../utils/accountBalance.js';
+
+import {
     addMonsterToMenagerie,
     updateMonsterStatus,
     removeMonsterFromMenagerie,
-    removeListingFromShop,
-    findMonsterById,
-    createShopListing,
-} from '../../utils/accountBalance.js';
+    findMonsterById
+} from '../../utils/monsters.js';
 
 const purchaseMonster = async (req, res) => {
     const { id } = req.params;

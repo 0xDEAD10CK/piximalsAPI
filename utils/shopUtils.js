@@ -64,3 +64,21 @@ export const sellInventoryItem = async (userId, itemId, quantity) => {
 
     return { msg: "Item sold successfully", data: newBalance};
 };
+
+export const removeListingFromShop = (itemId) => {
+    return prisma.shop.delete({
+        where: { id: itemId },
+    });
+};
+
+// Create a shop item for the monster
+export const createShopListing = (monsterId, playerId, price) => {
+    return prisma.shop.create({
+        data: {
+            id: uuidv4(),
+            monsterId: monsterId,
+            playerId: playerId,
+            price: price,
+        },
+    });
+};

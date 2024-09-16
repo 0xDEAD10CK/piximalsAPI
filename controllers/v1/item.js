@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { getRandomWeightedOption } from '../../utils/utils.js';
 import { randomItem } from '../../utils/items.js';
+import { getItemsFilter, getTotalItemCount } from '../../utils/filteringUtils.js';
 const prisma = new PrismaClient()
 
 const getItems = async (req, res) => {
@@ -9,31 +10,9 @@ const getItems = async (req, res) => {
     const skip = (page - 1) * pageSize;
 
     try {
-        const filterOptions = {
-            where: {}
-        };
+        const [items, filterOptions] = await getItemsFilter(pageSize, skip, type, name, rarity );
 
-        if (type) {
-            filterOptions.where.type = { contains: type };
-        }
-
-        if (rarity) {
-            filterOptions.where.rarity = { contains: rarity}
-        }
-
-        if (name) {
-            filterOptions.where.name = { contains: name };
-        }
-
-        const items = await prisma.item.findMany({
-            ...filterOptions,
-            take: pageSize,
-            skip,
-        });
-
-        const totalItems = await prisma.item.count({
-            where: filterOptions.where,
-        });
+        const totalItems = await getTotalItemCount(filterOptions);
 
         const totalPages = Math.ceil(totalItems / pageSize);
 
@@ -49,8 +28,6 @@ const getItems = async (req, res) => {
         return res.status(500).json({
             msg: err.message,
           });
-    } finally {
-        console.log("DONE")
     }
 }
 

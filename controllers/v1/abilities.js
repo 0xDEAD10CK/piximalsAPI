@@ -4,21 +4,22 @@ const prisma = new PrismaClient()
 import { getAbilitiesFilter } from '../../utils/filteringUtils';
 
 const createAbility = async (req, res) => {
-    const { name,
-        type,
-        cost, 
-        damage, 
-        description, 
-        category, 
-        effectType,
-        effectChance,
-        effectTurns,
-        effectDamage,
-        effectReduction,
-        effectHeal,
-        effectIncrease } = req.body;
-
     try {
+        const { name,
+            type,
+            cost, 
+            damage, 
+            description, 
+            category, 
+            effectType,
+            effectChance,
+            effectTurns,
+            effectDamage,
+            effectReduction,
+            effectHeal,
+            effectIncrease } = req.body;
+
+    
         const ability = await prisma.ability.create({
             data: {
                 name: name,
@@ -36,9 +37,14 @@ const createAbility = async (req, res) => {
                 effectIncrease: effectIncrease,
             },
         });
-        console.log('Ability created:', ability);
+        return res.status(200).json({
+            msg: 'Ability created successfully',
+            data: ability,
+        });
     } catch (error) {
-        console.error('Error creating ability:', error);
+        return res.status(500).json({
+            msg: err.message,
+          });
     }
 };
 
@@ -66,8 +72,6 @@ const getAbilities = async (req, res) => {
         return res.status(500).json({
             msg: err.message,
           });
-    } finally {
-        console.log("DONE")
     }
 }
 

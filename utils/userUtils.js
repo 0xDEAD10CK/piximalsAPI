@@ -1,14 +1,24 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-// Check if the user has an inventory
+/**
+ * Gets a users inventory
+ * 
+ * @param {string} userId - Will take a userid
+ * @returns finds an inventory belonging to a user
+ */
 export const checkInventory = async (userId) => {
     return await prisma.inventory.findFirst({
         where: { userId },
     });
 };
 
-// Create an inventory for the user
+/**
+ * Creates an inventory for a user
+ * 
+ * @param {string} userId - Will take a userid
+ * @returns creates an inventory and connects to the userid
+ */
 export const createInventory = async (userId) => {
     return await prisma.inventory.create({
             data: {
@@ -20,7 +30,12 @@ export const createInventory = async (userId) => {
     );
 };
 
-// Check if the item exists in the user's inventory
+/**
+ * 
+ * @param {Int} inventoryId - The id of an inventory
+ * @param {Int} itemId - Id of an item to be found in the above inventory
+ * @returns inventory object
+ */
 export const checkItemInInventory = async (inventoryId, itemId) => {
     return await prisma.inventoryItem.findFirst({
         where: {
@@ -30,9 +45,13 @@ export const checkItemInInventory = async (inventoryId, itemId) => {
     });
 }
 
-// Update the item in the user's inventory if it exists
+/**
+ * 
+ * @param {InventoryItem} existingInventoryItem 
+ * @param {Int} quantity 
+ * @returns updates the quanitity of the item in the inventory
+ */
 export const updateInventoryItem = async (existingInventoryItem, quantity) => {
-    console.log(existingInventoryItem, quantity);
     return await prisma.inventoryItem.update({
         where: { id: existingInventoryItem.id },
         data: {
@@ -42,9 +61,7 @@ export const updateInventoryItem = async (existingInventoryItem, quantity) => {
 };
 
 // Create an item in the user's inventory if it doesn't exist
-export const createInventoryItem = async (inventoryId, itemId, quantity) => {
-    console.log(inventoryId, itemId, quantity);
-    
+export const createInventoryItem = async (inventoryId, itemId, quantity) => {    
     await prisma.inventoryItem.create({
         data: {
             inventory: {

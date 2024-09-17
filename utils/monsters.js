@@ -4,6 +4,11 @@ import { monsterData } from '../data/monsterdata.js'
 import { v4 as uuidv4 } from 'uuid'
 const prisma = new PrismaClient()
 
+/**
+ * 
+ * @param {string} type - affects type of monster generated i.e nature
+ * @returns A new random monster
+ */
 export const generateMonster = async (type) => {
     const defineType = getRandomInt(0, 10)
     let monsterType = ""
@@ -36,10 +41,16 @@ export const generateMonster = async (type) => {
 
         return monster
     } catch (err) {
-        console.log(err)
+        return res.status(500).json({msg: error})
     }
 }
 
+/**
+ * 
+ * @param {int} id 
+ * @param {string} monsterId 
+ * @returns Attaches monster to a mangerie
+ */
 export const addMonsterToMenagerie = (id, monsterId) => {
     return prisma.menagerie.create({
         data: {
@@ -49,6 +60,12 @@ export const addMonsterToMenagerie = (id, monsterId) => {
     });
 };
 
+/**
+ * 
+ * @param {int} id 
+ * @param {string} monsterId 
+ * @returns removes monster from menagerie
+ */
 export const removeMonsterFromMenagerie = (id, monsterId) => {
     return prisma.menagerie.deleteMany({
         where: {
@@ -58,6 +75,12 @@ export const removeMonsterFromMenagerie = (id, monsterId) => {
     });
 };
 
+/**
+ * 
+ * @param {string} monsterId 
+ * @param {string} status 
+ * @returns 
+ */
 export const updateMonsterStatus = (monsterId, status) => {
     return prisma.monster.update({
         where: { id: monsterId },
@@ -65,7 +88,11 @@ export const updateMonsterStatus = (monsterId, status) => {
     });
 };
 
-// Fetch monster by ID
+/**
+ * 
+ * @param {string} id 
+ * @returns gets monster by id
+ */
 export const findMonsterById = (id) => {
     return prisma.monster.findUnique({
         where: { id: id },

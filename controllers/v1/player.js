@@ -82,6 +82,37 @@ const getInventory = async (req, res) => {
     }
 };
 
+const getMenagerie = async (req, res) => {
+    const user = req.user;
+    try {
+        const userdata = await prisma.account.findUnique({
+            where: { id: Number(user.id) },
+            select: {
+                menagerie: {
+                    select: {
+                        monster: {
+                            select: {
+                                id: true,
+                                name: true,
+                                rarity: true,
+                                type: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        return res.status(200).json({
+            msg: 'User menagerie successfully fetched!',
+            data: userdata,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            msg: err.message,
+        });
+    }};
+
 
 
 const addItemToInventory = async (req, res) => {
@@ -132,4 +163,4 @@ const addItemToInventory = async (req, res) => {
 
 
 
-export { getPlayerInfo, getInventory, addItemToInventory };
+export { getPlayerInfo, getInventory, addItemToInventory, getMenagerie };

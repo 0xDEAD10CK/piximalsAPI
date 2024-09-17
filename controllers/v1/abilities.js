@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-import { getAbilitiesFilter } from '../../utils/filteringUtils';
+import { getAbilitiesFilter } from '../../utils/filteringUtils.js';
 
 const createAbility = async (req, res) => {
     try {

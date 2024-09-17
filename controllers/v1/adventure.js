@@ -10,10 +10,10 @@
  */
 
 import { PrismaClient } from '@prisma/client'
-import { generateMonster } from '../../utils/monsters.js';
+import { generateMonster, addMonsterToMenagerie } from '../../utils/monsters.js';
 import { cleanUpZone, findZone, generateZone } from '../../utils/zoning.js';
 import { randomItem } from '../../utils/items.js';
-import { addMonsterToMenagerie, findPlayer } from '../../utils/accountBalance.js';
+import { findPlayer } from '../../utils/accountBalance.js';
 import { addToInventory } from '../../utils/itemUtils.js';
 const prisma = new PrismaClient()
 

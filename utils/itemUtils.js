@@ -1,12 +1,24 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-// Check if the item exists in the database
+/**
+ * 
+ * @param {int} itemId 
+ * @returns 
+ */
 export const checkItem = async (itemId) => {
     return await prisma.item.findUnique({
         where: { id: Number(itemId) }
     });
 }
+
+/**
+ * 
+ * @param {int} userId 
+ * @param {int} itemId 
+ * @param {int} quantity 
+ * @returns an inventoryitem to the users inventory
+ */
 export const addToInventory = async (userId, itemId, quantity) => {
     try {
       // Step 1: Fetch the user's account and include inventory
@@ -43,7 +55,6 @@ export const addToInventory = async (userId, itemId, quantity) => {
         return createdItem
       }
     } catch (error) {
-      console.error("Error in addToInventory:", error);
       return { status: 500, msg: `Error adding item to inventory: ${error.message}` };
     }
   };

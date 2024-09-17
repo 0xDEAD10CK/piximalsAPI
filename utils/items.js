@@ -2,10 +2,13 @@ import { PrismaClient } from "@prisma/client"
 import { getRandomInt, getRandomWeightedOption } from "./utils.js"
 const prisma = new PrismaClient()
 
+/**
+ * 
+ * @param {*} getLocation 
+ * @returns returns a random item
+ */
 export const randomItem = async (getLocation) => {
-
     const rarity = await getRandomWeightedOption(getLocation.rarity)
-
     const item = await prisma.item.findMany({
         where: {
             rarity: rarity.rarity
@@ -13,7 +16,6 @@ export const randomItem = async (getLocation) => {
     })
     
     const itemPicked = getRandomInt(0, item.length - 1)
-    
 
     return item[itemPicked]
 }

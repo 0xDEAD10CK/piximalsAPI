@@ -163,7 +163,7 @@ async function main() {
     }
 
     // Specify the number of monsters you want to create
-    const numMonstersToSeed = 100
+    const numMonstersToSeed = 12
 
     seedMonsters(numMonstersToSeed)
         .catch((e) => {

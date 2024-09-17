@@ -112,7 +112,7 @@ async function main() {
         data: {
             id: uuidv4(),
             monsterId: monster4.id,
-            playerId: 3,
+            playerId: 4,
             price: 10500,
         },
     })
@@ -121,7 +121,7 @@ async function main() {
         data: {
             id: uuidv4(),
             monsterId: monster5.id,
-            playerId: 4,
+            playerId: 5,
             price: 750,
         },
     })

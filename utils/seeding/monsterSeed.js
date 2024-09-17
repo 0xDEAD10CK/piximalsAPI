@@ -9,22 +9,22 @@ const prisma = new PrismaClient()
 
 async function main() {
     const typeArray = [
-        'Pyro', // Fire: Associated with flames, heat, and combustion.
-        'Cryo', // Ice: Related to freezing temperatures and icy elements.
-        'Aero', // Air: Pertaining to the wind, breezes, and atmospheric currents.
-        'Hydro', // Water: Connected to liquid forms, oceans, and aquatic environments.
-        'Geo', // Rock: Involving earth, stones, and geological elements.
-        'Electro', // Electric: Concerned with electricity, shocks, and energy.
-        'Solar', // Solar: Linked to the sun, solar energy, and radiant sunlight.
-        'Lunar', // Lunar: Associated with the moon and nocturnal elements.
-        'Shadow', // Shadow: Involving darkness, obscurity, and hidden elements.
-        'Mystic', // Mystic: Connected to magical and mysterious forces.
-        'Nature', // Nature: Relating to the natural world, plants, and ecosystems.
-        'Astral', // Astral: Connected to celestial bodies, stars, and otherworldly elements.
-        'Toxic', // Toxic: Involving harmful or poisonous substances.
-        'Metallic', // Metallic: Related to metal elements and durability.
-        'Spectral', // Spectral: Pertaining to ghosts, spirits, and ethereal phenomena.
-        'Chaos', // Chaos: Associated with disorder, unpredictability, and tumultuous elements.
+        'FIRE', // Fire: Associated with flames, heat, and combustion.
+        'ICE', // Ice: Related to freezing temperatures and icy elements.
+        'WIND', // Air: Pertaining to the wind, breezes, and atmospheric currents.
+        'WATER', // Water: Connected to liquid forms, oceans, and aquatic environments.
+        'EARTH', // Rock: Involving earth, stones, and geological elements.
+        'ELECTRIC', // Electric: Concerned with electricity, shocks, and energy.
+        'SOLAR', // Solar: Linked to the sun, solar energy, and radiant sunlight.
+        'LUNAR', // Lunar: Associated with the moon and nocturnal elements.
+        'SHADOW', // Shadow: Involving darkness, obscurity, and hidden elements.
+        'MYSTIC', // Mystic: Connected to magical and mysterious forces.
+        'NATURE', // Nature: Relating to the natural world, plants, and ecosystems.
+        'ASTRAL', // Astral: Connected to celestial bodies, stars, and otherworldly elements.
+        'TOXIC', // Toxic: Involving harmful or poisonous substances.
+        'METALLIC', // Metallic: Related to metal elements and durability.
+        'SPECTRAL', // Spectral: Pertaining to ghosts, spirits, and ethereal phenomena.
+        'CHAOS', // Chaos: Associated with disorder, unpredictability, and tumultuous elements.
     ]
 
     const speciesArray = [

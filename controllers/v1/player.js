@@ -94,6 +94,7 @@ const getMenagerie = async (req, res) => {
                             select: {
                                 id: true,
                                 name: true,
+                                species: true,
                                 rarity: true,
                                 type: true,
                             },

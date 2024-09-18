@@ -90,16 +90,7 @@ const getMenagerie = async (req, res) => {
             select: {
                 menagerie: {
                     select: {
-                        monster: {
-                            select: {
-                                id: true,
-                                name: true,
-                                species: true,
-                                rarity: true,
-                                type: true,
-                                status: true,
-                            },
-                        },
+                        monster: true, // This will fetch all fields from 'monster'
                     },
                 },
             },

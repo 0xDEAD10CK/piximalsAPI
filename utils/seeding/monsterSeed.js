@@ -28,7 +28,7 @@ async function main() {
     ]
 
     const speciesArray = [
-        'Drake',
+        'Dragon',
         'Yeti',
         'Golem',
         'Gryphon',
@@ -41,13 +41,24 @@ async function main() {
         'Minotaur',
         'Banshee',
         'Pegasus',
-        'Hydracorn',
+        'Hydra',
         'Phoenix',
         'Wendigo',
         'Treant',
         'Specter',
         'Chimera',
         'Wyrm',
+        'Harpy',
+        'Cerberus',
+        'Kraken',
+        'Leviathan',
+        'Manticore',
+        'Cyclops',
+        'Griffin',
+        'Basilisk',
+        'Gorgon',
+        'Siren',
+        'Titan'
     ]
 
     const rarityArray = [

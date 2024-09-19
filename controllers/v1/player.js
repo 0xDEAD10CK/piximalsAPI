@@ -86,7 +86,7 @@ const getMenagerie = async (req, res) => {
     const user = req.user;
     try {
         const userdata = await prisma.account.findUnique({
-            where: { id: Number(user.id) },
+            where: { id: user.id },
             select: {
                 menagerie: {
                     select: {

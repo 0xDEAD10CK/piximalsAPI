@@ -10,7 +10,7 @@
  */
 
 import { PrismaClient } from '@prisma/client'
-import { generateMonster, addMonsterToMenagerie } from '../../utils/monsters.js';
+import { generateMonster, addMonsterToMenagerie, updateMonsterStatus } from '../../utils/monsters.js';
 import { cleanUpZone, findZone, generateZone } from '../../utils/zoning.js';
 import { randomItem } from '../../utils/items.js';
 import { findPlayer } from '../../utils/accountBalance.js';
@@ -114,12 +114,41 @@ const collect = async (req, res) => {
     }
 }
 
-
-const deleteZone = async (req, res) => {
+//
+//  FOR THE MEAN TIME I AM ADJUSTING THE DELETE ZONE FUNCTION TO ACT AS IF EACH ZONE IS
+//  A SINGLE PLAYER ZONE. THIS WILL BE CHANGED IN THE FUTURE TO ALLOW FOR ZONES TO BE
+//  MULTIPLAYER ZONES
+//
+const leaveZone = async (req, res) => {
     try {
         const { zoneid } = req.params
+        const user = req.user;
 
+        const zone = await findZone(zoneid);
+        if (!zone) return res.status(404).json({msg: "Zone not found"})
 
+        // For each monster in zone, if the status is CAUGHT, add to menagerie.
+        const monsters = zone.monsters;
+        const monsterPromises = monsters.filter(monster => monster.status === "CAUGHT").map(async monster => {
+            // Update the status to 'IN_MENAGERIE'
+            await updateMonsterStatus(monster.id, "IN_MENAGERIE");
+
+            // Add the monster to the menagerie
+            return addMonsterToMenagerie(user.id, monster.id);
+        });
+
+        // Wait for all monsters to be added to menagerie
+        await Promise.all(monsterPromises);
+
+        // Add all items to inventory
+        const items = zone.items;
+        const itemPromises = items.map(item => addToInventory(user.id, item.id, 1));
+        console.log(itemPromises)
+
+        // Wait for all items to be added to inventory
+        await Promise.all(itemPromises);
+
+        // Clean up the zone
         const response = await cleanUpZone(zoneid)
 
         return res.status(200).json({msg: "Zone Deleted"})
@@ -139,6 +168,48 @@ const zoneInfo = async (req, res) => {
     }
 }
 
+const setAllMonsterStatusCaught = async (req, res) => {
+    try {
+        const { zoneId } = req.params;
+        
+        // Find the zone and include its monsters
+        const zone = await prisma.zone.findUnique({
+            where: { id: zoneId },
+            include: { monsters: true }
+        });
+
+        // If the zone doesn't exist, return 404
+        if (!zone) return res.status(404).json({ msg: "Zone not found" });
+
+        const monsters = zone.monsters;
+
+        // Loop through all monsters and update their status
+        const updatePromises = monsters.map(monster =>
+            prisma.monster.update({
+                where: { id: monster.id },
+                data: { status: "CAUGHT" }
+            })
+        );
+
+        // Wait for all monsters to be updated
+        await Promise.all(updatePromises);
+
+        // Optionally refetch the zone with updated monster statuses
+        const updatedZone = await prisma.zone.findUnique({
+            where: { id: zoneId },
+            include: { monsters: true }
+        });
+
+        // Return the updated zone with all monsters caught
+        return res.status(200).json({ msg: "All monsters caught", zone: updatedZone });
+
+    } catch (error) {
+        // Handle any errors
+        return res.status(500).json({ msg: error.message });
+    }
+};
+
+
 
 const search = async (req, res) => {
     // Take Zone ID from params
@@ -153,65 +224,62 @@ const search = async (req, res) => {
     const user = req.user;
 
     try {
-        // Get the player's location
-    const player = await prisma.account.findUnique({
-        where: {
-            id: user.id
-        },
-        select: {
-            location: {
-                select: {
-                    id: true,
-                    type: true,
-                    rarity: true
+            // Get the player's location
+        const player = await prisma.account.findUnique({
+            where: {
+                id: user.id
+            },
+            select: {
+                location: {
+                    select: {
+                        id: true,
+                        type: true,
+                        rarity: true
+                    }
                 }
             }
-        }
-    })
+        })
 
-    // Get the zone
-    const zone = await prisma.zone.findUnique({
-        where: {
-            id: zoneid
-        }
-    })
-
-    // Check if the zone exists
-    if (!zone) return res.status(404).json({msg: "Zone not found"})
-
-    // Generate a monster
-    const monster = await generateMonster(player.location.type)
-    const items = []
-    
-    // Generate a random amount of items
-    for (let i = 0; i < getRandomInt(2, 5); i++){
-        items.push(await randomItem(player.location))
-    }
-
-    console.log(items)
-    // Add the monster and items to the zone
-    const updatedZone = await prisma.zone.update({
-        where: {
-            id: zoneid
-        },
-        data: {
-            monsters: {
-                connect: {id: monster.id}
-            },
-            items: {
-                connect: items.map(item => {return {id: item.id}})
+        // Get the zone
+        const zone = await prisma.zone.findUnique({
+            where: {
+                id: zoneid
             }
+        })
+
+        // Check if the zone exists
+        if (!zone) return res.status(404).json({msg: "Zone not found"})
+
+        // Generate a monster
+        const monster = await generateMonster(player.location.type)
+        const items = []
+        
+        // Generate a random amount of items
+        for (let i = 0; i < getRandomInt(2, 5); i++){
+            items.push(await randomItem(player.location))
         }
-    })
 
-    console.log(updatedZone)
+        // Add the monster and items to the zone
+        const updatedZone = await prisma.zone.update({
+            where: {
+                id: zoneid
+            },
+            data: {
+                monsters: {
+                    connect: {id: monster.id}
+                },
+                items: {
+                    connect: items.map(item => {return {id: item.id}})
+                }
+            }
+        })
 
-    // return the monster to the user
-    return res.status(200).json({msg: "Monster found", monster: monster, zone: updatedZone})
+        // return the monster to the user
+        return res.status(200).json({msg: "Monster found", monster: monster, zone: updatedZone})
 
     } catch (error) {
         return res.status(500).json({msg: error})
     }
     
 }
-export { zoneGeneration, goToZone, deleteZone, zoneInfo, collect, search }
+export { zoneGeneration, goToZone, leaveZone, zoneInfo, collect, search, setAllMonsterStatusCaught }

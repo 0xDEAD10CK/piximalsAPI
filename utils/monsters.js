@@ -21,6 +21,24 @@ export const generateMonster = async (type) => {
         monsterType = type
     }
 
+    const abilities = await prisma.ability.findMany({
+        where: {
+            type: monsterType,
+        },
+    });
+
+    console.log(abilities[1])
+
+    const selectedAbilities = [];
+        while (selectedAbilities.length < 2) {
+            const randomIndex = getRandomInt(0, abilities.length - 1);
+            const selectedAbility = abilities[randomIndex];
+
+            if (!selectedAbilities.some(a => a.id === selectedAbility.id)) {
+                selectedAbilities.push(selectedAbility);
+            }
+        }
+
     const randomSpecies = monsterData.species[getRandomInt(0, monsterData.species.length - 1)]
     const randomRarity = getRandomWeightedOption(monsterData.rarity).rarity;
     const id = uuidv4()
@@ -35,9 +53,15 @@ export const generateMonster = async (type) => {
                 status: "Wild",
                 url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${id}`,
                 hp: 100,
-                ap:20,
+                ap: 20,
+                abilities: {
+                    connect: selectedAbilities.map(ability => ({ id: ability.id })),
+                },
             },
-        })
+            include: {
+                abilities: true
+            }
+        });
 
         return monster
     } catch (err) {

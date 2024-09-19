@@ -47,7 +47,7 @@ const purchaseMonster = async (req, res) => {
             deductBalance(buyer.id, shopItem.price),   // Deduct money from the buyer
             updateBalance(shopItem.playerId, shopItem.price),  // Update the seller's balance
             addMonsterToMenagerie(buyer.id, shopItem.monster.id),   // Transfer the monster from seller to buyer
-            updateMonsterStatus(shopItem.monster.id, 'In_Inventory'),   // Update the monster's status to 'In_Inventory'
+            updateMonsterStatus(shopItem.monster.id, 'In_Menagerie'),   // Update the monster's status to 'In_Inventory'
             removeMonsterFromMenagerie(shopItem.playerId, shopItem.monster.id),  // Remove the monster from the seller's inventory
             removeListingFromShop(id),  // Remove item from the shop
         ]);

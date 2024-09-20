@@ -24,7 +24,6 @@ const prisma = new PrismaClient()
  */
 const zoneGeneration = async (req, res) => {
     try {
-        const { monsterAmount } = req.body
         const user = req.user;
         let monsters = []
         let items = []
@@ -143,7 +142,6 @@ const leaveZone = async (req, res) => {
         // Add all items to inventory
         const items = zone.items;
         const itemPromises = items.map(item => addToInventory(user.id, item.id, 1));
-        console.log(itemPromises)
 
         // Wait for all items to be added to inventory
         await Promise.all(itemPromises);
@@ -172,8 +170,6 @@ const returnBattleResults = async (req, res) => {
     try {
         const user = req.user;
         const { zoneId, monsterId, result } = req.body;
-
-        console.log(zoneId, monsterId, result)
 
         const monster = await findMonsterInZone(zoneId, monsterId);
 

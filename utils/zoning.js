@@ -118,3 +118,34 @@ export const findZone = async (zoneid) => {
         return res.status(500).json({msg: error})
     }
 }
+
+/**
+ * 
+ * @param {string} zoneid 
+ * @param {string} monsterId 
+ * @returns 
+ */
+export const findMonsterInZone = (zoneid, monsterId) => {
+    try {
+        const monster = prisma.zone.findUnique({
+            where: {
+                id: zoneid
+            },
+            select: {
+                monsters: {
+                    where: {
+                        id: monsterId
+                    }
+                }
+            }
+        })
+        
+        if (!monster){
+            return res.status(404).json({msg: "Monster does not exist"})
+        }
+
+        return monster
+    } catch (error) {
+        return res.status(500).json({msg: error})
+    }
+}

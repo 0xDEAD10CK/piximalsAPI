@@ -11,6 +11,7 @@ import {
 
  import { checkItem } from '../../utils/itemUtils.js'
 import { check } from 'prettier'
+import { updateMonsterStatus } from '../../utils/monsters.js'
 
 const getPlayerInfo = async (req, res) => {
     const user = req.user
@@ -154,6 +155,23 @@ const addItemToInventory = async (req, res) => {
     }
 };
 
+const changePartyStatus = async (req, res) => {
+    const user = req.user;
+    const { id, status } = req.body;
+
+    // Update monster status in menagerie
+    try {
+        await updateMonsterStatus(id, status);
+
+        return res.status(200).json({
+            msg: 'Monster status updated successfully',
+        });
+    } catch (err) {
+        return res.status(500).json({
+            msg: err.message,
+        });
+    }
+};
 
 
-export { getPlayerInfo, getInventory, addItemToInventory, getMenagerie };
+export { getPlayerInfo, getInventory, addItemToInventory, getMenagerie, changePartyStatus };

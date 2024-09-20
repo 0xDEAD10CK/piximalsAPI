@@ -75,10 +75,10 @@ export const generateMonster = async (type) => {
  * @param {string} monsterId 
  * @returns Attaches monster to a mangerie
  */
-export const addMonsterToMenagerie = async (userId, monsterId) => {
+export const addMonsterToMenagerie = (userId, monsterId) => {
     try {
         console.log(`Adding Monster ID: ${monsterId} to menagerie for User ID: ${userId}`);
-        const result = await prisma.menagerie.create({
+        const result = prisma.menagerie.create({
             data: {
                 userId: userId,
                 monsterId: monsterId,
@@ -120,6 +120,20 @@ export const updateMonsterStatus = (monsterId, status) => {
     });
 };
 
+export const updateMonsterInZoneStatus = (zoneId, monsterId, status) => {
+    return prisma.zone.update({
+        where: { id: zoneId },
+        data: {
+            monsters: {
+                update: {
+                    where: { id: monsterId },
+                    data: { status: status },
+                },
+            },
+        },
+    });
+}
+
 /**
  * 
  * @param {string} id 
@@ -130,3 +144,14 @@ export const findMonsterById = (id) => {
         where: { id: id },
     });
 };
+
+/**
+ * 
+ * @param {string} id 
+ * @returns Deletes monster by id
+ */
+export const deleteMonster = (id) => {
+    return prisma.monster.delete({
+        where: { id: id },
+    });
+}

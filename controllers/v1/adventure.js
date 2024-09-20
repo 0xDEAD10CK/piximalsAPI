@@ -10,8 +10,8 @@
  */
 
 import { PrismaClient } from '@prisma/client'
-import { generateMonster, addMonsterToMenagerie, updateMonsterStatus } from '../../utils/monsters.js';
-import { cleanUpZone, findZone, generateZone } from '../../utils/zoning.js';
+import { generateMonster, addMonsterToMenagerie, updateMonsterStatus, updateMonsterInZoneStatus } from '../../utils/monsters.js';
+import { cleanUpZone, findMonsterInZone, findZone, generateZone } from '../../utils/zoning.js';
 import { randomItem } from '../../utils/items.js';
 import { findPlayer } from '../../utils/accountBalance.js';
 import { addToInventory } from '../../utils/itemUtils.js';
@@ -131,10 +131,10 @@ const leaveZone = async (req, res) => {
         const monsters = zone.monsters;
         const monsterPromises = monsters.filter(monster => monster.status === "CAUGHT").map(async monster => {
             // Update the status to 'IN_MENAGERIE'
-            await updateMonsterStatus(monster.id, "IN_MENAGERIE");
+            await updateMonsterInZoneStatus(zoneid, monster.id, "In_Menagerie");
 
             // Add the monster to the menagerie
-            return addMonsterToMenagerie(user.id, monster.id);
+            return await addMonsterToMenagerie(user.id, monster.id);
         });
 
         // Wait for all monsters to be added to menagerie
@@ -163,6 +163,34 @@ const zoneInfo = async (req, res) => {
         const zone = await findZone(zoneid);
 
         return res.status(200).json({msg: "Zone found", zone: zone})
+    } catch (error) {
+        return res.status(500).json({msg: error})
+    }
+}
+
+const returnBattleResults = async (req, res) => {
+    try {
+        const user = req.user;
+        const { zoneId, monsterId, result } = req.body;
+
+        console.log(zoneId, monsterId, result)
+
+        const monster = await findMonsterInZone(zoneId, monsterId);
+
+        if (!monster) return res.status(404).json({msg: "Monster not found"})
+
+        if (result === "CAUGHT"){
+            await updateMonsterStatus(monsterId, "CAUGHT")
+
+            return res.status(200).json({msg: "Monster caught"})
+        }
+        
+        if (result === "DEAD"){
+            await deleteMonster(monsterId);
+
+            return res.status(200).json({msg: "Monster defeated"})
+        }
+
     } catch (error) {
         return res.status(500).json({msg: error})
     }
@@ -282,4 +310,4 @@ const search = async (req, res) => {
     }
     
 }
-export { zoneGeneration, goToZone, leaveZone, zoneInfo, collect, search, setAllMonsterStatusCaught }
+export { zoneGeneration, goToZone, leaveZone, zoneInfo, collect, search, setAllMonsterStatusCaught, returnBattleResults }

@@ -153,3 +153,22 @@ export const deleteMonster = (id) => {
         where: { id: id },
     });
 }
+
+/**
+ * 
+ * Get all monsters with status "In_Party" from the user's menagerie
+ * @param {string} userId
+ * @returns All monsters in the user's party.
+ */
+export const countPartyMonsters = async (userId) => {
+    const count = await prisma.menagerie.count({
+        where: {
+            userId: userId,
+            monster: {
+                status: "In_Party"
+            }
+        }
+    });
+    return count;
+};
+

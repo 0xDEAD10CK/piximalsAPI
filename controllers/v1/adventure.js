@@ -233,8 +233,6 @@ const setAllMonsterStatusCaught = async (req, res) => {
     }
 };
 
-
-
 const search = async (req, res) => {
     // Take Zone ID from params
     // Get user ID from req.user
@@ -299,7 +297,7 @@ const search = async (req, res) => {
         })
 
         // return the monster to the user
-        return res.status(200).json({msg: "Monster found", monster: monster, zone: updatedZone})
+        return res.status(200).json({msg: "Monster found", monster: monster, zone: zone})
 
     } catch (error) {
         return res.status(500).json({msg: error})

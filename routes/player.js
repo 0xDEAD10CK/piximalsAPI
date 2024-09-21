@@ -3,7 +3,6 @@ const router = Router();
 
 import { getPlayerInfo, getInventory, addItemToInventory, getMenagerie, changePartyStatus } from "../controllers/v1/player.js";
 import authRoute from "../middleware/authRoute.js"
-import { addMonsterToMenagerie } from "../utils/monsters.js";
 
 router.route("/account").get(authRoute, getPlayerInfo);
 router.route("/inventory").get(authRoute, getInventory);

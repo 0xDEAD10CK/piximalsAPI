@@ -91,7 +91,20 @@ const getMenagerie = async (req, res) => {
             select: {
                 menagerie: {
                     select: {
-                        monster: true, // This will fetch all fields from 'monster'
+                        monster: {
+                            select: {
+                                id: true,
+                                name: true,
+                                type: true,
+                                status: true,
+                                species: true,
+                                rarity: true,
+                                url: true,
+                                abilities: true,
+                                hp: true,
+                                ap: true,
+                            },
+                        },
                     },
                 },
             },
@@ -105,7 +118,9 @@ const getMenagerie = async (req, res) => {
         return res.status(500).json({
             msg: err.message,
         });
-    }};
+    }
+};
+
 
 
 

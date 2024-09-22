@@ -43,6 +43,8 @@ enum EffectType {
   // More effect types as required
 }
 
+
+
 model Monster {
   id            String         @id @default(uuid())
   capturedAt    DateTime       @default(now())
@@ -101,6 +103,7 @@ model Account {
   inventory       Inventory?    // Relation to inventory model
   menagerie       Menagerie[]    // Relation to the new menagerie model
   shopItems       Shop[]
+  quests          Quest[] 
 
   // Equippable slots linked to InventoryItem for consistency
   equippedWeapon  InventoryItem?  @relation("equippedWeapon", fields: [equippedWeaponId], references: [id])
@@ -197,4 +200,25 @@ model Location {
   type          String
   description   String
   rarity        Json[]
+  quests        Quest[] 
+}
+
+model Quest {
+  id           Int        @id @default(autoincrement())
+  title        String
+  description  String
+  playerId     Int         // Foreign key for Account
+  locationId   Int         // Foreign key for Location
+  completed    Boolean    @default(false)
+  reward       Int
+  typeofQuest  QuestType
+
+  player       Account     @relation(fields: [playerId], references: [id])   // Relation to Account
+  location     Location    @relation(fields: [locationId], references: [id]) // Relation to Location
+}
+
+enum QuestType {
+  CAPTURE
+  DEFEAT
+  COLLECT
 }

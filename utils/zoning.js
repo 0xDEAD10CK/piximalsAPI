@@ -19,7 +19,7 @@ const prisma = new PrismaClient();
  * @param {items[{}]} items         - An array of Item objects 
  * @returns {Zone} Returns the newly created zone object
  */
-export const generateZone = async (name, monsters, type, user, description, items) => {
+export const generateZone = async (name, type, user, description) => {
     try {
         const zone = await prisma.zone.create({
             data: {
@@ -28,16 +28,6 @@ export const generateZone = async (name, monsters, type, user, description, item
                 description: description,
                 players: {
                     connect: {id: user.id}
-                },
-                monsters: {
-                    connect: monsters.map(monster => {
-                        return {id: monster.id}
-                    })
-                },
-                items: {
-                    connect: items.map(item => {
-                        return {id: item.id}
-                    })
                 }
         },
         select: {
@@ -124,6 +114,37 @@ export const findZone = async (zoneid) => {
         }
 
         return zone
+    } catch (error) {
+        return res.status(500).json({msg: error})
+    }
+}
+
+/**
+ * 
+ * @param {string} zoneid 
+ * @param {string} monsterId 
+ * @returns 
+ */
+export const findMonsterInZone = (zoneid, monsterId) => {
+    try {
+        const monster = prisma.zone.findUnique({
+            where: {
+                id: zoneid
+            },
+            select: {
+                monsters: {
+                    where: {
+                        id: monsterId
+                    }
+                }
+            }
+        })
+        
+        if (!monster){
+            return res.status(404).json({msg: "Monster does not exist"})
+        }
+
+        return monster
     } catch (error) {
         return res.status(500).json({msg: error})
     }

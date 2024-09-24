@@ -11,6 +11,7 @@ import {
 
  import { checkItem } from '../../utils/itemUtils.js'
 import { check } from 'prettier'
+import { updateMonsterStatus, countPartyMonsters } from '../../utils/monsters.js'
 
 const getPlayerInfo = async (req, res) => {
     const user = req.user
@@ -86,11 +87,24 @@ const getMenagerie = async (req, res) => {
     const user = req.user;
     try {
         const userdata = await prisma.account.findUnique({
-            where: { id: Number(user.id) },
+            where: { id: user.id },
             select: {
                 menagerie: {
                     select: {
-                        monster: true, // This will fetch all fields from 'monster'
+                        monster: {
+                            select: {
+                                id: true,
+                                name: true,
+                                type: true,
+                                status: true,
+                                species: true,
+                                rarity: true,
+                                url: true,
+                                abilities: true,
+                                hp: true,
+                                ap: true,
+                            },
+                        },
                     },
                 },
             },
@@ -104,7 +118,9 @@ const getMenagerie = async (req, res) => {
         return res.status(500).json({
             msg: err.message,
         });
-    }};
+    }
+};
+
 
 
 
@@ -154,6 +170,43 @@ const addItemToInventory = async (req, res) => {
     }
 };
 
+const changePartyStatus = async (req, res) => {
+    const user = req.user;
+    const { id, status } = req.body;
+
+    if (!user || !user.id || !id || !status) {
+        return res.status(400).json({
+            msg: 'Missing required fields: user ID, monster ID, or status.',
+        });
+    }
+
+    try {
+        // If we are trying to add a monster to the party (i.e., status is "In_Party")
+        if (status === "In_Party") {
+            const count = await countPartyMonsters(user.id);
+
+            // Check if the party is already full
+            if (count >= 3) {
+                return res.status(400).json({
+                    msg: 'Party is full, cannot add more monsters.',
+                });
+            }
+        }
+
+        // Proceed to update the monster's status (either adding to or removing from the party)
+        await updateMonsterStatus(id, status);
+
+        return res.status(200).json({
+            msg: 'Monster status updated successfully',
+        });
+    } catch (err) {
+        console.error("Error in changePartyStatus:", err.message);
+        return res.status(500).json({
+            msg: 'Internal server error',
+            error: err.message,
+        });
+    }
+};
 
 
-export { getPlayerInfo, getInventory, addItemToInventory, getMenagerie };
+export { getPlayerInfo, getInventory, addItemToInventory, getMenagerie, changePartyStatus };

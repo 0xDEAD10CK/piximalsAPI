@@ -21,6 +21,24 @@ export const generateMonster = async (type) => {
         monsterType = type
     }
 
+    const abilities = await prisma.ability.findMany({
+        where: {
+            type: monsterType,
+        },
+    });
+
+    console.log(abilities[1])
+
+    const selectedAbilities = [];
+        while (selectedAbilities.length < 2) {
+            const randomIndex = getRandomInt(0, abilities.length - 1);
+            const selectedAbility = abilities[randomIndex];
+
+            if (!selectedAbilities.some(a => a.id === selectedAbility.id)) {
+                selectedAbilities.push(selectedAbility);
+            }
+        }
+
     const randomSpecies = monsterData.species[getRandomInt(0, monsterData.species.length - 1)]
     const randomRarity = getRandomWeightedOption(monsterData.rarity).rarity;
     const id = uuidv4()
@@ -35,9 +53,15 @@ export const generateMonster = async (type) => {
                 status: "Wild",
                 url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${id}`,
                 hp: 100,
-                ap:20,
+                ap: 20,
+                abilities: {
+                    connect: selectedAbilities.map(ability => ({ id: ability.id })),
+                },
             },
-        })
+            include: {
+                abilities: true
+            }
+        });
 
         return monster
     } catch (err) {
@@ -51,14 +75,20 @@ export const generateMonster = async (type) => {
  * @param {string} monsterId 
  * @returns Attaches monster to a mangerie
  */
-export const addMonsterToMenagerie = (id, monsterId) => {
-    return prisma.menagerie.create({
-        data: {
-            userId: id,
-            monsterId: monsterId,
-        },
-    });
+export const addMonsterToMenagerie = (userId, monsterId) => {
+    try {
+        const result = prisma.menagerie.create({
+            data: {
+                userId: userId,
+                monsterId: monsterId,
+            },
+        });
+        return result;
+    } catch (error) {
+        console.error(`Error adding Monster ID: ${monsterId} to menagerie: `, error);
+    }
 };
+
 
 /**
  * 
@@ -88,6 +118,20 @@ export const updateMonsterStatus = (monsterId, status) => {
     });
 };
 
+export const updateMonsterInZoneStatus = (zoneId, monsterId, status) => {
+    return prisma.zone.update({
+        where: { id: zoneId },
+        data: {
+            monsters: {
+                update: {
+                    where: { id: monsterId },
+                    data: { status: status },
+                },
+            },
+        },
+    });
+}
+
 /**
  * 
  * @param {string} id 
@@ -98,3 +142,33 @@ export const findMonsterById = (id) => {
         where: { id: id },
     });
 };
+
+/**
+ * 
+ * @param {string} id 
+ * @returns Deletes monster by id
+ */
+export const deleteMonster = (id) => {
+    return prisma.monster.delete({
+        where: { id: id },
+    });
+}
+
+/**
+ * 
+ * Get all monsters with status "In_Party" from the user's menagerie
+ * @param {string} userId
+ * @returns All monsters in the user's party.
+ */
+export const countPartyMonsters = async (userId) => {
+    const count = await prisma.menagerie.count({
+        where: {
+            userId: userId,
+            monster: {
+                status: "In_Party"
+            }
+        }
+    });
+    return count;
+};
+

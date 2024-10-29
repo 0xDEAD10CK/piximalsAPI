@@ -6,7 +6,8 @@ import {
     createInventory,
     checkItemInInventory,
     updateInventoryItem,
-    createInventoryItem
+    createInventoryItem,
+    changePlayerLocation
  } from '../../utils/userUtils.js'
 
  import { checkItem } from '../../utils/itemUtils.js'
@@ -22,6 +23,7 @@ const getPlayerInfo = async (req, res) => {
                 id: true,
                 username: true,
                 currency: true,
+                location: true,
                 // other fields you want to include
             },
         })
@@ -121,9 +123,6 @@ const getMenagerie = async (req, res) => {
     }
 };
 
-
-
-
 const addItemToInventory = async (req, res) => {
     const user = req.user;
     const { itemId, quantity } = req.body;
@@ -208,5 +207,17 @@ const changePartyStatus = async (req, res) => {
     }
 };
 
+const changeLocation = async (req, res) => {
+    const user = req.user;
+    const { locationId } = req.body;
 
-export { getPlayerInfo, getInventory, addItemToInventory, getMenagerie, changePartyStatus };
+    console.log("Barbeque Monologues")
+
+    await changePlayerLocation(user.id, locationId);
+
+    return res.status(200).json({
+        msg: 'Location updated successfully',
+    });
+}
+
+export { getPlayerInfo, getInventory, addItemToInventory, getMenagerie, changePartyStatus, changeLocation };

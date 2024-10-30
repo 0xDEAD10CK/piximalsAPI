@@ -10,8 +10,10 @@ const prisma = new PrismaClient()
  * @returns A new random monster
  */
 export const generateMonster = async (type) => {
-    const defineType = getRandomInt(0, 10)
+    const defineType = getRandomInt(0, 3)
     let monsterType = ""
+
+    console.log(type)
 
     // If defineType is 1 or type is empty, get a random type from the monsterData.types array
     // Otherwise, use the type passed in the function
@@ -26,8 +28,6 @@ export const generateMonster = async (type) => {
             type: monsterType,
         },
     });
-
-    console.log(abilities[1])
 
     const selectedAbilities = [];
         while (selectedAbilities.length < 2) {

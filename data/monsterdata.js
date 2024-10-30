@@ -15,7 +15,8 @@ export const monsterData = {
         "TOXIC",
         "METALLIC",
         "SPECTRAL",
-        "CHAOS"
+        "CHAOS",
+        "VOID"
     ],
     species: [
         'Dragon',

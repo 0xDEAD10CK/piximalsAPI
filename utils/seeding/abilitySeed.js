@@ -16,7 +16,8 @@ import {
     metallicAbilities,
     spectralAbilities,
     chaosAbilities,
-    crispiesAbilities} from '../../data/abilityData.js'
+    crispiesAbilities,
+    voidAbilities} from '../../data/abilityData.js'
 
 const prisma = new PrismaClient();
 
@@ -62,6 +63,7 @@ const main = async () => {
         await seedAbilities(spectralAbilities);
         await seedAbilities(chaosAbilities);
         await seedAbilities(crispiesAbilities);
+        await seedAbilities(voidAbilities);
 
         console.log('Seeding completed successfully.');
     } catch (error) {

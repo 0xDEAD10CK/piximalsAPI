@@ -42,7 +42,7 @@ const zoneGeneration = async (req, res) => {
                 }
             }
         })
-        
+        console.log(player)
         for (let i = 0; i < monsterAmount; i++){
             monsters.push(generateMonster(player.location.type))
             items.push(randomItem(player.location))
@@ -99,10 +99,9 @@ const collect = async (req, res) => {
         const user = req.user;
         const { monsterId, itemId } = req.body
         let data = []
-
         await findZone(zoneid)
+        console.log("test")
         await findPlayer(user.id)
-
         if (monsterId){
             const monsterResponse = await addMonsterToMenagerie(user.id, monsterId)
             data.push(monsterResponse)

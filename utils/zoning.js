@@ -78,6 +78,7 @@ export const generateZone = async (name, monsters, type, user, description, item
     
     return zone;
     } catch (error) {
+        console.log(error)
         return res.status(500).json({msg: error})
     }
 }

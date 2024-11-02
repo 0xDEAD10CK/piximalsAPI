@@ -16,6 +16,5 @@ export const randomItem = async (getLocation) => {
     })
     
     const itemPicked = getRandomInt(0, item.length - 1)
-
     return item[itemPicked]
 }

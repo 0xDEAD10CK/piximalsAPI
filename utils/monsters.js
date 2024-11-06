@@ -12,13 +12,25 @@ const prisma = new PrismaClient()
 export const generateMonster = async (type) => {
     const defineType = getRandomInt(0, 10)
     let monsterType = ""
-
     // If defineType is 1 or type is empty, get a random type from the monsterData.types array
     // Otherwise, use the type passed in the function
     if (defineType === 1 || type === "") {
         monsterType = monsterData.types[getRandomInt(0, monsterData.types.length - 1)]
     } else {
         monsterType = type
+    }
+    const abilities = await prisma.ability.findMany({
+        where: {
+            type: monsterType,
+        },
+    });
+    const selectedAbilities = [];
+    while (selectedAbilities.length < 2) {
+        const randomIndex = getRandomInt(0, abilities.length - 1);
+        const selectedAbility = abilities[randomIndex];
+        if (!selectedAbilities.some(a => a.id === selectedAbility.id)) {
+            selectedAbilities.push(selectedAbility);
+        }
     }
 
     const randomSpecies = monsterData.species[getRandomInt(0, monsterData.species.length - 1)]
@@ -36,6 +48,12 @@ export const generateMonster = async (type) => {
                 url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${id}`,
                 hp: 100,
                 ap:20,
+                abilities: {
+                    connect: selectedAbilities.map(ability => ({ id: ability.id })),
+                },
+            },
+            include: {
+                abilities: true
             },
         })
 

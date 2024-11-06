@@ -31,7 +31,7 @@ app.use(`/${BASE_URL}/${CURRENT_VERSION}/my`, player)
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/adventure`, auth, adventure)
 
 // ADMIN ROUTES BELOW
-app.use(`/${BASE_URL}/${CURRENT_VERSION}/admin`, adminAuthRoute, admin)
+app.use(`/${BASE_URL}/${CURRENT_VERSION}/admin`, admin)
 
 
 app.listen(PORT, () => {

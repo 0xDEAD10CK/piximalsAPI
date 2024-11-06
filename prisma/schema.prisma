@@ -94,7 +94,8 @@ model Account {
   level           Int            @default(1)
   experience      Int            @default(0)
   health          Int            @default(100)
-  
+  starter         Boolean        @default(false)
+
   locationId    Int           
   location      Location       @relation(fields: [locationId], references: [id])
   zoneId        String?

@@ -211,8 +211,6 @@ const changeLocation = async (req, res) => {
     const user = req.user;
     const { locationId } = req.body;
 
-    console.log("Barbeque Monologues")
-
     await changePlayerLocation(user.id, locationId);
 
     return res.status(200).json({

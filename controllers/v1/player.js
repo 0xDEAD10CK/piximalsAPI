@@ -23,8 +23,11 @@ const getPlayerInfo = async (req, res) => {
                 id: true,
                 username: true,
                 currency: true,
+                role: true,
+                level: true,
+                experience: true,
+                health: true,
                 location: true,
-                // other fields you want to include
             },
         })
 

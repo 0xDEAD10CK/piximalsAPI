@@ -75,6 +75,25 @@ export const createInventoryItem = async (inventoryId, itemId, quantity) => {
     });
 };
 
+export const getUserAccount = async (id) => {
+    const response = await prisma.account.findUnique({
+        where: { id: id}
+    })
+
+    return response
+}
+
+export const collectedStarter = async (id) => {
+    const response = await prisma.account.update({
+        where: { id: id},
+        data: {
+            starter: true,
+        }
+    })
+
+    return response
+}
+
 export const changePlayerLocation = async (userId, locationId) => {
     return await prisma.account.update({
         where: { id: userId },

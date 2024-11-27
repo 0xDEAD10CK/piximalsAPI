@@ -21,16 +21,30 @@ function capitalizeEachWord(str) {
 export const generateMonster = async (type) => {
     const defineType = getRandomInt(0, 3)
     let monsterType = ""
-
-    console.log(type)
-
     // If defineType is 1 or type is empty, get a random type from the monsterData.types array
     // Otherwise, use the type passed in the function
     if (defineType === 1 || type === "") {
         monsterType = monsterData.types[getRandomInt(0, monsterData.types.length - 1)]
     } else {
-        monsterType = type
+        monsterType = type.toUpperCase()
     }
+    console.log(monsterType)
+    const abilities = await prisma.ability.findMany({
+        where: {
+            type: monsterType,
+        },
+    });
+    
+    console.log(abilities.length)
+    const selectedAbilities = [];
+    while (selectedAbilities.length < 2) {
+        const randomIndex = getRandomInt(0, abilities.length - 1);
+        const selectedAbility = abilities[randomIndex];
+        if (!selectedAbilities.some(a => a.id === selectedAbility.id)) {
+            selectedAbilities.push(selectedAbility);
+        }
+    }
+    
 
     const abilities = await prisma.ability.findMany({
         where: {
@@ -70,16 +84,15 @@ export const generateMonster = async (type) => {
                 status: "Wild",
                 url: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${id}`,
                 hp: 100,
-                ap: 20,
-                abilities: {
+                ap:20,
+                abilities: selectedAbilities && selectedAbilities.length > 0 ? {
                     connect: selectedAbilities.map(ability => ({ id: ability.id })),
-                },
+                } : undefined,
             },
             include: {
                 abilities: true
-            }
-        });
-
+            },
+        })
         return monster
     } catch (err) {
         return res.status(500).json({msg: error})

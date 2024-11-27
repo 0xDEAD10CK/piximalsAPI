@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-import { getAbilitiesFilter } from '../../utils/filteringUtils.js';
+import { getAbilitiesFilter, getTotalAbilityCount } from '../../utils/filteringUtils.js';
 
 const createAbility = async (req, res) => {
     try {
@@ -55,9 +55,7 @@ const getAbilities = async (req, res) => {
 
     try {
         const [abilities, filterOptions] = await getAbilitiesFilter(pageSize, skip, type, name, category);
-
         const totalItems = await getTotalAbilityCount(filterOptions);
-
         const totalPages = Math.ceil(totalItems / pageSize);
 
         return res.status(200).json({

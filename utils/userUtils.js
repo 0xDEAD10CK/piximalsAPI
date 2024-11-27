@@ -74,3 +74,14 @@ export const createInventoryItem = async (inventoryId, itemId, quantity) => {
         },
     });
 };
+
+export const changePlayerLocation = async (userId, locationId) => {
+    return await prisma.account.update({
+        where: { id: userId },
+        data: {
+            location: {
+                connect: { id: locationId }  // Connects the account to the new location using its ID
+            }
+        }
+    });
+};

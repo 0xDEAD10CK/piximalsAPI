@@ -2,7 +2,16 @@ import { PrismaClient } from '@prisma/client'
 import { getRandomInt, getRandomWeightedOption } from './utils.js'
 import { monsterData } from '../data/monsterdata.js'
 import { v4 as uuidv4 } from 'uuid'
+import {
+    prefixesByType,
+    genericSuffixes,
+} from './seeding/nameList.js'
+
 const prisma = new PrismaClient()
+
+function capitalizeEachWord(str) {
+    return str.replace(/\b\w/g, (match) => match.toUpperCase())
+}
 
 /**
  * 
@@ -10,8 +19,10 @@ const prisma = new PrismaClient()
  * @returns A new random monster
  */
 export const generateMonster = async (type) => {
-    const defineType = getRandomInt(0, 10)
+    const defineType = getRandomInt(0, 3)
     let monsterType = ""
+
+    console.log(type)
 
     // If defineType is 1 or type is empty, get a random type from the monsterData.types array
     // Otherwise, use the type passed in the function
@@ -27,8 +38,6 @@ export const generateMonster = async (type) => {
         },
     });
 
-    console.log(abilities[1])
-
     const selectedAbilities = [];
         while (selectedAbilities.length < 2) {
             const randomIndex = getRandomInt(0, abilities.length - 1);
@@ -42,11 +51,19 @@ export const generateMonster = async (type) => {
     const randomSpecies = monsterData.species[getRandomInt(0, monsterData.species.length - 1)]
     const randomRarity = getRandomWeightedOption(monsterData.rarity).rarity;
     const id = uuidv4()
+
+    const randomPrefix = prefixesByType[monsterType][getRandomInt(0, prefixesByType[monsterType].length - 1)]
+    const randomSuffix = genericSuffixes[getRandomInt(0, genericSuffixes.length - 1)]
+
+    const monsterName = capitalizeEachWord(
+        `${randomPrefix} ${randomSuffix}`
+    )
+
     try {
         const monster = await prisma.monster.create({
             data: {
                 id: id,
-                name: "Jones",
+                name: monsterName,
                 type: monsterType,
                 species: randomSpecies,
                 rarity: randomRarity,

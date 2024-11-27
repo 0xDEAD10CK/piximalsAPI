@@ -244,6 +244,8 @@ const search = async (req, res) => {
 
     const { zoneid } = req.params
     const user = req.user;
+    let monster;
+    let updatedZone;
 
     try {
             // Get the player's location
@@ -272,29 +274,48 @@ const search = async (req, res) => {
         // Check if the zone exists
         if (!zone) return res.status(404).json({msg: "Zone not found"})
 
+        console.log("test - found zone")
+
         // Generate a monster
-        const monster = await generateMonster(player.location.type)
+        try {
+            monster = await generateMonster(player.location.type)
+        } catch (error) {
+            console.log(error)
+        }
+
+        console.log("test - monster generated")
+
         const items = []
+
+        console.log(monster)
         
         // Generate a random amount of items
         for (let i = 0; i < getRandomInt(2, 5); i++){
             items.push(await randomItem(player.location))
         }
 
+        console.log("test - items generated")
+
         // Add the monster and items to the zone
-        const updatedZone = await prisma.zone.update({
-            where: {
-                id: zoneid
-            },
-            data: {
-                monsters: {
-                    connect: {id: monster.id}
+        try {
+            updatedZone = await prisma.zone.update({
+                where: {
+                    id: zoneid
                 },
-                items: {
-                    connect: items.map(item => {return {id: item.id}})
+                data: {
+                    monsters: {
+                        connect: {id: monster.id}
+                    },
+                    items: {
+                        connect: items.map(item => {return {id: item.id}})
+                    }
                 }
-            }
-        })
+            })
+        } catch (error) {
+            console.log(error)
+        }
+
+        console.log("test - monster and items added to zone")
 
         // return the monster to the user
         return res.status(200).json({msg: "Monster found", monster: monster, zone: zone})

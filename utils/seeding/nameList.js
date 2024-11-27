@@ -15,6 +15,7 @@ const prefixesByType = {
     'METALLIC': ['metallic', 'iron', 'steel', 'bronze', 'titanium', 'chrome', 'alloy', 'brass', 'silver', 'gold'],
     'SPECTRAL': ['spectral', 'ghostly', 'phantom', 'wraith', 'ethereal', 'apparition', 'haunting', 'poltergeist', 'soulbound', 'unearthly'],
     'CHAOS': ['chaos', 'disorder', 'entropy', 'pandemonium', 'anarchy', 'turmoil', 'mayhem', 'havoc', 'discord', 'cacophony'],
+    'VOID': ['void', 'abyss', 'nihil', 'null', 'abyssal', 'voidborn', 'nullify', 'obliterate', 'annihilate', 'eradicate'],
 };
 
 const genericSuffixes = [

@@ -36,6 +36,9 @@ const purchaseMonster = async (req, res) => {
             select: { id: true, currency: true },
         });
 
+        console.log(shopItem)
+        console.log(buyer)
+
         if (buyer.currency < shopItem.price) {
             return res.status(403).json({
                 msg: 'You do not have enough money!',
@@ -46,9 +49,8 @@ const purchaseMonster = async (req, res) => {
         await prisma.$transaction([
             deductBalance(buyer.id, shopItem.price),   // Deduct money from the buyer
             updateBalance(shopItem.playerId, shopItem.price),  // Update the seller's balance
-            addMonsterToMenagerie(buyer.id, shopItem.monster.id),   // Transfer the monster from seller to buyer
             updateMonsterStatus(shopItem.monster.id, 'In_Menagerie'),   // Update the monster's status to 'In_Inventory'
-            removeMonsterFromMenagerie(shopItem.playerId, shopItem.monster.id),  // Remove the monster from the seller's inventory
+            addMonsterToMenagerie(buyer.id, shopItem.monster.id),   // Transfer the monster from seller to buyer
             removeListingFromShop(id),  // Remove item from the shop
         ]);
 
@@ -195,6 +197,7 @@ const getShop = async (req, res) => {
             msg: 'Shop items retrieved successfully',
             data: {
                 shopItems,
+                totalItems,
                 totalPages,
                 currentPage: page,
             },

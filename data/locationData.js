@@ -2,7 +2,7 @@ export const locationData = [
     {
         name: "Grasslands",
         description: "A vast expanse of grassy fields and rolling hills.",
-        type: "Nature",
+        type: "EARTH",
         rarity: [{ rarity: "common", weight: 60 }, { rarity: "epic", weight: 0 },
         { rarity: "uncommon", weight: 25 }, { rarity: "rare", weight: 15 },
         { rarity: "legendary", weight: 0 }, { rarity: "mythic", weight: 0 },
@@ -11,7 +11,7 @@ export const locationData = [
     {
         name: "Bleak Forests",
         description: "A dark and foreboding forest with twisted trees and thick undergrowth.",
-        type: "Lunar",
+        type: "NATURE",
         rarity: [{ rarity: "common", weight: 45 }, { rarity: "epic", weight: 3 },
         { rarity: "uncommon", weight: 30 }, { rarity: "rare", weight: 22 },
         { rarity: "legendary", weight: 0 }, { rarity: "mythic", weight: 0 },
@@ -20,7 +20,7 @@ export const locationData = [
     {
         name: "Waning Tundra",
         description: "A frozen wasteland where the sun never shines.",
-        type: "Ice",
+        type: "ICE",
         rarity: [{ rarity: "common", weight: 40 }, { rarity: "epic", weight: 10 },
         { rarity: "uncommon", weight: 35 }, { rarity: "rare", weight: 15 },
         { rarity: "legendary", weight: 0 }, { rarity: "mythic", weight: 0 },
@@ -29,7 +29,7 @@ export const locationData = [
     {
         name: "Dead Mans Plains",
         description: "A dark vast and marshy graveyard of the damned.",
-        type: "Shadow",
+        type: "SHADOW",
         rarity: [{ rarity: "common", weight: 50 }, { rarity: "epic", weight: 3 },
         { rarity: "uncommon", weight: 30 }, { rarity: "rare", weight: 15 },
         { rarity: "legendary", weight: 1 }, { rarity: "mythic", weight: 1 },
@@ -38,7 +38,7 @@ export const locationData = [
     {
         name: "Whispering Woods",
         description: "A forest that whispers with the voices of the dead.",
-        type: "Mystic",
+        type: "MYSTIC",
         rarity: [{ rarity: "common", weight: 50 }, { rarity: "epic", weight: 3 },
         { rarity: "uncommon", weight: 30 }, { rarity: "rare", weight: 15 },
         { rarity: "legendary", weight: 1 }, { rarity: "mythic", weight: 1 },
@@ -47,7 +47,7 @@ export const locationData = [
     {
         name: "Mount Horror",
         description: "A mountain range that is said to be cursed.",
-        type: "Nature",
+        type: "VOID",
         rarity: [{ rarity: "common", weight: 40 }, { rarity: "epic", weight: 10 },
         { rarity: "uncommon", weight: 25 }, { rarity: "rare", weight: 20 },
         { rarity: "legendary", weight: 3 }, { rarity: "mythic", weight: 1 },
@@ -56,7 +56,7 @@ export const locationData = [
     {
         name: "The Void",
         description: "A place where the darkness consumes all.",
-        type: "Astral",
+        type: "ASTRAL",
         rarity: [{ rarity: "common", weight: 0 }, { rarity: "epic", weight: 0 },
         { rarity: "uncommon", weight: 0 }, { rarity: "rare", weight: 0 },
         { rarity: "legendary", weight: 0 }, { rarity: "mythic", weight: 0 },

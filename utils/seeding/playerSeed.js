@@ -20,12 +20,19 @@ async function registerUser(username, password, role, locationId) {
             username,
             password: hashedPassword,
             role,
+            inventory: {
+                create: {}
+            },
             location: {
                 connect: {
                     id: locationId
                 }
             }
-        }
+        },
+        include: {
+            inventory: true, // Include the inventory in the returned user object
+            menagerie: true, // Include the menagerie in the returned user object
+          },
     })
 
     delete user.password

@@ -5,7 +5,6 @@ export const getRandomInt = (min, max) => {
 export const getRandomWeightedOption = (options) => {
     const totalWeight = options.reduce((sum, option) => sum + option.weight, 0);
     let random = Math.random() * totalWeight;
-    console.log("Total Weight:", totalWeight, "Random:", random)
     for (const option of options) {
         if (random < option.weight) {
             return option;

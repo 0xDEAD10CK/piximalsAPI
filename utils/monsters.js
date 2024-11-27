@@ -2,7 +2,16 @@ import { PrismaClient } from '@prisma/client'
 import { getRandomInt, getRandomWeightedOption } from './utils.js'
 import { monsterData } from '../data/monsterdata.js'
 import { v4 as uuidv4 } from 'uuid'
+import {
+    prefixesByType,
+    genericSuffixes,
+} from './seeding/nameList.js'
+
 const prisma = new PrismaClient()
+
+function capitalizeEachWord(str) {
+    return str.replace(/\b\w/g, (match) => match.toUpperCase())
+}
 
 /**
  * 
@@ -10,7 +19,7 @@ const prisma = new PrismaClient()
  * @returns A new random monster
  */
 export const generateMonster = async (type) => {
-    const defineType = getRandomInt(0, 10)
+    const defineType = getRandomInt(0, 3)
     let monsterType = ""
     // If defineType is 1 or type is empty, get a random type from the monsterData.types array
     // Otherwise, use the type passed in the function
@@ -37,14 +46,38 @@ export const generateMonster = async (type) => {
     }
     
 
+    const abilities = await prisma.ability.findMany({
+        where: {
+            type: monsterType,
+        },
+    });
+
+    const selectedAbilities = [];
+        while (selectedAbilities.length < 2) {
+            const randomIndex = getRandomInt(0, abilities.length - 1);
+            const selectedAbility = abilities[randomIndex];
+
+            if (!selectedAbilities.some(a => a.id === selectedAbility.id)) {
+                selectedAbilities.push(selectedAbility);
+            }
+        }
+
     const randomSpecies = monsterData.species[getRandomInt(0, monsterData.species.length - 1)]
     const randomRarity = getRandomWeightedOption(monsterData.rarity).rarity;
     const id = uuidv4()
+
+    const randomPrefix = prefixesByType[monsterType][getRandomInt(0, prefixesByType[monsterType].length - 1)]
+    const randomSuffix = genericSuffixes[getRandomInt(0, genericSuffixes.length - 1)]
+
+    const monsterName = capitalizeEachWord(
+        `${randomPrefix} ${randomSuffix}`
+    )
+
     try {
         const monster = await prisma.monster.create({
             data: {
                 id: id,
-                name: "Jones",
+                name: monsterName,
                 type: monsterType,
                 species: randomSpecies,
                 rarity: randomRarity,
@@ -72,14 +105,20 @@ export const generateMonster = async (type) => {
  * @param {string} monsterId 
  * @returns Attaches monster to a mangerie
  */
-export const addMonsterToMenagerie = (id, monsterId) => {
-    return prisma.menagerie.create({
-        data: {
-            userId: id,
-            monsterId: monsterId,
-        },
-    });
+export const addMonsterToMenagerie = (userId, monsterId) => {
+    try {
+        const result = prisma.menagerie.create({
+            data: {
+                userId: userId,
+                monsterId: monsterId,
+            },
+        });
+        return result;
+    } catch (error) {
+        console.error(`Error adding Monster ID: ${monsterId} to menagerie: `, error);
+    }
 };
+
 
 /**
  * 
@@ -109,6 +148,20 @@ export const updateMonsterStatus = (monsterId, status) => {
     });
 };
 
+export const updateMonsterInZoneStatus = (zoneId, monsterId, status) => {
+    return prisma.zone.update({
+        where: { id: zoneId },
+        data: {
+            monsters: {
+                update: {
+                    where: { id: monsterId },
+                    data: { status: status },
+                },
+            },
+        },
+    });
+}
+
 /**
  * 
  * @param {string} id 
@@ -119,3 +172,33 @@ export const findMonsterById = (id) => {
         where: { id: id },
     });
 };
+
+/**
+ * 
+ * @param {string} id 
+ * @returns Deletes monster by id
+ */
+export const deleteMonster = (id) => {
+    return prisma.monster.delete({
+        where: { id: id },
+    });
+}
+
+/**
+ * 
+ * Get all monsters with status "In_Party" from the user's menagerie
+ * @param {string} userId
+ * @returns All monsters in the user's party.
+ */
+export const countPartyMonsters = async (userId) => {
+    const count = await prisma.menagerie.count({
+        where: {
+            userId: userId,
+            monster: {
+                status: "In_Party"
+            }
+        }
+    });
+    return count;
+};
+

@@ -93,3 +93,14 @@ export const collectedStarter = async (id) => {
 
     return response
 }
+
+export const changePlayerLocation = async (userId, locationId) => {
+    return await prisma.account.update({
+        where: { id: userId },
+        data: {
+            location: {
+                connect: { id: locationId }  // Connects the account to the new location using its ID
+            }
+        }
+    });
+};

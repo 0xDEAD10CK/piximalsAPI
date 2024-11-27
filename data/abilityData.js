@@ -2644,3 +2644,155 @@ export const crispiesAbilities = [
         effectIncrease: null
     }
 ];
+export const voidAbilities = [
+    {
+        name: "Shadow Grasp",
+        type: "VOID",
+        cost: 25,
+        damage: 40,
+        description: "Summons tendrils of darkness to grasp and damage enemies, dealing damage over time.",
+        category: "ATTACK",
+        effectType: "DAMAGE",
+        effectTurns: 3,
+        effectChance: 70, // 70% chance to deal damage over time
+        effectDamage: 15,
+        effectReduction: null,
+        effectHeal: null,
+        effectIncrease: null
+    },
+    {
+        name: "Veil of Darkness",
+        type: "VOID",
+        cost: 30,
+        damage: null,
+        description: "Creates a shroud of darkness that conceals the user, reducing incoming damage.",
+        category: "DEFENSE",
+        effectType: "PROTECTION",
+        effectTurns: 4,
+        effectChance: null,
+        effectDamage: null,
+        effectReduction: 30, // Reduces incoming damage by 30%
+        effectHeal: null,
+        effectIncrease: null
+    },
+    {
+        name: "Void Step",
+        type: "VOID",
+        cost: 20,
+        damage: null,
+        description: "Allows the user to briefly step into the void, evading attacks.",
+        category: "UTILITY",
+        effectType: "Evasion",
+        effectTurns: 2,
+        effectChance: 80, // 80% chance to evade attacks
+        effectDamage: null,
+        effectReduction: null,
+        effectHeal: null,
+        effectIncrease: null
+    },
+    {
+        name: "Abyssal Scream",
+        type: "VOID",
+        cost: 35,
+        damage: 50,
+        description: "Unleashes a horrifying scream from the abyss that damages and terrifies enemies.",
+        category: "ATTACK",
+        effectType: "DAMAGE",
+        effectTurns: 1,
+        effectChance: 60, // 60% chance to terrify
+        effectDamage: 50,
+        effectReduction: null,
+        effectHeal: null,
+        effectIncrease: null
+    },
+    {
+        name: "Eclipse Shield",
+        type: "VOID",
+        cost: 40,
+        damage: null,
+        description: "Forms a barrier of void energy that absorbs damage and reflects a portion back.",
+        category: "DEFENSE",
+        effectType: "PROTECTION",
+        effectTurns: 3,
+        effectChance: null,
+        effectDamage: null,
+        effectReduction: 25, // Absorbs 25% of incoming damage
+        effectHeal: null,
+        effectIncrease: null
+    },
+    {
+        name: "Dark Surge",
+        type: "VOID",
+        cost: 30,
+        damage: 60,
+        description: "Harnesses dark energy to unleash a powerful wave that damages all enemies in a radius.",
+        category: "ATTACK",
+        effectType: "DAMAGE",
+        effectTurns: null,
+        effectChance: null,
+        effectDamage: 60,
+        effectReduction: null,
+        effectHeal: null,
+        effectIncrease: null
+    },
+    {
+        name: "Chilling Presence",
+        type: "VOID",
+        cost: 15,
+        damage: null,
+        description: "Radiates an aura of void energy that chills enemies, reducing their speed.",
+        category: "UTILITY",
+        effectType: "DEBUFF",
+        effectTurns: 3,
+        effectChance: 70, // 70% chance to reduce speed
+        effectDamage: null,
+        effectReduction: null,
+        effectHeal: null,
+        effectIncrease: null
+    },
+    {
+        name: "Mind Fog",
+        type: "VOID",
+        cost: 25,
+        damage: null,
+        description: "Creates a cloud of confusion that disrupts enemy actions and reduces their accuracy.",
+        category: "UTILITY",
+        effectType: "DEBUFF",
+        effectTurns: 2,
+        effectChance: 60, // 60% chance to cause confusion
+        effectDamage: null,
+        effectReduction: null,
+        effectHeal: null,
+        effectIncrease: null
+    },
+    {
+        name: "Void Pulse",
+        type: "VOID",
+        cost: 20,
+        damage: null,
+        description: "Sends out a pulse of void energy that temporarily weakens enemy defenses.",
+        category: "UTILITY",
+        effectType: "DEBUFF",
+        effectTurns: 3,
+        effectChance: 100, // Always successful
+        effectDamage: null,
+        effectReduction: null,
+        effectHeal: null,
+        effectIncrease: -20 // Reduces enemy defenses by 20%
+    },
+    {
+        name: "Eternal Darkness",
+        type: "VOID",
+        cost: 50,
+        damage: null,
+        description: "Envelops the battlefield in darkness, preventing enemies from seeing and increasing the chance of critical hits against them.",
+        category: "UTILITY",
+        effectType: "BUFF",
+        effectTurns: 4,
+        effectChance: 100, // Always successful
+        effectDamage: null,
+        effectReduction: null,
+        effectHeal: null,
+        effectIncrease: 25 // Increases critical hit chance by 25%
+    }
+];

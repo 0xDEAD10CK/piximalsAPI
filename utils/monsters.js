@@ -44,23 +44,6 @@ export const generateMonster = async (type) => {
             selectedAbilities.push(selectedAbility);
         }
     }
-    
-
-    const abilities = await prisma.ability.findMany({
-        where: {
-            type: monsterType,
-        },
-    });
-
-    const selectedAbilities = [];
-        while (selectedAbilities.length < 2) {
-            const randomIndex = getRandomInt(0, abilities.length - 1);
-            const selectedAbility = abilities[randomIndex];
-
-            if (!selectedAbilities.some(a => a.id === selectedAbility.id)) {
-                selectedAbilities.push(selectedAbility);
-            }
-        }
 
     const randomSpecies = monsterData.species[getRandomInt(0, monsterData.species.length - 1)]
     const randomRarity = getRandomWeightedOption(monsterData.rarity).rarity;

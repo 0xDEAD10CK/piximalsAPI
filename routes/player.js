@@ -7,7 +7,6 @@ import { getPlayerInfo,
         addItemToInventory,
         moveMonsterToParty,
         moveMonsterFromParty,
-        changePartyStatus,
         changeLocation } from "../controllers/v1/player.js";
 
 import authRoute from "../middleware/authRoute.js"

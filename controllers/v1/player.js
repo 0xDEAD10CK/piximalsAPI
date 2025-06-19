@@ -67,7 +67,7 @@ const getUserInventory = async (req, res) => {
     }
 };
 
-const getMenagerie = async (req, res) => {
+const getUserMenagerie = async (req, res) => {
     const user = req.user;
     try {
         const userdata = await prisma.account.findUnique({
@@ -170,7 +170,7 @@ const moveMonsterToParty = async (req, res) => {
                 msg: 'Party is full!',
             });
         } else {
-            await updateMonsterStatus(user.id, monsterId, 'IN_PARTY');
+            await updateMonsterStatus(monsterId, 'IN_PARTY');
 
             return res.status(201).json({
                 msg: 'Monster successfully moved to party!',
@@ -189,7 +189,7 @@ const moveMonsterFromParty = async (req, res) => {
 
     try {
         // Check if the monster exists
-        await updateMonsterStatus(user.id, monsterId, 'IN_MENAGERIE');
+        await updateMonsterStatus(monsterId, 'IN_MENAGERIE');
 
         return res.status(201).json({
             msg: 'Monster successfully moved from party!',
@@ -197,35 +197,6 @@ const moveMonsterFromParty = async (req, res) => {
     } catch (err) {
         return res.status(500).json({
             msg: err.message,
-        });
-    }
-};
-
-
-    try {
-        // If we are trying to add a monster to the party (i.e., status is "In_Party")
-        if (status === "In_Party") {
-            const count = await countPartyMonsters(user.id);
-
-            // Check if the party is already full
-            if (count >= 3) {
-                return res.status(400).json({
-                    msg: 'Party is full, cannot add more monsters.',
-                });
-            }
-        }
-
-        // Proceed to update the monster's status (either adding to or removing from the party)
-        await updateMonsterStatus(id, status);
-
-        return res.status(200).json({
-            msg: 'Monster status updated successfully',
-        });
-    } catch (err) {
-        console.error("Error in changePartyStatus:", err.message);
-        return res.status(500).json({
-            msg: 'Internal server error',
-            error: err.message,
         });
     }
 };
@@ -241,5 +212,5 @@ const changeLocation = async (req, res) => {
     });
 }
 
-export { getPlayerInfo, getUserMenagerie, addItemToInventory, getUserInventory, moveMonsterToParty, moveMonsterFromParty };
+export { getPlayerInfo, getUserMenagerie, addItemToInventory, getUserInventory, moveMonsterToParty, moveMonsterFromParty, changeLocation };
 

@@ -90,7 +90,7 @@ const sellMonster = async (req, res) => {
         await removeMonsterFromMenagerie(user.id, id)
 
         // Update the status of the monster to 'ON_MARKET'
-        await updateMonsterStatus(user.id, id, 'ON_MARKET');
+        await updateMonsterStatus(id, 'ON_MARKET');
 
         return res.status(200).json({
             msg: 'Monster listed successfully',
@@ -143,7 +143,7 @@ const cancelListing = async (req, res) => {
         }
 
         // Update the status of the monster to 'IN_MENAGERIE'
-        await updateMonsterStatus(user.id, monsterId, 'IN_MENAGERIE');
+        await updateMonsterStatus(monsterId, 'IN_MENAGERIE');
 
         return res.status(200).json({ msg: "Listing successfully canceled." });
     } catch (error) {

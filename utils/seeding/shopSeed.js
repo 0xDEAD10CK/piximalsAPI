@@ -14,7 +14,7 @@ async function main() {
         data: {
             id: monsterid1,
             name: 'Ember King',
-            type: 'Pyro',
+            type: 'FIRE',
             species: 'Dragon',
             rarity: 'Transcendant',
             status: "ON_MARKET",
@@ -28,7 +28,7 @@ async function main() {
         data: {
             id: monsterid2,
             name: 'Glacier Warden',
-            type: 'Cryo',
+            type: 'ICE',
             species: 'Behemoth',
             rarity: 'Rare',
             status: "ON_MARKET",
@@ -42,7 +42,7 @@ async function main() {
         data: {
             id: monsterid3,
             name: 'Stellar Conqueror',
-            type: 'Astral',
+            type: 'ASTRAL',
             species: 'Minotaur',
             rarity: 'Legendary',
             status: "ON_MARKET",
@@ -56,7 +56,7 @@ async function main() {
         data: {
             id: monsterid4,
             name: 'Umbra Dreadlord',
-            type: 'Shadow',
+            type: 'SHADOW',
             species: 'Serpent',
             rarity: 'Mythical',
             status: "ON_MARKET",
@@ -70,7 +70,7 @@ async function main() {
         data: {
             id: monsterid5,
             name: 'Luminar Harbinger',
-            type: 'Solar',
+            type: 'SOLAR',
             species: 'Sphinx',
             rarity: 'Uncommon',
             status: "ON_MARKET",
@@ -112,7 +112,7 @@ async function main() {
         data: {
             id: uuidv4(),
             monsterId: monster4.id,
-            playerId: 3,
+            playerId: 4,
             price: 10500,
         },
     })
@@ -121,7 +121,7 @@ async function main() {
         data: {
             id: uuidv4(),
             monsterId: monster5.id,
-            playerId: 4,
+            playerId: 5,
             price: 750,
         },
     })

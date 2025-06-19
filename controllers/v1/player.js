@@ -8,12 +8,13 @@ import {
     getMenagerie,
     checkItemInInventory,
     updateInventoryItem,
-    createInventoryItem
+    createInventoryItem,
+    changePlayerLocation
  } from '../../utils/userUtils.js'
 
 import { checkItem } from '../../utils/itemUtils.js'
-
-import { updateMonsterStatus } from '../../utils/accountBalance.js'
+import { check } from 'prettier'
+import { updateMonsterStatus, countPartyMonsters } from '../../utils/monsters.js'
 
 const getPlayerInfo = async (req, res) => {
     const user = req.user
@@ -24,7 +25,11 @@ const getPlayerInfo = async (req, res) => {
                 id: true,
                 username: true,
                 currency: true,
-                // other fields you want to include
+                role: true,
+                level: true,
+                experience: true,
+                health: true,
+                location: true,
             },
         })
 
@@ -62,17 +67,32 @@ const getUserInventory = async (req, res) => {
     }
 };
 
-const getUserMenagerie = async (req, res) => {
+const getMenagerie = async (req, res) => {
     const user = req.user;
     try {
-        const userdata = await getMenagerie(user.id);
-
-        // If the user's menagerie or monsters are not found, handle the response accordingly
-        if (!userdata || !userdata.menagerie) {
-            return res.status(404).json({
-                msg: 'Menagerie not found!',
-            });
-        }
+        const userdata = await prisma.account.findUnique({
+            where: { id: user.id },
+            select: {
+                menagerie: {
+                    select: {
+                        monster: {
+                            select: {
+                                id: true,
+                                name: true,
+                                type: true,
+                                status: true,
+                                species: true,
+                                rarity: true,
+                                url: true,
+                                abilities: true,
+                                hp: true,
+                                ap: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
 
         return res.status(200).json({
             msg: 'User menagerie successfully fetched!',
@@ -182,4 +202,44 @@ const moveMonsterFromParty = async (req, res) => {
 };
 
 
+    try {
+        // If we are trying to add a monster to the party (i.e., status is "In_Party")
+        if (status === "In_Party") {
+            const count = await countPartyMonsters(user.id);
+
+            // Check if the party is already full
+            if (count >= 3) {
+                return res.status(400).json({
+                    msg: 'Party is full, cannot add more monsters.',
+                });
+            }
+        }
+
+        // Proceed to update the monster's status (either adding to or removing from the party)
+        await updateMonsterStatus(id, status);
+
+        return res.status(200).json({
+            msg: 'Monster status updated successfully',
+        });
+    } catch (err) {
+        console.error("Error in changePartyStatus:", err.message);
+        return res.status(500).json({
+            msg: 'Internal server error',
+            error: err.message,
+        });
+    }
+};
+
+const changeLocation = async (req, res) => {
+    const user = req.user;
+    const { locationId } = req.body;
+
+    await changePlayerLocation(user.id, locationId);
+
+    return res.status(200).json({
+        msg: 'Location updated successfully',
+    });
+}
+
 export { getPlayerInfo, getUserMenagerie, addItemToInventory, getUserInventory, moveMonsterToParty, moveMonsterFromParty };
+

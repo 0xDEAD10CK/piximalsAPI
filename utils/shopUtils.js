@@ -1,7 +1,15 @@
 import { PrismaClient } from "@prisma/client";
+import { v4 as uuidv4 } from 'uuid'
 const prisma = new PrismaClient();
 
 // Sell an item from the user's inventory
+/**
+ * 
+ * @param {string} userId 
+ * @param {int} itemId 
+ * @param {int} quantity 
+ * @returns creates listing to sell an item from your inventory
+ */
 export const sellInventoryItem = async (userId, itemId, quantity) => {
     const user = await prisma.account.findUnique({
         where: { id: userId },
@@ -63,4 +71,33 @@ export const sellInventoryItem = async (userId, itemId, quantity) => {
     });
 
     return { msg: "Item sold successfully", data: newBalance};
+};
+
+/**
+ * 
+ * @param {int} itemId 
+ * @returns delete listing from shop
+ */
+export const removeListingFromShop = (itemId) => {
+    return prisma.shop.delete({
+        where: { id: itemId },
+    });
+};
+
+/**
+ * 
+ * @param {string} monsterId 
+ * @param {int} playerId 
+ * @param {int} price 
+ * @returns 
+ */
+export const createShopListing = (monsterId, playerId, price) => {
+    return prisma.shop.create({
+        data: {
+            id: uuidv4(),
+            monsterId: monsterId,
+            playerId: playerId,
+            price: price,
+        },
+    });
 };

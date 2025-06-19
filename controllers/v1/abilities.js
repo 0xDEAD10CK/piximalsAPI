@@ -1,22 +1,25 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-const createAbility = async (req, res) => {
-    const { name,
-        type,
-        cost, 
-        damage, 
-        description, 
-        category, 
-        effectType,
-        effectChance,
-        effectTurns,
-        effectDamage,
-        effectReduction,
-        effectHeal,
-        effectIncrease } = req.body;
+import { getAbilitiesFilter, getTotalAbilityCount } from '../../utils/filteringUtils.js';
 
+const createAbility = async (req, res) => {
     try {
+        const { name,
+            type,
+            cost, 
+            damage, 
+            description, 
+            category, 
+            effectType,
+            effectChance,
+            effectTurns,
+            effectDamage,
+            effectReduction,
+            effectHeal,
+            effectIncrease } = req.body;
+
+    
         const ability = await prisma.ability.create({
             data: {
                 name: name,
@@ -34,9 +37,14 @@ const createAbility = async (req, res) => {
                 effectIncrease: effectIncrease,
             },
         });
-        console.log('Ability created:', ability);
+        return res.status(200).json({
+            msg: 'Ability created successfully',
+            data: ability,
+        });
     } catch (error) {
-        console.error('Error creating ability:', error);
+        return res.status(500).json({
+            msg: err.message,
+          });
     }
 };
 
@@ -46,32 +54,8 @@ const getAbilities = async (req, res) => {
     const skip = (page - 1) * pageSize;
 
     try {
-        const filterOptions = {
-            where: {}
-        };
-
-        if (type) {
-            filterOptions.where.type = { contains: type };
-        }
-
-        if (name) {
-            filterOptions.where.name = { contains: name };
-        }
-
-        if (category) {
-            filterOptions.where.category = { contains: category };
-        }
-
-        const abilities = await prisma.ability.findMany({
-            ...filterOptions,
-            take: pageSize,
-            skip,
-        });
-
-        const totalItems = await prisma.ability.count({
-            where: filterOptions.where,
-        });
-
+        const [abilities, filterOptions] = await getAbilitiesFilter(pageSize, skip, type, name, category);
+        const totalItems = await getTotalAbilityCount(filterOptions);
         const totalPages = Math.ceil(totalItems / pageSize);
 
         return res.status(200).json({
@@ -86,8 +70,6 @@ const getAbilities = async (req, res) => {
         return res.status(500).json({
             msg: err.message,
           });
-    } finally {
-        console.log("DONE")
     }
 }
 

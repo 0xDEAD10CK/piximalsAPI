@@ -1,20 +1,23 @@
-import { v4 as uuidv4 } from 'uuid'
 import { PrismaClient } from '@prisma/client'
-import { sellInventoryItem } from '../../utils/shopUtils.js';
-
-
 const prisma = new PrismaClient()
+
+import {
+    sellInventoryItem,
+    removeListingFromShop,
+    createShopListing
+} from '../../utils/shopUtils.js';
 
 import { 
     deductBalance,
     updateBalance,
+} from '../../utils/accountBalance.js';
+
+import {
     addMonsterToMenagerie,
     updateMonsterStatus,
     removeMonsterFromMenagerie,
-    removeListingFromShop,
-    findMonsterById,
-    createShopListing,
-} from '../../utils/accountBalance.js';
+    findMonsterById
+} from '../../utils/monsters.js';
 
 const purchaseMonster = async (req, res) => {
     const { id } = req.params;
@@ -33,6 +36,9 @@ const purchaseMonster = async (req, res) => {
             select: { id: true, currency: true },
         });
 
+        console.log(shopItem)
+        console.log(buyer)
+
         if (buyer.currency < shopItem.price) {
             return res.status(403).json({
                 msg: 'You do not have enough money!',
@@ -43,6 +49,7 @@ const purchaseMonster = async (req, res) => {
         await prisma.$transaction([
             deductBalance(buyer.id, shopItem.price),   // Deduct money from the buyer
             updateBalance(shopItem.playerId, shopItem.price),  // Update the seller's balance
+            updateMonsterStatus(shopItem.monster.id, 'In_Menagerie'),   // Update the monster's status to 'In_Inventory'
             addMonsterToMenagerie(buyer.id, shopItem.monster.id),   // Transfer the monster from seller to buyer
             updateMonsterStatus(buyer.id, shopItem.monster.id, 'IN_MENAGERIE'),   // Update the monster's status to 'In_Inventory'
             removeMonsterFromMenagerie(shopItem.playerId, shopItem.monster.id),  // Remove the monster from the seller's inventory
@@ -192,6 +199,7 @@ const getShop = async (req, res) => {
             msg: 'Shop items retrieved successfully',
             data: {
                 shopItems,
+                totalItems,
                 totalPages,
                 currentPage: page,
             },

@@ -19,7 +19,7 @@ const prisma = new PrismaClient();
  * @param {items[{}]} items         - An array of Item objects 
  * @returns {Zone} Returns the newly created zone object
  */
-export const generateZone = async (name, type, user, description) => {
+export const generateZone = async (name, type, user, description, monsters, items) => {
     try {
         const zone = await prisma.zone.create({
             data: {
@@ -28,6 +28,12 @@ export const generateZone = async (name, type, user, description) => {
                 description: description,
                 players: {
                     connect: {id: user.id}
+                },
+                monsters: {
+                    connect: monsters.map(monster => ({id: monster.id}))
+                },
+                items: {
+                    connect: items.map(item => ({id: item.id}))
                 }
         },
         select: {

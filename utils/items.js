@@ -8,6 +8,7 @@ const prisma = new PrismaClient()
  * @returns returns a random item
  */
 export const randomItem = async (getLocation) => {
+    console.log(getLocation)
     const rarity = await getRandomWeightedOption(getLocation.rarity)
     const item = await prisma.item.findMany({
         where: {

@@ -25,9 +25,9 @@ const prisma = new PrismaClient()
 const zoneGeneration = async (req, res) => {
     try {
         const user = req.user;
+        const { monsterAmount } = req.body
         let monsters = []
         let items = []
-        
         const player = await prisma.account.findUnique({
             where: {
                 id: user.id
@@ -51,10 +51,8 @@ const zoneGeneration = async (req, res) => {
         monsters = await Promise.all(monsters);
         items = await Promise.all(items);
 
-        const zone = await generateZone("Dangerzone", player.location.type, user, "This is a dangerous zone")
+        const zone = await generateZone("Dangerzone", player.location.type, user, "This is a dangerous zone", monsters, items)
         
-        console.log(zone)
-
         return res.status(200).json({msg: "Welcome to the Dangerzone", zone: zone})
     } catch (error) {
         return res.status(500).json({msg: error})

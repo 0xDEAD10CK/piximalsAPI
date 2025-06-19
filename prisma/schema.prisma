@@ -101,7 +101,7 @@ model Account {
   zoneId        String?
   zone          Zone?           @relation(fields: [zoneId], references: [id])// Relation to the zone model
 
-  inventory       Inventory?    // Relation to inventory model
+  inventory       Inventory[]    // Relation to inventory model
   menagerie       Menagerie[]    // Relation to the new menagerie model
   shopItems       Shop[]
   quests          Quest[] 

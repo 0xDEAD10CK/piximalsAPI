@@ -4,13 +4,15 @@ const prisma = new PrismaClient()
 import { 
     checkInventory,
     createInventory,
+    getInventory,
+    getMenagerie,
     checkItemInInventory,
     updateInventoryItem,
     createInventoryItem,
     changePlayerLocation
  } from '../../utils/userUtils.js'
 
- import { checkItem } from '../../utils/itemUtils.js'
+import { checkItem } from '../../utils/itemUtils.js'
 import { check } from 'prettier'
 import { updateMonsterStatus, countPartyMonsters } from '../../utils/monsters.js'
 
@@ -42,33 +44,10 @@ const getPlayerInfo = async (req, res) => {
     }
 }
 
-const getInventory = async (req, res) => {
+const getUserInventory = async (req, res) => {
     const user = req.user;
     try {
-        const userdata = await prisma.account.findUnique({
-            where: { id: Number(user.id) },
-            select: {
-                inventory: {
-                    select: {
-                        items: {
-                            select: {
-                                id: true,
-                                quantity: true,
-                                item: { // Accessing the related item model
-                                    select: {
-                                        id: true,
-                                        name: true,
-                                        effects: true,
-                                        buyPrice: true,
-                                        sellPrice: true,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        });
+        const userdata = await getInventory(user.id);
 
         // If the user's inventory or items are not found, handle the response accordingly
         if (!userdata || !userdata.inventory) {
@@ -172,15 +151,56 @@ const addItemToInventory = async (req, res) => {
     }
 };
 
-const changePartyStatus = async (req, res) => {
+const moveMonsterToParty = async (req, res) => {
     const user = req.user;
-    const { id, status } = req.body;
+    const { monsterId } = req.params;
 
-    if (!user || !user.id || !id || !status) {
-        return res.status(400).json({
-            msg: 'Missing required fields: user ID, monster ID, or status.',
+    try {
+        // Check how many monsters in menagerie have status 'IN_PARTY'
+        const menagerie = await getMenagerie(user.id);
+
+        // Extract the monsters from the menagerie records
+        const monsters = menagerie.menagerie.map(record => record.monster);
+
+        // Count the number of monsters in the party
+        const partyCount = monsters.filter(monster => monster.status === 'IN_PARTY').length;
+        
+        if (partyCount >= 3) {
+            return res.status(403).json({
+                msg: 'Party is full!',
+            });
+        } else {
+            await updateMonsterStatus(user.id, monsterId, 'IN_PARTY');
+
+            return res.status(201).json({
+                msg: 'Monster successfully moved to party!',
+            });
+        }
+    } catch (err) {
+        return res.status(500).json({
+            msg: err.message,
         });
     }
+};
+
+const moveMonsterFromParty = async (req, res) => {
+    const user = req.user;
+    const { monsterId } = req.params;
+
+    try {
+        // Check if the monster exists
+        await updateMonsterStatus(user.id, monsterId, 'IN_MENAGERIE');
+
+        return res.status(201).json({
+            msg: 'Monster successfully moved from party!',
+        });
+    } catch (err) {
+        return res.status(500).json({
+            msg: err.message,
+        });
+    }
+};
+
 
     try {
         // If we are trying to add a monster to the party (i.e., status is "In_Party")
@@ -221,4 +241,5 @@ const changeLocation = async (req, res) => {
     });
 }
 
-export { getPlayerInfo, getInventory, addItemToInventory, getMenagerie, changePartyStatus, changeLocation };
+export { getPlayerInfo, getUserMenagerie, addItemToInventory, getUserInventory, moveMonsterToParty, moveMonsterFromParty };
+

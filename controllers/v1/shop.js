@@ -51,6 +51,8 @@ const purchaseMonster = async (req, res) => {
             updateBalance(shopItem.playerId, shopItem.price),  // Update the seller's balance
             updateMonsterStatus(shopItem.monster.id, 'In_Menagerie'),   // Update the monster's status to 'In_Inventory'
             addMonsterToMenagerie(buyer.id, shopItem.monster.id),   // Transfer the monster from seller to buyer
+            updateMonsterStatus(buyer.id, shopItem.monster.id, 'IN_MENAGERIE'),   // Update the monster's status to 'In_Inventory'
+            removeMonsterFromMenagerie(shopItem.playerId, shopItem.monster.id),  // Remove the monster from the seller's inventory
             removeListingFromShop(id),  // Remove item from the shop
         ]);
 
@@ -76,7 +78,7 @@ const sellMonster = async (req, res) => {
         // Fetch the monster details
         const monster = await findMonsterById(id);
 
-        if (monster.status === 'On_Market') {
+        if (monster.status === 'ON_MARKET') {
             return res.status(403).json({
                 msg: "Monster already marketed."
             });
@@ -87,8 +89,8 @@ const sellMonster = async (req, res) => {
 
         await removeMonsterFromMenagerie(user.id, id)
 
-        // Update the status of the monster to 'On_Market'
-        await updateMonsterStatus(id, 'On_Market');
+        // Update the status of the monster to 'ON_MARKET'
+        await updateMonsterStatus(user.id, id, 'ON_MARKET');
 
         return res.status(200).json({
             msg: 'Monster listed successfully',
@@ -140,8 +142,8 @@ const cancelListing = async (req, res) => {
             return res.status(404).json({ msg: "Monster not found." });
         }
 
-        // Update the status of the monster to 'In_Menagerie'
-        await updateMonsterStatus(monsterId, 'In_Menagerie');
+        // Update the status of the monster to 'IN_MENAGERIE'
+        await updateMonsterStatus(user.id, monsterId, 'IN_MENAGERIE');
 
         return res.status(200).json({ msg: "Listing successfully canceled." });
     } catch (error) {

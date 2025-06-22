@@ -1,7 +1,7 @@
 import { Ability, AbilityCategory, PrismaClient, AbilityType, EffectType } from '@prisma/client'
 const prisma = new PrismaClient()
 
-import { getAbilitiesFilter, getTotalAbilityCount } from '../../utils/filteringUtils.js';
+import { getAbilitiesFilter, getTotalAbilityCount } from '../../utils/filteringUtils';
 import { Request, Response } from 'express';
 
 interface CreateAbilityRequestBody {
@@ -89,7 +89,7 @@ interface GetAbilitiesQuery {
 interface GetAbilitiesSuccess {
     msg: string
     data: {
-        abilities: Ability;
+        abilities: Ability[];
         totalPages: number;
         currentPage: number;
     }

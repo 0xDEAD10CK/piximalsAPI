@@ -1,11 +1,9 @@
 import dotenv from 'dotenv'
-import express, { urlencoded, json } from 'express'
+import express, { urlencoded, json, Application } from 'express'
 import cors from "cors";
 
 // IMPORT ROUTES BELOW
-import adminAuthRoute from './middleware/adminAuthRoute.js'
-
-import auth from './routes/auth.js'
+import auth from './routes/auth'
 import shop from './routes/shop.js'
 import player from './routes/player.js'
 import admin from './routes/admin.js'
@@ -13,13 +11,13 @@ import adventure from "./routes/adventure.js"
 
 dotenv.config()
 
-const app = express()
+const app: Application = express()
 app.use(cors());
 
-const BASE_URL = 'api'
-const CURRENT_VERSION = 'v1'
+const BASE_URL: string = 'api'
+const CURRENT_VERSION: string = 'v1'
 
-const PORT = process.env.PORT
+const PORT: number = parseInt(process.env.PORT || '3000', 10)
 
 app.use(urlencoded({ extended: false }))
 app.use(json())

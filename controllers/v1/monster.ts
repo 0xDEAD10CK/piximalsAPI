@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 import { v4 as uuidv4 } from 'uuid'
-import { monsterData } from '../../data/monsterdata.js';
-import { getRandomInt, getRandomWeightedOption } from '../../utils/utils.js';
+import { monsterData } from '../../data/monsterdata';
+import { getRandomInt, getRandomWeightedOption } from '../../utils/utils';
+import { Request, Response } from 'express';
 
 const prisma = new PrismaClient()
 /**
@@ -11,39 +12,35 @@ const prisma = new PrismaClient()
  * @param {Object} res - The response object.
  * @returns {Object} The generated monster.
  */
-const generateMonster = async (req, res) => {
+const generateMonster = async (req: Request, res: Response) => {
     const randomType = monsterData.types[getRandomInt(0, monsterData.types.length - 1)];
     const randomSpecies = monsterData.species[getRandomInt(0, monsterData.species.length - 1)];
     const randomRarity = getRandomWeightedOption(monsterData.rarity).rarity;
     const id = uuidv4();
 
     try {
-        // Fetch abilities based on the monster's type
         const abilities = await prisma.ability.findMany({
             where: {
                 type: randomType,
             },
         });
 
-        // Ensure we have enough abilities to choose from
         if (abilities.length < 2) {
             return res.status(500).json({
                 msg: 'Not enough abilities for this monster type.',
             });
         }
 
-        // Shuffle abilities and pick two unique abilities
-        const selectedAbilities = [];
+        const selectedAbilities:any = [];
         while (selectedAbilities.length < 2) {
             const randomIndex = getRandomInt(0, abilities.length - 1);
             const selectedAbility = abilities[randomIndex];
 
-            if (!selectedAbilities.some(a => a.id === selectedAbility.id)) {
+            if (!selectedAbilities.some((a:any) => a.id === selectedAbility.id)) {
                 selectedAbilities.push(selectedAbility);
             }
         }
 
-        // Create the monster with selected abilities
         const monster = await prisma.monster.create({
             data: {
                 id: id,
@@ -56,7 +53,7 @@ const generateMonster = async (req, res) => {
                 hp: 100,
                 ap: 20,
                 abilities: {
-                    connect: selectedAbilities.map(ability => ({ id: ability.id })),
+                    connect: selectedAbilities.map((ability: any) => ({ id: ability.id })),
                 },
             },
             include: {
@@ -68,7 +65,7 @@ const generateMonster = async (req, res) => {
             msg: 'Monster successfully generated',
             data: monster,
         });
-    } catch (err) {
+    } catch (err: any) {
         return res.status(500).json({
             msg: err.message,
         });
@@ -82,7 +79,7 @@ const generateMonster = async (req, res) => {
  * @param {Object} res - The response object.
  * @returns {Object} The response object with the fetched monster data.
  */
-const getMonsters = async (req, res) => {
+const getMonsters = async (req: Request, res: Response) => {
     try {
         const monsterData = await prisma.monster.findMany({
             include: {
@@ -101,7 +98,7 @@ const getMonsters = async (req, res) => {
             msg: 'Monster successfully fetched',
             data: monsterData,
         })
-    } catch (err) {
+    } catch (err: any) {
         return res.status(500).json({
             msg: err.message,
         })

@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
  * @param {int} itemId 
  * @returns 
  */
-export const checkItem = async (itemId) => {
+export const checkItem = async (itemId: string) => {
     return await prisma.item.findUnique({
         where: { id: Number(itemId) }
     });
@@ -19,7 +19,7 @@ export const checkItem = async (itemId) => {
  * @param {int} quantity 
  * @returns an inventoryitem to the users inventory
  */
-export const addToInventory = async (userId, itemId, quantity) => {
+export const addToInventory = async (userId: number, itemId: number, quantity: number) => {
     try {
       // Step 1: Fetch the user's account and include inventory
       const user = await prisma.account.findUnique({
@@ -54,7 +54,7 @@ export const addToInventory = async (userId, itemId, quantity) => {
   
         return createdItem
       }
-    } catch (error) {
+    } catch (error: any) {
       return { status: 500, msg: `Error adding item to inventory: ${error.message}` };
     }
   };

@@ -13,10 +13,15 @@ import {
  } from '../../utils/userUtils.js'
 
 import { checkItem } from '../../utils/itemUtils.js'
-import { check } from 'prettier'
-import { updateMonsterStatus, countPartyMonsters } from '../../utils/monsters.js'
+import { updateMonsterStatus } from '../../utils/monsters.js'
+import { Response, Request } from 'express'
+import { isAuthenticated } from '../../utils/isAuthenticated.js'
 
-const getPlayerInfo = async (req, res) => {
+const getPlayerInfo = async (req: Request, res: Response) => {
+    if (!isAuthenticated(req)){
+        return res.status(401).json({ msg: "Unauthorized"})
+    }
+
     const user = req.user
     try {
         const userdata = await prisma.account.findUnique({
@@ -37,19 +42,22 @@ const getPlayerInfo = async (req, res) => {
             msg: 'User information successfully fetched!',
             data: userdata,
         })
-    } catch (err) {
+    } catch (err: any) {
         return res.status(500).json({
             msg: err.message,
         })
     }
 }
 
-const getUserInventory = async (req, res) => {
+const getUserInventory = async (req: Request, res: Response) => {
+    if (!isAuthenticated(req)){
+        return res.status(401).json({ msg: "Unauthorized"})
+    }
+
     const user = req.user;
     try {
         const userdata = await getInventory(user.id);
 
-        // If the user's inventory or items are not found, handle the response accordingly
         if (!userdata || !userdata.inventory) {
             return res.status(404).json({
                 msg: 'Inventory not found!',
@@ -60,14 +68,17 @@ const getUserInventory = async (req, res) => {
             msg: 'User inventory successfully fetched!',
             data: userdata,
         });
-    } catch (err) {
+    } catch (err: any) {
         return res.status(500).json({
             msg: err.message,
         });
     }
 };
 
-const getUserMenagerie = async (req, res) => {
+const getUserMenagerie = async (req: Request, res: Response) => {
+    if (!isAuthenticated(req)){
+        return res.status(401).json({ msg: "Unauthorized"})
+    }
     const user = req.user;
     try {
         const userdata = await prisma.account.findUnique({
@@ -98,14 +109,17 @@ const getUserMenagerie = async (req, res) => {
             msg: 'User menagerie successfully fetched!',
             data: userdata,
         });
-    } catch (err) {
+    } catch (err: any) {
         return res.status(500).json({
             msg: err.message,
         });
     }
 };
 
-const addItemToInventory = async (req, res) => {
+const addItemToInventory = async (req: Request, res: Response) => {
+    if (!isAuthenticated(req)){
+        return res.status(401).json({ msg: "Unauthorized"})
+    }
     const user = req.user;
     const { itemId, quantity } = req.body;
 
@@ -144,20 +158,29 @@ const addItemToInventory = async (req, res) => {
             msg: 'Item successfully added to inventory!',
             data: updatedInventoryItem,
         });
-    } catch (err) {
+    } catch (err: any) {
         return res.status(500).json({
             msg: err.message,
         });
     }
 };
 
-const moveMonsterToParty = async (req, res) => {
+const moveMonsterToParty = async (req: Request, res: Response) => {
+    if (!isAuthenticated(req)){
+        return res.status(401).json({ msg: "Unauthorized"})
+    }
     const user = req.user;
     const { monsterId } = req.params;
 
     try {
         // Check how many monsters in menagerie have status 'IN_PARTY'
         const menagerie = await getMenagerie(user.id);
+
+        if (!menagerie) {
+            return res.status(404).json({
+                msg: 'Menagerie not found',
+            });
+        }
 
         // Extract the monsters from the menagerie records
         const monsters = menagerie.menagerie.map(record => record.monster);
@@ -176,14 +199,17 @@ const moveMonsterToParty = async (req, res) => {
                 msg: 'Monster successfully moved to party!',
             });
         }
-    } catch (err) {
+    } catch (err: any) {
         return res.status(500).json({
             msg: err.message,
         });
     }
 };
 
-const moveMonsterFromParty = async (req, res) => {
+const moveMonsterFromParty = async (req: Request, res: Response) => {
+    if (!isAuthenticated(req)){
+        return res.status(401).json({ msg: "Unauthorized"})
+    }
     const user = req.user;
     const { monsterId } = req.params;
 
@@ -194,14 +220,17 @@ const moveMonsterFromParty = async (req, res) => {
         return res.status(201).json({
             msg: 'Monster successfully moved from party!',
         });
-    } catch (err) {
+    } catch (err: any) {
         return res.status(500).json({
             msg: err.message,
         });
     }
 };
 
-const changeLocation = async (req, res) => {
+const changeLocation = async (req: Request, res: Response) => {
+    if (!isAuthenticated(req)){
+        return res.status(401).json({ msg: "Unauthorized"})
+    }
     const user = req.user;
     const { locationId } = req.body;
 

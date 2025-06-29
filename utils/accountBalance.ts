@@ -7,7 +7,7 @@ export const viewBalance = () => {
 }
 
 // Deduct balance from account
-export const deductBalance = (id, cost) => {
+export const deductBalance = (id: number, cost: number) => {
     return prisma.account.update({
         where: { id: id },
         data: { currency: { decrement: cost } },
@@ -15,7 +15,7 @@ export const deductBalance = (id, cost) => {
 };
 
 // Update balance in account
-export const updateBalance = (id, amount) => {
+export const updateBalance = (id: number, amount: number) => {
     return prisma.account.update({
         where: { id: id },
         data: { currency: { increment: amount } },
@@ -23,7 +23,7 @@ export const updateBalance = (id, amount) => {
 };
 
 // Add a monster to the menagerie
-export const addMonsterToMenagerie = (id, monsterId) => {
+export const addMonsterToMenagerie = (id: number, monsterId: string) => {
     return prisma.menagerie.create({
         data: {
             userId: id,
@@ -33,7 +33,7 @@ export const addMonsterToMenagerie = (id, monsterId) => {
 };
 
 // Remove a monster from the menagerie
-export const removeMonsterFromMenagerie = (id, monsterId) => {
+export const removeMonsterFromMenagerie = (id: number, monsterId: string) => {
     return prisma.menagerie.deleteMany({
         where: {
             userId: id,
@@ -43,7 +43,7 @@ export const removeMonsterFromMenagerie = (id, monsterId) => {
 };
 
 // Update monster status
-export const updateMonsterStatus = async (userId, monsterId, status) => {
+export const updateMonsterStatus = async (userId: number, monsterId: string, status: string) => {
     // Find the menagerie record for the user that contains the monster
     await prisma.menagerie.findUnique({
         where: { id: userId },
@@ -58,21 +58,21 @@ export const updateMonsterStatus = async (userId, monsterId, status) => {
 };
 
 // Remove listing from shop
-export const removeListingFromShop = (itemId) => {
+export const removeListingFromShop = (itemId: string) => {
     return prisma.shop.delete({
         where: { id: itemId },
     });
 };
 
 // Fetch monster by ID
-export const findMonsterById = (id) => {
+export const findMonsterById = (id: string) => {
     return prisma.monster.findUnique({
         where: { id: id },
     });
 };
 
 // Create a shop listing for the monster
-export const createShopListing = (monsterId, playerId, price) => {
+export const createShopListing = (monsterId: string, playerId: number, price: number) => {
     return prisma.shop.create({
         data: {
             id: uuidv4(),
@@ -83,16 +83,17 @@ export const createShopListing = (monsterId, playerId, price) => {
     });
 };
 
-export const findPlayer = async (userId) => {
+export const findPlayer = async (userId: number) => {
     const player = await prisma.account.findUnique({
         where: {
             id: userId
         }
     }) 
 
-    if (!player){
-        return res.status(404).json({msg: "Player can not be found"})
-    }
+    // To be fixed
+    // if (!player){
+    //     return res.status(404).json({msg: "Player can not be found"})
+    // }
 
     return player
 }

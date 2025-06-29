@@ -1,10 +1,18 @@
 import { PrismaClient } from '@prisma/client'
-import { getRandomWeightedOption } from '../../utils/utils.js';
-import { randomItem } from '../../utils/items.js';
-import { getItemsFilter, getTotalItemCount } from '../../utils/filteringUtils.js';
+import { randomItem } from '../../utils/items';
+import { getItemsFilter, getTotalItemCount } from '../../utils/filteringUtils';
+import { Request, Response } from 'express';
 const prisma = new PrismaClient()
 
-const getItems = async (req, res) => {
+interface ItemQuery {
+    page?: number;
+    pageSize?: number;
+    type?: string;
+    name?: string;
+    rarity?: string;
+}
+
+const getItems = async (req: Request<{}, {}, {}, ItemQuery>, res: Response) => {
     const { page = 1, pageSize = 10, type, name, rarity } = req.query;
 
     const skip = (page - 1) * pageSize;
@@ -24,14 +32,14 @@ const getItems = async (req, res) => {
                 currentPage: page,
             },
         })
-    } catch (err) {
+    } catch (err: any) {
         return res.status(500).json({
             msg: err.message,
           });
     }
 }
 
-const getRandomItem = async (req, res) => {
+const getRandomItem = async (req: Request, res: Response) => {
     try {
         const getLocation = await prisma.location.findFirst()
 
@@ -41,7 +49,7 @@ const getRandomItem = async (req, res) => {
             msg: 'Item retrieved successfully',
             data: item,
         });
-    } catch (err) {
+    } catch (err: any) {
         return res.status(500).json({
             msg: err.message,
         });

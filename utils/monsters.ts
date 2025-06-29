@@ -1,15 +1,15 @@
 import { PrismaClient } from '@prisma/client'
-import { getRandomInt, getRandomWeightedOption } from './utils.js'
-import { monsterData } from '../data/monsterdata.js'
+import { getRandomInt, getRandomWeightedOption } from './utils'
+import { monsterData } from '../data/monsterdata'
 import { v4 as uuidv4 } from 'uuid'
 import {
     prefixesByType,
     genericSuffixes,
-} from './seeding/nameList.js'
+} from './seeding/nameList'
 
 const prisma = new PrismaClient()
 
-function capitalizeEachWord(str) {
+function capitalizeEachWord(str: string) {
     return str.replace(/\b\w/g, (match) => match.toUpperCase())
 }
 
@@ -18,7 +18,7 @@ function capitalizeEachWord(str) {
  * @param {string} type - affects type of monster generated i.e nature
  * @returns A new random monster
  */
-export const generateMonster = async (type) => {
+export const generateMonster = async (type: any) => {
     const defineType = getRandomInt(0, 3)
     let monsterType = ""
     // If defineType is 1 or type is empty, get a random type from the monsterData.types array
@@ -36,7 +36,7 @@ export const generateMonster = async (type) => {
     });
     
     console.log(abilities.length)
-    const selectedAbilities = [];
+    const selectedAbilities:any[] = [];
     while (selectedAbilities.length < 2) {
         const randomIndex = getRandomInt(0, abilities.length - 1);
         const selectedAbility = abilities[randomIndex];
@@ -77,8 +77,8 @@ export const generateMonster = async (type) => {
             },
         })
         return monster
-    } catch (err) {
-        return res.status(500).json({msg: error})
+    } catch (error:any) {
+        return error
     }
 }
 
@@ -88,18 +88,14 @@ export const generateMonster = async (type) => {
  * @param {string} monsterId 
  * @returns Attaches monster to a mangerie
  */
-export const addMonsterToMenagerie = (userId, monsterId) => {
-    try {
-        const result = prisma.menagerie.create({
-            data: {
-                userId: userId,
-                monsterId: monsterId,
-            },
-        });
-        return result;
-    } catch (error) {
-        console.error(`Error adding Monster ID: ${monsterId} to menagerie: `, error);
-    }
+export const addMonsterToMenagerie = (userId:number, monsterId: string) => {
+    const result = prisma.menagerie.create({
+        data: {
+            userId: userId,
+            monsterId: monsterId,
+        },
+    });
+    return result;
 };
 
 
@@ -109,7 +105,7 @@ export const addMonsterToMenagerie = (userId, monsterId) => {
  * @param {string} monsterId 
  * @returns removes monster from menagerie
  */
-export const removeMonsterFromMenagerie = (id, monsterId) => {
+export const removeMonsterFromMenagerie = (id:number, monsterId: string) => {
     return prisma.menagerie.deleteMany({
         where: {
             userId: id,
@@ -124,14 +120,14 @@ export const removeMonsterFromMenagerie = (id, monsterId) => {
  * @param {string} status 
  * @returns 
  */
-export const updateMonsterStatus = (monsterId, status) => {
+export const updateMonsterStatus = (monsterId: string, status: string) => {
     return prisma.monster.update({
         where: { id: monsterId },
         data: { status: status },
     });
 };
 
-export const updateMonsterInZoneStatus = (zoneId, monsterId, status) => {
+export const updateMonsterInZoneStatus = (zoneId: string, monsterId: string, status:string) => {
     return prisma.zone.update({
         where: { id: zoneId },
         data: {
@@ -150,7 +146,7 @@ export const updateMonsterInZoneStatus = (zoneId, monsterId, status) => {
  * @param {string} id 
  * @returns gets monster by id
  */
-export const findMonsterById = (id) => {
+export const findMonsterById = (id: string) => {
     return prisma.monster.findUnique({
         where: { id: id },
     });
@@ -161,7 +157,7 @@ export const findMonsterById = (id) => {
  * @param {string} id 
  * @returns Deletes monster by id
  */
-export const deleteMonster = (id) => {
+export const deleteMonster = (id: string) => {
     return prisma.monster.delete({
         where: { id: id },
     });
@@ -173,7 +169,7 @@ export const deleteMonster = (id) => {
  * @param {string} userId
  * @returns All monsters in the user's party.
  */
-export const countPartyMonsters = async (userId) => {
+export const countPartyMonsters = async (userId: number) => {
     const count = await prisma.menagerie.count({
         where: {
             userId: userId,

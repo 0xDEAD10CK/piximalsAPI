@@ -1,9 +1,38 @@
-import { PrismaClient } from '@prisma/client'
+import { Ability, AbilityCategory, PrismaClient, AbilityType, EffectType } from '@prisma/client'
 const prisma = new PrismaClient()
 
-import { getAbilitiesFilter, getTotalAbilityCount } from '../../utils/filteringUtils.js';
+import { getAbilitiesFilter, getTotalAbilityCount } from '../../utils/filteringUtils';
+import { Request, Response } from 'express';
 
-const createAbility = async (req, res) => {
+interface CreateAbilityRequestBody {
+   name: string;
+   type: AbilityType;
+   cost: number;
+   damage?: number;
+   description: string;
+   category: AbilityCategory;
+   effectType?: string;
+   effectTurns?: number;
+   effectChance?: number;
+   effectDamage?: number;
+   effectReduction?: number;
+   effectHeal?: number;
+   effectIncrease?: number;
+}
+
+interface ErrorResponse {
+  msg: string;
+}
+
+interface SuccessResponse {
+    message: string;
+    data: Ability;
+}
+
+const createAbility = async (
+        req: Request<{}, {}, CreateAbilityRequestBody>,
+        res: Response<SuccessResponse | ErrorResponse>
+    ): Promise<void> => {
     try {
         const { name,
             type,
@@ -37,18 +66,40 @@ const createAbility = async (req, res) => {
                 effectIncrease: effectIncrease,
             },
         });
-        return res.status(200).json({
+        
+        res.status(200).json({
             msg: 'Ability created successfully',
             data: ability,
         });
-    } catch (error) {
-        return res.status(500).json({
-            msg: err.message,
+    } catch (error: any) {
+        res.status(500).json({
+            msg: error.message,
           });
     }
 };
 
-const getAbilities = async (req, res) => {
+interface GetAbilitiesQuery {
+    page?: number;
+    pageSize?: number;
+    type: EffectType;
+    name?: string;
+    category?: string;
+}
+
+interface GetAbilitiesSuccess {
+    msg: string
+    data: {
+        abilities: Ability[];
+        totalPages: number;
+        currentPage: number;
+    }
+}
+
+
+const getAbilities = async (
+        req: Request<{}, {}, {}, GetAbilitiesQuery>, 
+        res: Response<GetAbilitiesSuccess | ErrorResponse>
+    ) => {
     const { page = 1, pageSize = 10, type, name, category } = req.query;
 
     const skip = (page - 1) * pageSize;
@@ -58,7 +109,7 @@ const getAbilities = async (req, res) => {
         const totalItems = await getTotalAbilityCount(filterOptions);
         const totalPages = Math.ceil(totalItems / pageSize);
 
-        return res.status(200).json({
+        res.status(200).json({
             msg: 'Abilities retrieved successfully',
             data: {
                 abilities,
@@ -66,8 +117,8 @@ const getAbilities = async (req, res) => {
                 currentPage: page,
             },
         })
-    } catch (err) {
-        return res.status(500).json({
+    } catch (err: any) {
+        res.status(500).json({
             msg: err.message,
           });
     }

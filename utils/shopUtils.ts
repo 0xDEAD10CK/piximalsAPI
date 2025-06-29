@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
  * @param {int} quantity 
  * @returns creates listing to sell an item from your inventory
  */
-export const sellInventoryItem = async (userId, itemId, quantity) => {
+export const sellInventoryItem = async (userId: number, itemId: number, quantity: number) => {
     const user = await prisma.account.findUnique({
         where: { id: userId },
         select: {
@@ -35,7 +35,7 @@ export const sellInventoryItem = async (userId, itemId, quantity) => {
         },
     });
 
-    const item = user.inventory.items.find((item) => item.item.id === itemId);
+    const item = user?.inventory?.items.find((item) => item.item.id === itemId);
 
     if (!item) {
         return { msg: "Item not found in inventory" };
@@ -78,7 +78,7 @@ export const sellInventoryItem = async (userId, itemId, quantity) => {
  * @param {int} itemId 
  * @returns delete listing from shop
  */
-export const removeListingFromShop = (itemId) => {
+export const removeListingFromShop = (itemId: string) => {
     return prisma.shop.delete({
         where: { id: itemId },
     });
@@ -91,7 +91,7 @@ export const removeListingFromShop = (itemId) => {
  * @param {int} price 
  * @returns 
  */
-export const createShopListing = (monsterId, playerId, price) => {
+export const createShopListing = (monsterId: string, playerId: number, price: number) => {
     return prisma.shop.create({
         data: {
             id: uuidv4(),

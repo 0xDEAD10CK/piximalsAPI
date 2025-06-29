@@ -5,7 +5,7 @@
  * @requires PrismaClient
  */
 
-import { PrismaClient } from "@prisma/client";
+import { Account, Item, Monster, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 /**
@@ -19,7 +19,7 @@ const prisma = new PrismaClient();
  * @param {items[{}]} items         - An array of Item objects 
  * @returns {Zone} Returns the newly created zone object
  */
-export const generateZone = async (name, type, user, description, monsters, items) => {
+export const generateZone = async (name: string, type: string, user: Account, description: string, monsters: Monster[], items: Item[]) => {
     try {
         const zone = await prisma.zone.create({
             data: {
@@ -74,8 +74,7 @@ export const generateZone = async (name, type, user, description, monsters, item
     
     return zone;
     } catch (error) {
-        console.log(error)
-        return res.status(500).json({msg: error})
+        return {msg: error}
     }
 }
 
@@ -85,7 +84,7 @@ export const generateZone = async (name, type, user, description, monsters, item
  * @param {string} zoneid - Takes a zoneid and then deletes it
  * @returns deleted zone message
  */
-export const cleanUpZone = async (zoneid) => {
+export const cleanUpZone = async (zoneid: string) => {
     try {
         const deleteZone = await prisma.zone.delete({
             where: {
@@ -95,7 +94,7 @@ export const cleanUpZone = async (zoneid) => {
         
         return deleteZone;
     } catch (error) {
-        return res.status(500).json({msg: error})
+        return {msg: error}
     }
 }
 
@@ -104,7 +103,7 @@ export const cleanUpZone = async (zoneid) => {
  * @param {string} zoneid Takes zoneid and finds zone data
  * @returns zone with monsters and items data
  */
-export const findZone = async (zoneid) => {
+export const findZone = async (zoneid: string) => {
     try {
         const zone = await prisma.zone.findUnique({
             where: {
@@ -117,12 +116,12 @@ export const findZone = async (zoneid) => {
         })        
         
         if (!zone){
-            return res.status(404).json({msg: "Zone does not exist"})
+            return {msg: "Zone does not exist"}
         }
 
         return zone
     } catch (error) {
-        return res.status(500).json({msg: error})
+        return {msg: error}
     }
 }
 
@@ -132,7 +131,7 @@ export const findZone = async (zoneid) => {
  * @param {string} monsterId 
  * @returns 
  */
-export const findMonsterInZone = (zoneid, monsterId) => {
+export const findMonsterInZone = (zoneid: string, monsterId: string) => {
     try {
         const monster = prisma.zone.findUnique({
             where: {
@@ -148,11 +147,11 @@ export const findMonsterInZone = (zoneid, monsterId) => {
         })
         
         if (!monster){
-            return res.status(404).json({msg: "Monster does not exist"})
+            return {msg: "Monster does not exist"}
         }
 
         return monster
     } catch (error) {
-        return res.status(500).json({msg: error})
+        return {msg: error}
     }
 }

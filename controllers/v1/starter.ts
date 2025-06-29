@@ -1,9 +1,14 @@
 import { PrismaClient } from '@prisma/client'
-import { addMonsterToMenagerie, generateMonster } from '../../utils/monsters.js'
-import { collectedStarter, getUserAccount } from '../../utils/userUtils.js'
+import { addMonsterToMenagerie, generateMonster } from '../../utils/monsters'
+import { collectedStarter, getUserAccount } from '../../utils/userUtils'
+import { Request, Response } from 'express'
+import { isAuthenticated } from '../../utils/isAuthenticated'
 const prisma = new PrismaClient()
 
-const getStarter = async (req, res) => {
+const getStarter = async (req: Request, res: Response) => {
+    if (!isAuthenticated(req)) {
+        return res.status(401).json({ msg: 'Unauthorized'})
+    }
     try {
         const response = []
         const defaultTypes = ["FIRE", "WATER", "EARTH"]
@@ -11,6 +16,10 @@ const getStarter = async (req, res) => {
 
         const userData = await getUserAccount(user.id)
         
+        if (!userData){
+            return res.status(400).json({ msg: "Starters not found"})
+        }
+
         if (userData.starter === true){
             return res.status(400).json({ msg: "Already have a starter"})
         }
@@ -26,7 +35,10 @@ const getStarter = async (req, res) => {
     }
 }
 
-const collectStarter = async (req, res) => {
+const collectStarter = async (req: Request, res: Response) => {
+    if (!isAuthenticated(req)) {
+        return res.status(401).json({ msg: 'Unauthorized'})
+    }
     try {
         const { monsterId } = req.body
         const user = req.user;

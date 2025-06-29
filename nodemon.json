@@ -1,5 +1,5 @@
 {
-    "watch": ["."],
-    "ext": "ts",
-    "exec": "node --loader ts-node/esm index.ts"
+  "watch": ["."],
+  "ext": "ts",
+  "exec": "tsx index.ts"
 }

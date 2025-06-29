@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
  * @param {string} userId - Will take a userid
  * @returns finds an inventory belonging to a user
  */
-export const checkInventory = async (userId) => {
+export const checkInventory = async (userId: number) => {
     return await prisma.inventory.findFirst({
         where: { userId },
     });
@@ -19,7 +19,7 @@ export const checkInventory = async (userId) => {
  * @param {string} userId - Will take a userid
  * @returns creates an inventory and connects to the userid
  */
-export const createInventory = async (userId) => {
+export const createInventory = async (userId: number) => {
     return await prisma.inventory.create({
             data: {
                 user: {
@@ -31,7 +31,7 @@ export const createInventory = async (userId) => {
 };
 
 // Get Inventory
-export const getInventory = async (userId) => {
+export const getInventory = async (userId: number) => {
     return await prisma.account.findUnique({
         where: { id: Number(userId) },
         select: {
@@ -58,7 +58,7 @@ export const getInventory = async (userId) => {
     });
 };
 
-export const getMenagerie = async (userId) => {
+export const getMenagerie = async (userId: number) => {
     return await prisma.account.findUnique({
         where: { id: Number(userId) },
         select: {
@@ -89,7 +89,7 @@ export const getMenagerie = async (userId) => {
  * @param {Int} itemId - Id of an item to be found in the above inventory
  * @returns inventory object
  */
-export const checkItemInInventory = async (inventoryId, itemId) => {
+export const checkItemInInventory = async (inventoryId: number, itemId: number) => {
     return await prisma.inventoryItem.findFirst({
         where: {
             inventoryId: inventoryId,
@@ -104,7 +104,7 @@ export const checkItemInInventory = async (inventoryId, itemId) => {
  * @param {Int} quantity 
  * @returns updates the quanitity of the item in the inventory
  */
-export const updateInventoryItem = async (existingInventoryItem, quantity) => {
+export const updateInventoryItem = async (existingInventoryItem:any, quantity:number) => {
     return await prisma.inventoryItem.update({
         where: { id: existingInventoryItem.id },
         data: {
@@ -114,7 +114,7 @@ export const updateInventoryItem = async (existingInventoryItem, quantity) => {
 };
 
 // Create an item in the user's inventory if it doesn't exist
-export const createInventoryItem = async (inventoryId, itemId, quantity) => {    
+export const createInventoryItem = async (inventoryId: number, itemId: number, quantity: number) => {    
     await prisma.inventoryItem.create({
         data: {
             inventory: {
@@ -128,7 +128,7 @@ export const createInventoryItem = async (inventoryId, itemId, quantity) => {
     });
 };
 
-export const getUserAccount = async (id) => {
+export const getUserAccount = async (id: number) => {
     const response = await prisma.account.findUnique({
         where: { id: id}
     })
@@ -136,7 +136,7 @@ export const getUserAccount = async (id) => {
     return response
 }
 
-export const collectedStarter = async (id) => {
+export const collectedStarter = async (id: number) => {
     const response = await prisma.account.update({
         where: { id: id},
         data: {
@@ -147,7 +147,7 @@ export const collectedStarter = async (id) => {
     return response
 }
 
-export const changePlayerLocation = async (userId, locationId) => {
+export const changePlayerLocation = async (userId: number, locationId: number) => {
     return await prisma.account.update({
         where: { id: userId },
         data: {

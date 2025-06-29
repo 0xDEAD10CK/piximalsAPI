@@ -89,17 +89,13 @@ export const generateMonster = async (type: any) => {
  * @returns Attaches monster to a mangerie
  */
 export const addMonsterToMenagerie = (userId:number, monsterId: string) => {
-    try {
-        const result = prisma.menagerie.create({
-            data: {
-                userId: userId,
-                monsterId: monsterId,
-            },
-        });
-        return result;
-    } catch (error) {
-        console.error(`Error adding Monster ID: ${monsterId} to menagerie: `, error);
-    }
+    const result = prisma.menagerie.create({
+        data: {
+            userId: userId,
+            monsterId: monsterId,
+        },
+    });
+    return result;
 };
 
 

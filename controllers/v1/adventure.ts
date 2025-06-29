@@ -4,7 +4,7 @@
  */
 
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { Item, Monster, PrismaClient } from '@prisma/client';
 import {
   generateMonster,
   addMonsterToMenagerie,
@@ -21,10 +21,15 @@ import { randomItem } from '../../utils/items';
 import { findPlayer } from '../../utils/accountBalance';
 import { addToInventory } from '../../utils/itemUtils';
 import { getRandomInt } from '../../utils/utils';
+import { isAuthenticated } from '../../utils/isAuthenticated';
 
 const prisma = new PrismaClient();
 
 const zoneGeneration = async (req: Request, res: Response) => {
+  if (!isAuthenticated(req)) {
+    return res.status(401).json({ msg: 'Unauthorized'})
+  }
+  
   try {
     const user = req.user;
     const { monsterAmount } = req.body;
@@ -50,16 +55,16 @@ const zoneGeneration = async (req: Request, res: Response) => {
     const resolvedMonsters = await Promise.all(monsters);
     const resolvedItems = await Promise.all(items);
 
-    const zone = await generateZone(
-      'Dangerzone',
-      player.location.type,
-      user,
-      'This is a dangerous zone',
-      resolvedMonsters,
-      resolvedItems
-    );
+    // const zone = await generateZone(
+    //   'Dangerzone',
+    //   player.location.type,
+    //   user,
+    //   'This is a dangerous zone',
+    //   resolvedMonsters,
+    //   resolvedItems
+    // );
 
-    return res.status(200).json({ msg: 'Welcome to the Dangerzone', zone });
+    return res.status(200).json({ msg: 'Welcome to the Dangerzone' });
   } catch (error: any) {
     return res.status(500).json({ msg: error.message });
   }
@@ -85,6 +90,9 @@ const goToZone = async (req: Request, res: Response) => {
 };
 
 const collect = async (req: Request, res: Response) => {
+  if (!isAuthenticated(req)) {
+    return res.status(401).json({ msg: 'Unauthorized'})
+  }
   try {
     const { zoneid } = req.params;
     const user = req.user;
@@ -111,21 +119,26 @@ const collect = async (req: Request, res: Response) => {
 };
 
 const leaveZone = async (req: Request, res: Response) => {
+  if (!isAuthenticated(req)) {
+    return res.status(401).json({ msg: 'Unauthorized'})
+  }
   try {
     const { zoneid } = req.params;
     const user = req.user;
     const zone = await findZone(zoneid);
 
-    if (!zone) return res.status(404).json({ msg: 'Zone not found' });
+    if ('msg' in zone) {
+      return res.status(404).json({ msg: zone.msg });
+    }
 
     const monsterPromises = zone.monsters
-      .filter(monster => monster.status === 'CAUGHT')
-      .map(async monster => {
+      .filter((monster: Monster) => monster.status === 'CAUGHT')
+      .map(async (monster: Monster) => {
         await updateMonsterInZoneStatus(zoneid, monster.id, 'In_Menagerie');
         return await addMonsterToMenagerie(user.id, monster.id);
       });
 
-    const itemPromises = zone.items.map(item => addToInventory(user.id, item.id, 1));
+    const itemPromises = zone.items.map((item: Item) => addToInventory(user.id, item.id, 1));
 
     await Promise.all([...monsterPromises, ...itemPromises]);
 
@@ -199,6 +212,9 @@ const setAllMonsterStatusCaught = async (req: Request, res: Response) => {
 };
 
 const search = async (req: Request, res: Response) => {
+  if (!isAuthenticated(req)) {
+    return res.status(401).json({ msg: 'Unauthorized'})
+  }
   const { zoneid } = req.params;
   const user = req.user;
   try {

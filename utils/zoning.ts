@@ -6,6 +6,7 @@
  */
 
 import { Account, Item, Monster, PrismaClient } from "@prisma/client";
+import { ZoneWithDetails } from "../types/Zone";
 const prisma = new PrismaClient();
 
 /**
@@ -103,13 +104,13 @@ export const cleanUpZone = async (zoneid: string) => {
  * @param {string} zoneid Takes zoneid and finds zone data
  * @returns zone with monsters and items data
  */
-export const findZone = async (zoneid: string) => {
+export const findZone = async (zoneid: string): Promise<ZoneWithDetails | GeneralError> => {
     try {
         const zone = await prisma.zone.findUnique({
             where: {
                 id: zoneid
             },
-            select: {
+            include: {
                 monsters: true,
                 items: true
             }
@@ -120,7 +121,7 @@ export const findZone = async (zoneid: string) => {
         }
 
         return zone
-    } catch (error) {
+    } catch (error: any) {
         return {msg: error}
     }
 }

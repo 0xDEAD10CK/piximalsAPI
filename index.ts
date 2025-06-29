@@ -3,11 +3,11 @@ import express, { urlencoded, json, Application } from 'express'
 import cors from "cors";
 
 // IMPORT ROUTES BELOW
-import auth from './routes/auth'
-import shop from './routes/shop.js'
-import player from './routes/player.js'
-import admin from './routes/admin.js'
-import adventure from "./routes/adventure.js"
+import auth from './routes/auth.ts'
+import shop from './routes/shop.ts'
+import player from './routes/player.ts'
+import admin from './routes/admin.ts'
+import adventure from "./routes/adventure.ts"
 
 dotenv.config()
 

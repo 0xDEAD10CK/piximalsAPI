@@ -5,39 +5,48 @@ import {
     sellInventoryItem,
     removeListingFromShop,
     createShopListing
-} from '../../utils/shopUtils.js';
+} from '../../utils/shopUtils';
 
 import { 
     deductBalance,
     updateBalance,
-} from '../../utils/accountBalance.js';
+} from '../../utils/accountBalance';
 
 import {
     addMonsterToMenagerie,
     updateMonsterStatus,
     removeMonsterFromMenagerie,
     findMonsterById
-} from '../../utils/monsters.js';
+} from '../../utils/monsters';
+import { Request, Response } from 'express';
+import { isAuthenticated } from '../../utils/isAuthenticated';
 
-const purchaseMonster = async (req, res) => {
+const purchaseMonster = async (req: Request, res: Response) => {
+    if (!isAuthenticated(req)) {
+        return res.status(401).json({ msg: 'Unauthorized'})
+    }
+      
     const { id } = req.params;
     const user = req.user;
 
     try {
-        // Find the monster in the shop
         const shopItem = await prisma.shop.findUnique({
             where: { id },
-            include: { monster: true }, // Include monster details in the response
+            include: { monster: true }, 
         });
 
-        // Check if the user has enough money
+        if (!shopItem || !shopItem.monster) {
+            return res.status(404).json({ msg: 'Shop item or monster not found' });
+        }
+
         const buyer = await prisma.account.findUnique({
             where: { id: user.id },
             select: { id: true, currency: true },
         });
 
-        console.log(shopItem)
-        console.log(buyer)
+        if (!buyer) {
+            return res.status(404).json({ msg: 'Buyer account not found' });
+        }
 
         if (buyer.currency < shopItem.price) {
             return res.status(403).json({
@@ -51,7 +60,7 @@ const purchaseMonster = async (req, res) => {
             updateBalance(shopItem.playerId, shopItem.price),  // Update the seller's balance
             updateMonsterStatus(shopItem.monster.id, 'In_Menagerie'),   // Update the monster's status to 'In_Inventory'
             addMonsterToMenagerie(buyer.id, shopItem.monster.id),   // Transfer the monster from seller to buyer
-            updateMonsterStatus(buyer.id, shopItem.monster.id, 'IN_MENAGERIE'),   // Update the monster's status to 'In_Inventory'
+            updateMonsterStatus(shopItem.monster.id, 'IN_MENAGERIE'),   // Update the monster's status to 'In_Inventory'
             removeMonsterFromMenagerie(shopItem.playerId, shopItem.monster.id),  // Remove the monster from the seller's inventory
             removeListingFromShop(id),  // Remove item from the shop
         ]);
@@ -62,14 +71,18 @@ const purchaseMonster = async (req, res) => {
                 purchasedMonster: shopItem.monster,
             },
         });
-    } catch (err) {
+    } catch (err:any) {
         return res.status(500).json({
             msg: err.message,
         });
     }
 };
 
-const sellMonster = async (req, res) => {
+const sellMonster = async (req: Request, res: Response) => {
+    if (!isAuthenticated(req)) {
+        return res.status(401).json({ msg: 'Unauthorized'})
+    }
+
     const { id } = req.params;
     const user = req.user;
     const { price } = req.body;
@@ -77,6 +90,12 @@ const sellMonster = async (req, res) => {
     try {
         // Fetch the monster details
         const monster = await findMonsterById(id);
+
+        if (!monster) {
+            return res.status(400).json({
+                msg: "Monster Not Found"
+            })
+        }
 
         if (monster.status === 'ON_MARKET') {
             return res.status(403).json({
@@ -98,15 +117,19 @@ const sellMonster = async (req, res) => {
                 listedMonster: shopItem,
             },
         });
-    } catch (err) {
+    } catch (err: any) {
         return res.status(500).json({
             msg: err.message,
         });
     }
 };
 
-const cancelListing = async (req, res) => {
-    const { id } = req.params; // Correct the destructuring
+const cancelListing = async (req: Request, res: Response) => {
+    if (!isAuthenticated(req)) {
+        return res.status(401).json({ msg: 'Unauthorized'})
+    }
+
+    const { id } = req.params; 
     const user = req.user;
 
     try {
@@ -142,24 +165,29 @@ const cancelListing = async (req, res) => {
             return res.status(404).json({ msg: "Monster not found." });
         }
 
-        // Update the status of the monster to 'IN_MENAGERIE'
         await updateMonsterStatus(monsterId, 'IN_MENAGERIE');
 
         return res.status(200).json({ msg: "Listing successfully canceled." });
     } catch (error) {
-        // Add error handling to return a response in case of exceptions
-        console.error(error);
         return res.status(500).json({ msg: "Internal server error." });
     }
 };
 
-const getShop = async (req, res) => {
+interface ShopQuery {
+    page?: number;
+    pageSize?: number;
+    type?: string;
+    species?: string;
+    rarity?: string;
+}
+
+const getShop = async (req: Request<{}, {}, {}, ShopQuery>, res: Response) => {
     const { page = 1, pageSize = 10, type, species, rarity } = req.query
 
     const skip = (page - 1) * pageSize
 
     try {
-        const filterOptions = {
+        const filterOptions:any = {
             monster: {},
         }
 
@@ -204,14 +232,17 @@ const getShop = async (req, res) => {
                 currentPage: page,
             },
         })
-    } catch (err) {
+    } catch (err:any) {
         return res.status(500).json({
             msg: err.message,
         })
     }
 }
 
-const sellItem = async (req, res) => {
+const sellItem = async (req: Request, res: Response) => {
+    if (!isAuthenticated(req)) {
+        return res.status(401).json({ msg: 'Unauthorized'})
+    }
     const user = req.user
     const { itemId, quantity } = req.body
     const response = await sellInventoryItem(user.id, itemId, quantity);

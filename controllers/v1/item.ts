@@ -24,7 +24,7 @@ const getItems = async (req: Request<{}, {}, {}, ItemQuery>, res: Response) => {
 
         const totalPages = Math.ceil(totalItems / pageSize);
 
-        return res.status(200).json({
+        res.status(200).json({
             msg: 'Items retrieved successfully',
             data: {
                 items,
@@ -32,10 +32,12 @@ const getItems = async (req: Request<{}, {}, {}, ItemQuery>, res: Response) => {
                 currentPage: page,
             },
         })
+        return 
     } catch (err: any) {
-        return res.status(500).json({
+        res.status(500).json({
             msg: err.message,
           });
+        return 
     }
 }
 
@@ -45,14 +47,16 @@ const getRandomItem = async (req: Request, res: Response) => {
 
         const item = await randomItem(getLocation)
 
-        return res.status(200).json({
+        res.status(200).json({
             msg: 'Item retrieved successfully',
             data: item,
         });
+        return 
     } catch (err: any) {
-        return res.status(500).json({
+        res.status(500).json({
             msg: err.message,
         });
+        return 
     }
 }
 

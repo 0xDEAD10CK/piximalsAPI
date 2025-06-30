@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-const getAllUsers = async (req: Request, res: Response): Promise<Response | void> => {
+const getAllUsers = async (req: Request, res: Response): Promise<void> => {
   try {
     const users = await prisma.account.findMany({
       select: {
@@ -50,15 +50,17 @@ const getAllUsers = async (req: Request, res: Response): Promise<Response | void
       },
     });
 
-    return res.status(200).json({
+    res.status(200).json({
       msg: 'User information successfully fetched!',
       data: users,
     });
+    return 
   } catch (error) {
     console.error('Error fetching users:', error);
-    return res.status(500).json({
+    res.status(500).json({
       msg: 'An error occurred while fetching users.',
     });
+    return 
   }
 };
 

@@ -24,12 +24,12 @@ app.use(json())
 
 // PLAYER ROUTES BELOW
 app.use(`/${BASE_URL}/${CURRENT_VERSION}/auth`, auth)
-app.use(`/${BASE_URL}/${CURRENT_VERSION}/shop`, shop)
-app.use(`/${BASE_URL}/${CURRENT_VERSION}/my`, player)
-app.use(`/${BASE_URL}/${CURRENT_VERSION}/adventure`, auth, adventure)
+// app.use(`/${BASE_URL}/${CURRENT_VERSION}/shop`, shop)
+// app.use(`/${BASE_URL}/${CURRENT_VERSION}/my`, player)
+// app.use(`/${BASE_URL}/${CURRENT_VERSION}/adventure`, auth, adventure)
 
 // ADMIN ROUTES BELOW
-app.use(`/${BASE_URL}/${CURRENT_VERSION}/admin`, admin)
+// app.use(`/${BASE_URL}/${CURRENT_VERSION}/admin`, admin)
 
 
 app.listen(PORT, () => {

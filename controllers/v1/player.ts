@@ -19,7 +19,8 @@ import { isAuthenticated } from '../../utils/isAuthenticated.js'
 
 const getPlayerInfo = async (req: Request, res: Response) => {
     if (!isAuthenticated(req)){
-        return res.status(401).json({ msg: "Unauthorized"})
+        res.status(401).json({ msg: "Unauthorized"})
+        return 
     }
 
     const user = req.user
@@ -38,20 +39,23 @@ const getPlayerInfo = async (req: Request, res: Response) => {
             },
         })
 
-        return res.status(201).json({
+        res.status(201).json({
             msg: 'User information successfully fetched!',
             data: userdata,
         })
+        return 
     } catch (err: any) {
-        return res.status(500).json({
+        res.status(500).json({
             msg: err.message,
         })
+        return 
     }
 }
 
 const getUserInventory = async (req: Request, res: Response) => {
     if (!isAuthenticated(req)){
-        return res.status(401).json({ msg: "Unauthorized"})
+        res.status(401).json({ msg: "Unauthorized"})
+        return 
     }
 
     const user = req.user;
@@ -59,25 +63,29 @@ const getUserInventory = async (req: Request, res: Response) => {
         const userdata = await getInventory(user.id);
 
         if (!userdata || !userdata.inventory) {
-            return res.status(404).json({
+            res.status(404).json({
                 msg: 'Inventory not found!',
             });
+            return 
         }
 
-        return res.status(200).json({
+        res.status(200).json({
             msg: 'User inventory successfully fetched!',
             data: userdata,
         });
+        return 
     } catch (err: any) {
-        return res.status(500).json({
+        res.status(500).json({
             msg: err.message,
         });
+        return 
     }
 };
 
 const getUserMenagerie = async (req: Request, res: Response) => {
     if (!isAuthenticated(req)){
-        return res.status(401).json({ msg: "Unauthorized"})
+        res.status(401).json({ msg: "Unauthorized"})
+        return 
     }
     const user = req.user;
     try {
@@ -105,20 +113,23 @@ const getUserMenagerie = async (req: Request, res: Response) => {
             },
         });
 
-        return res.status(200).json({
+        res.status(200).json({
             msg: 'User menagerie successfully fetched!',
             data: userdata,
         });
+        return 
     } catch (err: any) {
-        return res.status(500).json({
+        res.status(500).json({
             msg: err.message,
         });
+        return 
     }
 };
 
 const addItemToInventory = async (req: Request, res: Response) => {
     if (!isAuthenticated(req)){
-        return res.status(401).json({ msg: "Unauthorized"})
+        res.status(401).json({ msg: "Unauthorized"})
+        return 
     }
     const user = req.user;
     const { itemId, quantity } = req.body;
@@ -136,9 +147,10 @@ const addItemToInventory = async (req: Request, res: Response) => {
         const item = await checkItem(itemId)
 
         if (!item) {
-            return res.status(404).json({
+            res.status(404).json({
                 msg: 'Item not found!',
             });
+            return 
         }
 
         // Check if the item is already in the user's inventory
@@ -154,20 +166,23 @@ const addItemToInventory = async (req: Request, res: Response) => {
             updatedInventoryItem = await createInventoryItem(inventory.id, item.id, quantity)
         }
 
-        return res.status(201).json({
+        res.status(201).json({
             msg: 'Item successfully added to inventory!',
             data: updatedInventoryItem,
         });
+        return 
     } catch (err: any) {
-        return res.status(500).json({
+        res.status(500).json({
             msg: err.message,
         });
+        return 
     }
 };
 
 const moveMonsterToParty = async (req: Request, res: Response) => {
     if (!isAuthenticated(req)){
-        return res.status(401).json({ msg: "Unauthorized"})
+        res.status(401).json({ msg: "Unauthorized"})
+        return 
     }
     const user = req.user;
     const { monsterId } = req.params;
@@ -177,9 +192,10 @@ const moveMonsterToParty = async (req: Request, res: Response) => {
         const menagerie = await getMenagerie(user.id);
 
         if (!menagerie) {
-            return res.status(404).json({
+            res.status(404).json({
                 msg: 'Menagerie not found',
             });
+            return 
         }
 
         // Extract the monsters from the menagerie records
@@ -189,26 +205,30 @@ const moveMonsterToParty = async (req: Request, res: Response) => {
         const partyCount = monsters.filter(monster => monster.status === 'IN_PARTY').length;
         
         if (partyCount >= 3) {
-            return res.status(403).json({
+            res.status(403).json({
                 msg: 'Party is full!',
             });
+            return 
         } else {
             await updateMonsterStatus(monsterId, 'IN_PARTY');
 
-            return res.status(201).json({
+            res.status(201).json({
                 msg: 'Monster successfully moved to party!',
             });
+            return 
         }
     } catch (err: any) {
-        return res.status(500).json({
+        res.status(500).json({
             msg: err.message,
         });
+        return 
     }
 };
 
 const moveMonsterFromParty = async (req: Request, res: Response) => {
     if (!isAuthenticated(req)){
-        return res.status(401).json({ msg: "Unauthorized"})
+        res.status(401).json({ msg: "Unauthorized"})
+        return 
     }
     const user = req.user;
     const { monsterId } = req.params;
@@ -217,28 +237,32 @@ const moveMonsterFromParty = async (req: Request, res: Response) => {
         // Check if the monster exists
         await updateMonsterStatus(monsterId, 'IN_MENAGERIE');
 
-        return res.status(201).json({
+        res.status(201).json({
             msg: 'Monster successfully moved from party!',
         });
+        return 
     } catch (err: any) {
-        return res.status(500).json({
+        res.status(500).json({
             msg: err.message,
         });
+        return 
     }
 };
 
 const changeLocation = async (req: Request, res: Response) => {
     if (!isAuthenticated(req)){
-        return res.status(401).json({ msg: "Unauthorized"})
+        res.status(401).json({ msg: "Unauthorized"})
+        return 
     }
     const user = req.user;
     const { locationId } = req.body;
 
     await changePlayerLocation(user.id, locationId);
 
-    return res.status(200).json({
+    res.status(200).json({
         msg: 'Location updated successfully',
     });
+    return 
 }
 
 export { getPlayerInfo, getUserMenagerie, addItemToInventory, getUserInventory, moveMonsterToParty, moveMonsterFromParty, changeLocation };

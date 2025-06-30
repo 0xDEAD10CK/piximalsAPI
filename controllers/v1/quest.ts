@@ -16,8 +16,10 @@ export const createQuest = async (req: Request, res: Response) => {
             }
         })
 
-        return res.status(200).json({msg: response})
+        res.status(200).json({msg: response})
+        return 
     } catch (error: any) {
-        return res.status(500).json({msg: error.message})
+        res.status(500).json({msg: error.message})
+        return 
     }
 }

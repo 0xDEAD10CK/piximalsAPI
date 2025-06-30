@@ -27,7 +27,8 @@ const prisma = new PrismaClient();
 
 const zoneGeneration = async (req: Request, res: Response) => {
   if (!isAuthenticated(req)) {
-    return res.status(401).json({ msg: 'Unauthorized'})
+    res.status(401).json({ msg: 'Unauthorized'})
+    return 
   }
   
   try {
@@ -45,7 +46,10 @@ const zoneGeneration = async (req: Request, res: Response) => {
       },
     });
 
-    if (!player?.location) return res.status(404).json({ msg: 'Player location not found' });
+    if (!player?.location) {
+      res.status(404).json({ msg: 'Player location not found' });
+      return
+    }
 
     for (let i = 0; i < monsterAmount; i++) {
       monsters.push(generateMonster(player.location.type));
@@ -64,9 +68,11 @@ const zoneGeneration = async (req: Request, res: Response) => {
     //   resolvedItems
     // );
 
-    return res.status(200).json({ msg: 'Welcome to the Dangerzone' });
+    res.status(200).json({ msg: 'Welcome to the Dangerzone' });
+    return 
   } catch (error: any) {
-    return res.status(500).json({ msg: error.message });
+    res.status(500).json({ msg: error.message });
+    return 
   }
 };
 
@@ -76,22 +82,28 @@ const goToZone = async (req: Request, res: Response) => {
     const user = req.user;
 
     const zone = await prisma.zone.findUnique({ where: { id: zoneid } });
-    if (!zone) return res.status(404).json({ msg: 'Zone not found' });
+    if (!zone) {
+      res.status(404).json({ msg: 'Zone not found' });
+      return
+    } 
 
     const moveZone = await prisma.zone.update({
       where: { id: zoneid },
       data: { players: { connect: { id: user?.id } } },
     });
 
-    return res.status(200).json({ msg: 'Welcome to the Dangerzone', zone: moveZone });
+    res.status(200).json({ msg: 'Welcome to the Dangerzone', zone: moveZone });
+    return 
   } catch (error: any) {
-    return res.status(500).json({ msg: error.message });
+    res.status(500).json({ msg: error.message });
+    return 
   }
 };
 
 const collect = async (req: Request, res: Response) => {
   if (!isAuthenticated(req)) {
-    return res.status(401).json({ msg: 'Unauthorized'})
+    res.status(401).json({ msg: 'Unauthorized'})
+    return 
   }
   try {
     const { zoneid } = req.params;
@@ -112,15 +124,18 @@ const collect = async (req: Request, res: Response) => {
       data.push(itemResponse);
     }
 
-    return res.status(200).json({ msg: 'Added to inventory', data });
+    res.status(200).json({ msg: 'Added to inventory', data });
+    return 
   } catch (error: any) {
-    return res.status(500).json({ msg: error.message });
+    res.status(500).json({ msg: error.message });
+    return 
   }
 };
 
 const leaveZone = async (req: Request, res: Response) => {
   if (!isAuthenticated(req)) {
-    return res.status(401).json({ msg: 'Unauthorized'})
+    res.status(401).json({ msg: 'Unauthorized'})
+    return 
   }
   try {
     const { zoneid } = req.params;
@@ -128,7 +143,8 @@ const leaveZone = async (req: Request, res: Response) => {
     const zone = await findZone(zoneid);
 
     if ('msg' in zone) {
-      return res.status(404).json({ msg: zone.msg });
+      res.status(404).json({ msg: zone.msg });
+      return 
     }
 
     const monsterPromises = zone.monsters
@@ -144,9 +160,11 @@ const leaveZone = async (req: Request, res: Response) => {
 
     await cleanUpZone(zoneid);
 
-    return res.status(200).json({ msg: 'Zone Deleted' });
+    res.status(200).json({ msg: 'Zone Deleted' });
+    return 
   } catch (error: any) {
-    return res.status(500).json({ msg: error.message });
+    res.status(500).json({ msg: error.message });
+    return 
   }
 };
 
@@ -154,9 +172,11 @@ const zoneInfo = async (req: Request, res: Response) => {
   try {
     const { zoneid } = req.params;
     const zone = await findZone(zoneid);
-    return res.status(200).json({ msg: 'Zone found', zone });
+    res.status(200).json({ msg: 'Zone found', zone });
+    return 
   } catch (error: any) {
-    return res.status(500).json({ msg: error.message });
+    res.status(500).json({ msg: error.message });
+    return 
   }
 };
 
@@ -169,15 +189,18 @@ const returnBattleResults = async (req: Request, res: Response) => {
 
     if (result === 'CAUGHT') {
       await updateMonsterStatus(monsterId, 'CAUGHT');
-      return res.status(200).json({ msg: 'Monster caught' });
+      res.status(200).json({ msg: 'Monster caught' });
+      return 
     }
 
     if (result === 'DEAD') {
       await prisma.monster.delete({ where: { id: monsterId } });
-      return res.status(200).json({ msg: 'Monster defeated' });
+      res.status(200).json({ msg: 'Monster defeated' });
+      return 
     }
   } catch (error: any) {
-    return res.status(500).json({ msg: error.message });
+    res.status(500).json({ msg: error.message });
+    return 
   }
 };
 
@@ -189,7 +212,10 @@ const setAllMonsterStatusCaught = async (req: Request, res: Response) => {
       include: { monsters: true },
     });
 
-    if (!zone) return res.status(404).json({ msg: 'Zone not found' });
+    if (!zone) {
+      res.status(404).json({ msg: 'Zone not found' });
+      return 
+    }
 
     await Promise.all(
       zone.monsters.map(monster =>
@@ -205,15 +231,18 @@ const setAllMonsterStatusCaught = async (req: Request, res: Response) => {
       include: { monsters: true },
     });
 
-    return res.status(200).json({ msg: 'All monsters caught', zone: updatedZone });
+    res.status(200).json({ msg: 'All monsters caught', zone: updatedZone });
+    return 
   } catch (error: any) {
-    return res.status(500).json({ msg: error.message });
+    res.status(500).json({ msg: error.message });
+    return 
   }
 };
 
 const search = async (req: Request, res: Response) => {
   if (!isAuthenticated(req)) {
-    return res.status(401).json({ msg: 'Unauthorized'})
+    res.status(401).json({ msg: 'Unauthorized'})
+    return 
   }
   const { zoneid } = req.params;
   const user = req.user;
@@ -227,10 +256,16 @@ const search = async (req: Request, res: Response) => {
       },
     });
 
-    if (!player?.location) return res.status(404).json({ msg: 'Player location not found' });
+    if (!player?.location) {
+      res.status(404).json({ msg: 'Player location not found' });
+      return 
+    }
 
     const zone = await prisma.zone.findUnique({ where: { id: zoneid } });
-    if (!zone) return res.status(404).json({ msg: 'Zone not found' });
+    if (!zone) {
+      res.status(404).json({ msg: 'Zone not found' });
+      return 
+    }
 
     const monster = await generateMonster(player.location.type);
     const items = await Promise.all(
@@ -245,9 +280,11 @@ const search = async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(200).json({ msg: 'Monster found', monster, zone });
+    res.status(200).json({ msg: 'Monster found', monster, zone });
+    return 
   } catch (error: any) {
-    return res.status(500).json({ msg: error.message });
+    res.status(500).json({ msg: error.message });
+    return 
   }
 };
 

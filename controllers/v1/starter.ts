@@ -7,7 +7,8 @@ const prisma = new PrismaClient()
 
 const getStarter = async (req: Request, res: Response) => {
     if (!isAuthenticated(req)) {
-        return res.status(401).json({ msg: 'Unauthorized'})
+        res.status(401).json({ msg: 'Unauthorized'})
+        return 
     }
     try {
         const response = []
@@ -17,11 +18,13 @@ const getStarter = async (req: Request, res: Response) => {
         const userData = await getUserAccount(user.id)
         
         if (!userData){
-            return res.status(400).json({ msg: "Starters not found"})
+            res.status(400).json({ msg: "Starters not found"})
+            return 
         }
 
         if (userData.starter === true){
-            return res.status(400).json({ msg: "Already have a starter"})
+            res.status(400).json({ msg: "Already have a starter"})
+            return 
         }
 
         for (const type of defaultTypes) {
@@ -29,15 +32,18 @@ const getStarter = async (req: Request, res: Response) => {
             response.push(monster)
         }
 
-        return res.status(201).json({ msg: "successfully retrieved", data: response })
+        res.status(201).json({ msg: "successfully retrieved", data: response })
+        return 
     } catch (error) {
-        return res.status(500).json({msg: error})
+        res.status(500).json({msg: error})
+        return 
     }
 }
 
 const collectStarter = async (req: Request, res: Response) => {
     if (!isAuthenticated(req)) {
-        return res.status(401).json({ msg: 'Unauthorized'})
+        res.status(401).json({ msg: 'Unauthorized'})
+        return 
     }
     try {
         const { monsterId } = req.body
@@ -47,8 +53,10 @@ const collectStarter = async (req: Request, res: Response) => {
         await collectedStarter(user.id)
         
         res.status(200).json({msg: "Collected Starter", data: monsterResponse})
+        return 
     } catch (error) {
-        return res.status(500).json({msg: error})
+        res.status(500).json({msg: error})
+        return 
     }
 }
 

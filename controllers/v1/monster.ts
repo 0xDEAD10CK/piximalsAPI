@@ -26,9 +26,10 @@ const generateMonster = async (req: Request, res: Response) => {
         });
 
         if (abilities.length < 2) {
-            return res.status(500).json({
+            res.status(500).json({
                 msg: 'Not enough abilities for this monster type.',
             });
+            return 
         }
 
         const selectedAbilities:any = [];
@@ -61,14 +62,16 @@ const generateMonster = async (req: Request, res: Response) => {
             }
         });
         
-        return res.status(201).json({
+        res.status(201).json({
             msg: 'Monster successfully generated',
             data: monster,
         });
+        return 
     } catch (err: any) {
-        return res.status(500).json({
+        res.status(500).json({
             msg: err.message,
         });
+        return 
     }
 };
 
@@ -94,14 +97,16 @@ const getMonsters = async (req: Request, res: Response) => {
             },
         })
 
-        return res.status(201).json({
+        res.status(201).json({
             msg: 'Monster successfully fetched',
             data: monsterData,
         })
+        return 
     } catch (err: any) {
-        return res.status(500).json({
+        res.status(500).json({
             msg: err.message,
         })
+        return 
     }
 }
 

@@ -10,9 +10,11 @@ const authRoute = (req: AuthenticatedRequest, res: Response, next: NextFunction)
         const authHeader = req.headers.authorization
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(403).json({
+            res.status(403).json({
                 msg: 'No token provided',
             })
+
+            return
         }
 
         const token = authHeader.split(' ')[1];
@@ -25,11 +27,12 @@ const authRoute = (req: AuthenticatedRequest, res: Response, next: NextFunction)
         const payload = jwt.verify(token, secret);
         req.user = payload
 
-        return next()
+        next()
     } catch (error) {
-        return res.status(403).json({
+        res.status(403).json({
             msg: 'Not authorized to access this route',
         })
+        return 
     }
 }
 

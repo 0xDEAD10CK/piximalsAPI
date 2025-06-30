@@ -72,10 +72,12 @@ const register = async (
       msg: "User successfully registered",
       data: sanitizeAccount(newUser),
     });
+    
   } catch (err: any) {
     res.status(500).json({
       msg: err.message || "Internal Server Error",
     });
+    
   }
 };
 
